@@ -165,7 +165,8 @@ void ofApp::update(){
         }
         handleSceneChange();
     }
-    
+    double beforeOSC;
+    if(co.debug)beforeOSC = ofGetElapsedTimef();
     // update from incoming osc
     while (receiver.hasWaitingMessages()) {
         ofxOscMessage m;
@@ -175,27 +176,30 @@ void ofApp::update(){
             for(int t = 0; t < 2; t++){
                 for(int i = 0; i < teams[t].buttons.size(); i++){
                     
-                    //Button *b = teams[t].buttons[i];
+                    Button *b = &teams[t].buttons[i];
                     
-                    if( m.getAddress()==teams[t].buttons[i].address ){
-                        teams[t].buttons[i].set(m.getArgAsFloat(0)/127.0f, m.getArgAsFloat(1)/127.0f, m.getArgAsFloat(2));
-                        int table = teams[t].buttons[i].table + teams[t].teamId*NUM_TABLES/2;
-                        receivingTables[table]=true;
+                    if( m.getAddress()==b->address ){
+                        b->set(m.getArgAsFloat(0)/127.0f, m.getArgAsFloat(1)/127.0f, m.getArgAsFloat(2));
+//                        int table = b->table + teams[t].teamId*NUM_TABLES/2;
+//                        receivingTables[table]=true;
                         break;
                     }
-                    if (m.getAddress()==teams[t].buttons[i].secondAdress){
+                    if (m.getAddress()==b->secondAdress){
                         if(m.getArgAsInt32(0)==1){
                             if(teams[t].s04.spyId == -1)teams[t].s04.spyId=i;
-                            teams[t].buttons[i].on = true;
-                            teams[t].buttons[i].isPlaying = true;
+                            b->on = true;
+                            b->isPlaying = true;
                             break;
                         }
-                        else teams[t].buttons[i].on = false;
+                        else{
+                            b->on = false;
+                        }
                     }
                 }
             }
         }
     }
+    if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
     
     if(!co.refill1){
         teams[0].update();

@@ -87,13 +87,15 @@ public:
                 s02.begin();
             }
             if(co->sceneNumber == 2){ // maze
+                createScene(s03.polys);
+                
                 s03.average = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
                 //virtual void setPhysics(float density, float bounce, float friction);
                 s03.average.get()->setPhysics(3.0, 0.0, 400.0);
                 s03.average.get()->setup(box2d.getWorld(), 1920, 1080, 60);
               
                 
-                createScene(s03.polys);
+            
                 s03.begin();
             }if(p_sceneNum == 2){ // reset if it was just a test!
                 s03.average->destroy();
@@ -223,6 +225,8 @@ public:
                 
                 buttons[i].drawb2d();
             }
+            
+            for(int i = 0; i<polyShapes.size();i++)polyShapes[i]->draw();
         }
     }
     
