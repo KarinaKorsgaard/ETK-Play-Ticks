@@ -1,0 +1,23 @@
+scene 4 began at: 10:46
+team 0 finished at 10:46:20
+spy from team 0 beat the other team at10:46
+team 1 finished at 10:46:20
+
+scene 3 began at: 10:46
+team 0 finished at 10:46:36
+team 1 finished at 10:46:36
+
+scene 4 began at: 10:46
+team 1 finished at 10:46:38
+spy from team 0 beat the other team at10:46
+team 0 finished at 10:46:39
+
+scene 3 began at: 10:46
+team 0 finished at 10:46:41
+team 1 finished at 10:46:41
+
+scene 2 began at: 10:46
+
+scene 3 began at: 10:46
+team 0 finished at 10:46:44
+team 1 finished at 10:46:44

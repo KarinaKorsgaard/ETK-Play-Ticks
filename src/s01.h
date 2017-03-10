@@ -1,0 +1,146 @@
+#include "ofMain.h"
+#include "common.h"
+
+class Blob{
+public:
+    ofPolyline area;
+    ofVec2f pos;
+    ofVec2f speed;
+    float radius = 600.;
+    int wave_height=radius*0.1; // height of a sine wave
+    int waves_amount= 16; // amount of sine aves per circle
+    int circle_resolution = 1600;
+    // so we just multiplying the angle on amount of waves we want to have
+    
+    
+    void setup(){
+        for(int i = 0; i< 36; i++){
+            float x=radius*cos(i);
+            float y=radius*sin(i);
+            area.addVertex(ofVec2f(x,y));
+            area.close();
+        }
+        pos = ofVec2f(1920/2,1080/2);
+        speed = ofVec2f(5,5);
+    }
+    void move(){
+        pos+=speed;
+        if(pos.x>1920-100)speed.x*=-1;
+        if(pos.x<100)speed.x*=-1;
+        
+        if(pos.y>1080-100)speed.y*=-1;
+        if(pos.y<100)speed.y*=-1;
+    }
+    void updatePoly(){
+        ofPolyline copy = area;
+        area.clear();
+        wave_height= radius * ofMap(sin(ofGetElapsedTimef()),0,1,0.02,0.1);
+        float speed_increment= ofGetElapsedTimef();
+        int anim_shape=16;
+       // int sine_radius=radius*0.1;
+        
+        for(int i=0; i<circle_resolution; i++){
+            
+            float angle=TWO_PI/circle_resolution*i;
+            float raidus_addon=wave_height*sin((angle+speed_increment)*anim_shape);
+            
+            float x=cos(angle)*(radius+raidus_addon);
+            float y=sin(angle)*(radius+raidus_addon);
+            x/=2;
+            y/=2;
+            x = CLAMP(x+pos.x,0,1920);
+            y = CLAMP(y+pos.y,0,1080);
+            area.addVertex(ofPoint(x,y));
+        }
+        
+        area.close();
+        
+        area = area.getSmoothed(100);
+    }
+    void draw(){
+
+        ofPushStyle();
+        ofSetColor(0,0,60);
+        ofSetLineWidth(20);
+        area.draw();
+        ofPopStyle();
+    }
+};
+
+
+class Scene01 : public commonFunctions{
+    
+public:
+    vector<Button>*buttons;
+    Blob blob;
+    void setup(commonObjects*_co, vector<Button>*b){
+        buttons = b;
+        co = _co;
+        svg.load("svg/s01.svg");
+        poly = getPolyline(svg)[0];
+        
+        blob.setup();
+        
+        head = transformToCollumn(getLine("text/01.txt",0),800, co->font_medium);
+        bread = transformToCollumn(getLine("text/01.txt",1),800, co->font_small);
+
+        
+    };
+    
+    bool isDone(){
+        bool isInside=true;
+        
+        for(int i = 0; i<buttons->size();i++){
+            if(!buttons->at(i).isPlaying)continue;
+            
+            if(!buttons->at(i).on){
+                isInside=false;
+                break;
+            }
+            if(!blob.area.inside(buttons->at(i).getBiquadPos()) && !buttons->at(i).isDead()){
+                isInside=false;
+                break;
+            }
+        }
+        return isInside;
+    };
+    
+    void update(){
+        blob.updatePoly();
+        if(!isDone()){
+            blob.move();
+            for(int i=0; i<buttons->size(); i++) {
+                buttons->at(i).update(co->attraction);
+            }
+        }
+    }
+
+    void draw(){
+        ofSetColor(255);
+     //   svg.draw();
+        blob.draw();
+        for(int i=0; i<buttons->size(); i++) {
+            buttons->at(i).draw();
+            if(co->debug){
+                buttons->at(i).drawDebug();
+            }
+        }
+//        ofSetColor(ofColor::royalBlue);
+//        for(int i = 0; i< head.size();i++)
+//            co->font_medium->drawString(head[i], 50, 100+i*co->font_medium->getLineHeight());
+//        
+//        for(int i = 0; i< bread.size();i++)
+//            co->font_small->drawString(bread[i], 50, 180+i*co->font_small->getLineHeight());
+    };
+    
+    void begin(){};
+    void reset(){};
+
+    commonObjects * co;
+    ofxSVG svg;
+    ofPolyline poly;
+    
+    vector<string> head;
+    vector<string> bread;
+    
+};

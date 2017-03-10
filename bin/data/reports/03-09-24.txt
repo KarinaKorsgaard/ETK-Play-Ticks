@@ -1,0 +1,28 @@
+
+scene 7 began at: 14:23
+
+scene 4 began at: 14:23
+
+scene 7 began at: 14:23
+
+scene 6 began at: 14:23
+
+scene 3 began at: 14:23
+team 0 finished at 14:23:44
+team 1 finished at 14:23:44
+
+scene 4 began at: 14:23
+
+scene 2 began at: 14:23
+
+scene 1 began at: 14:23
+team 0 finished at 14:23:49
+team 1 finished at 14:23:49
+
+scene -12 began at: 14:23
+team 0 finished at 14:23:49
+team 1 finished at 14:23:49
+
+scene 0 began at: 14:23
+
+scene 7 began at: 14:24

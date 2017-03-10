@@ -1,0 +1,25 @@
+<group>
+	<log_report>1</log_report>
+	<time_energy_balance>0.5</time_energy_balance>
+	<physics>
+		<attraction>1000</attraction>
+		<low_pass_position>0.05</low_pass_position>
+		<gravity>16</gravity>
+	</physics>
+	<spy_game>
+		<drain_on_collide>0.2</drain_on_collide>
+	</spy_game>
+	<game_controls>
+		<refill_1>0</refill_1>
+		<refill_2>0</refill_2>
+		<refill_amount>50</refill_amount>
+		<refill_animation_time>5</refill_animation_time>
+		<drain_team_1>1</drain_team_1>
+		<drain_team_2>1</drain_team_2>
+	</game_controls>
+	<market_control>
+		<calculate_market_1>0</calculate_market_1>
+		<calculate_market_2>0</calculate_market_2>
+	</market_control>
+<group/>
+</group>
