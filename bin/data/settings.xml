@@ -12,7 +12,7 @@
 	<game_controls>
 		<refill_1>0</refill_1>
 		<refill_2>0</refill_2>
-		<refill_amount>50</refill_amount>
+		<refill_amount>100</refill_amount>
 		<refill_animation_time>5</refill_animation_time>
 		<drain_team_1>1</drain_team_1>
 		<drain_team_2>1</drain_team_2>

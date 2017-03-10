@@ -171,35 +171,42 @@ void ofApp::update(){
     while (receiver.hasWaitingMessages()) {
         ofxOscMessage m;
         receiver.getNextMessage(m);
+        if(co.debug)cout<<m.getAddress()<<endl;
         // set button values
         if(!co.lock){
             for(int t = 0; t < 2; t++){
                 for(int i = 0; i < teams[t].buttons.size(); i++){
                     
                     Button *b = &teams[t].buttons[i];
-                    
-                    if( m.getAddress()==b->address ){
-                        b->set(m.getArgAsFloat(0)/127.0f, m.getArgAsFloat(1)/127.0f, m.getArgAsFloat(2));
-//                        int table = b->table + teams[t].teamId*NUM_TABLES/2;
-//                        receivingTables[table]=true;
-                        break;
-                    }
                     if (m.getAddress()==b->secondAdress){
-                        if(m.getArgAsInt32(0)==1){
-                            if(teams[t].s04.spyId == -1)teams[t].s04.spyId=i;
-                            b->on = true;
-                            b->isPlaying = true;
-                            break;
-                        }
-                        else{
+                        if(m.getArgAsInt32(0)==0){
+//                            if(teams[t].s04.spyId == -1)
+//                                teams[t].s04.spyId=i;
+//                            b->on = true;
+//                            b->isPlaying = true;
+//                        }
+//                        else{
                             b->on = false;
                         }
+                        
                     }
+                    else if( m.getAddress()==b->address ){
+                        b->on = true;
+                        b->isPlaying = true;
+                        b->set(m.getArgAsFloat(0)/127.0f, m.getArgAsFloat(1)/127.0f, m.getArgAsFloat(2));
+                        int table = b->table + teams[t].teamId*NUM_TABLES/2;
+                        receivingTables[table]=true;
+                        
+                        if(teams[t].s04.spyId == -1)
+                            teams[t].s04.spyId=i;
+                        
+                    }
+                    
                 }
             }
         }
     }
-    if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
+    //if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
     
     if(!co.refill1){
         teams[0].update();
@@ -260,6 +267,7 @@ void ofApp::draw(){
             ofTranslate(1920, 0);
             teams[1].draw();
             ofPopMatrix();
+            
             easeRefill2 = ofGetElapsedTimef();
             teams[1].recordValues();
         }
@@ -349,8 +357,8 @@ void ofApp::handleSceneChange(){
                 b.box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
                 //virtual void setPhysics(float density, float bounce, float friction);
                 b.box2Dcircle.get()->setPhysics(3.0, 0.0, 400.0);
-                b.box2Dcircle.get()->setup(teams[0].box2d.getWorld(), 0, 0, 40);
-                
+                b.box2Dcircle.get()->setup(teams[0].box2d.getWorld(), 0, 0, 0);
+                b.box2Dcircle.get()->alive = false;
                 teams[0].buttons.push_back(b);
                 
                 teams[0].buttons.back().box2Dcircle.get()->setData(new ButtonData());
@@ -377,23 +385,33 @@ void ofApp::handleSceneChange(){
 void ofApp::refill(int team, float timef){
     float t=ofGetElapsedTimef()-timef;
     for(int i=0; i<teams[team].buttons.size(); i++) {
+        
         Button * b = &teams[team].buttons.at(i);
-        
-        float oldValue = b->beforeRefillValue;
-        float newValue = oldValue + co.refillCoef;
-        //  if(co.lessIsMore)newValue =oldValue + (b->beginningValue - b->value) * co.refillCoef;
-        //  else newValue = oldValue + b->value * co.refillCoef;
-        b->value=CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue);
-        
-        b->updateRadius();
-        
-        
-        ofPushMatrix();
-        ofTranslate(b->getGridPos());
-        ofTranslate(1920 * team,0);
-        ofTranslate(800,0);
-        b->draw(false, true, true);
-        ofPopMatrix();
+        if(b->isPlaying){
+            
+            float oldValue = b->beforeRefillValue;
+            
+            float newValue = oldValue + co.refillCoef;
+//            cout << oldValue<< endl;
+//            cout << newValue<< endl;
+//            cout << "" << endl;
+            //  if(co.lessIsMore)newValue =oldValue + (b->beginningValue - b->value) * co.refillCoef;
+            //  else newValue = oldValue + b->value * co.refillCoef;
+            b->value=CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue);
+            
+//            cout << b->value << endl;
+//            cout << "" << endl;
+            
+            b->updateRadius();
+            
+            
+            ofPushMatrix();
+            ofTranslate(b->getGridPos());
+            ofTranslate(1920 * team,0);
+            ofTranslate(800,0);
+            b->draw(false, true, true);
+            ofPopMatrix();
+        }
     }
     if(t>co.refillTime && team == 0)co.refill1=false;
     if(t>co.refillTime && team == 1)co.refill2=false;

@@ -33,7 +33,8 @@ public:
         box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
         box2Dcircle.get()->setPhysics(3.0, 0.0, 400.0);
-        box2Dcircle.get()->setup(world->getWorld(), 0, 0, 40);
+        box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), 1);
+        box2Dcircle.get()->alive = false;
         
         ofColor c;
         c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
@@ -118,13 +119,18 @@ public:
                 box2Dcircle->setVelocity(0,0);
                 box2Dcircle->addAttractionPoint(o.x,o.y, attraction );
                 filterLowPass.update(getPos());
-                updateRadius();
+                
+                if(value <= 0.0){
+                    on = false;
+                }
+                
+                //if(getPos().x<10||getPos().x>1970)box2Dcircle->setPosition(, <#float y#>)
             }
             else {
-                box2Dcircle->setRadius(0);
                 prev_on = false;
             }
         }
+        updateRadius();
     }
     
     void updateWithGravity(int attraction ){
@@ -148,29 +154,33 @@ public:
                 else box2Dcircle->addForce(ofVec2f(dx,0), 10. );
                 
                 filterLowPass.update(getPos());
-                updateRadius();
+                
+                if(value <= 0.0){
+                    on = false;
+                }
+                
             }
             else {
-                box2Dcircle->setRadius(0);
                 prev_on = false;
             }
-        
         }
         else {
-            box2Dcircle->setRadius(0);
             prev_on = false;
         }
+        updateRadius();
     }
     
     void updateRadius(){
-        radius = ofMap(CLAMP(value,0,100),0,100,10,100);
-        if(value == 0.0)radius = 0;
-        box2Dcircle->setRadius(radius);
-        
-        if(radius == 0.0 || !on) box2Dcircle->alive = false;
-        else box2Dcircle->alive = true;
-       // if(teamNumber ==0 && ID == 0 && table == 0)
-       //     cout <<1./(1.-log(radius))<< endl;
+        if(on){
+            radius = ofMap(CLAMP(value,0,100),0,100,10,100);
+            if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
+            else box2Dcircle->setRadius(radius);
+            box2Dcircle->alive = true;
+        }
+        else {
+            box2Dcircle->setRadius(0);
+            box2Dcircle->alive = false;
+        }
     }
     
     void drain(float f){
@@ -191,7 +201,6 @@ public:
                 value-=(dx+dy)*f;
         }
         if(value<0)value = 0;
-        
     }
     
     bool isColliding(){

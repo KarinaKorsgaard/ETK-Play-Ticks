@@ -23,13 +23,14 @@ public:
     bool isDone(){
         bool isInside=true;
         
-        isInside = winningArea.inside(filterLowPass.value());
-        
+        isInside = winningArea.inside(average->getPosition());
+       
         if(isInside){ // all playing and alive buttons must be on for the average to count!
+            co->log("average is home, but all buttons are not on!");
             for(int i = 0; i<buttons->size();i++){
               //  if(!buttons->at(i).isPlaying || buttons->at(i).isDead())continue;
                 
-                if(!buttons->at(i).on){
+                if(!buttons->at(i).on && buttons->at(i).isPlaying){
                     isInside=false;
                     break;
                 }

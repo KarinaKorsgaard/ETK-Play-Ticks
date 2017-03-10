@@ -83,8 +83,7 @@ public:
         
         head = transformToCollumn(getLine("text/01.txt",0),800, co->font_medium);
         bread = transformToCollumn(getLine("text/01.txt",1),800, co->font_small);
-
-        
+    
     };
     
     bool isDone(){

@@ -21,6 +21,7 @@
 #include "designCharacter.h"
 #include "drainTest.h"
 #include "finale.h"
+#include "pingPong.h"
 
 class Team{
 
@@ -46,6 +47,7 @@ public:
     Scene05 s05; // gravity
     Scene06 s06; // market
     
+    PingPong pingPong;
     Finale finale;
     DesignACharacter sDesign;
     DrainTest drainTest;
@@ -69,6 +71,7 @@ public:
         s04.setup(co,&buttons);
         s05.setup(co,&buttons);
         s06.setup(co,&buttons);
+        pingPong.setup(co,&buttons);
         if(teamId == 0)finale.setup(co,&buttons);
     }
     
@@ -92,7 +95,7 @@ public:
                 s03.average = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
                 //virtual void setPhysics(float density, float bounce, float friction);
                 s03.average.get()->setPhysics(3.0, 0.0, 400.0);
-                s03.average.get()->setup(box2d.getWorld(), 1920, 1080, 60);
+                s03.average.get()->setup(box2d.getWorld(), 1920-120, 1080-120, 60);
               
                 
             
@@ -148,10 +151,14 @@ public:
         if(co->sceneNumber==3)drainTest.update();
         if(co->sceneNumber==4 && s04.spyId !=-1)s04.update();
         if(co->sceneNumber==5)s05.update();
-        if(teamId == 0 && co->sceneNumber==6)s06.update();
-        if(teamId == 1 && co->sceneNumber==6)s06.update();
- 
+        
+        if(co->sceneNumber==6)s06.update();
+        //if(teamId == 1 && co->sceneNumber==6)s06.update();
+        
+        
+        
         if(teamId == 0 && co->sceneNumber==7)finale.update();
+        if(co->sceneNumber==8)pingPong.update();
         
         if(co->sceneNumber==9)sDesign.update();
         box2d.update();
@@ -165,7 +172,7 @@ public:
         if(co->sceneNumber==3)isDone= drainTest.isDone();
         if(co->sceneNumber==4&& s04.spyId !=-1)isDone= s04.isDone();
         if(co->sceneNumber==5)isDone= s05.isDone();
-        
+        if(co->sceneNumber==8)isDone=pingPong.isDone();
         
         if(co->sceneNumber==6){
             bool b = teamId == 0 ? co->marketDone1:co->marketDone2;
@@ -201,6 +208,18 @@ public:
 
     void draw(){
         ofFill();
+        if(co->debug){
+            ofSetColor(255,200);
+            for(int i=0; i<buttons.size(); i++) {
+                
+                if(buttons[i].isColliding())
+                    ofSetColor(255,0,0);
+                
+                buttons[i].drawb2d();
+            }
+            
+            for(int i = 0; i<polyShapes.size();i++)polyShapes[i]->draw();
+        }
         
         if(co->sceneNumber==0)s01.draw();
         if(co->sceneNumber==1)s02.draw();
@@ -210,24 +229,13 @@ public:
         if(co->sceneNumber==5)s05.draw();
         if(co->sceneNumber==6)s06.draw();
         if(co->sceneNumber==7 && teamId == 0)finale.draw();
+        if(co->sceneNumber==8)pingPong.draw();
         if(co->sceneNumber==9) sDesign.draw();
         
         
         drawResult();
         
-        if(co->debug){
-            ofSetColor(255);
-            ofNoFill();
-            for(int i=0; i<buttons.size(); i++) {
-
-                if(buttons[i].isColliding())
-                    ofSetColor(255,0,0);
-                
-                buttons[i].drawb2d();
-            }
-            
-            for(int i = 0; i<polyShapes.size();i++)polyShapes[i]->draw();
-        }
+        
     }
     
     
