@@ -424,7 +424,7 @@ void ofApp::refill(int team, float timef){
 void ofApp::exit(){
 
     if(co.logReport){
-        string path = ofToString("reports/"+ofGetTimestampString("%m-%d-%M")+".txt");
+        string path = ofToString("reports/"+ofGetTimestampString("%m-%d_%H-%M")+".txt");
         ofFile newFile(ofToDataPath(path),ofFile::WriteOnly); //file doesn't exist yet
         newFile.create();
 
