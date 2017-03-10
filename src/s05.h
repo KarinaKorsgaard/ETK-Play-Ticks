@@ -54,7 +54,7 @@ public:
         if(!isDone()){ // freeze when has reached...
             for(int i=0; i<buttons->size(); i++) {
                 
-                buttons->at(i).updateWithGravity(co->attraction);
+                buttons->at(i).updateWithGravity(co->jump);
             }
         }
     }
@@ -85,6 +85,7 @@ public:
     void begin(){
         theWinner=-1;
         for(int i = 0; i<buttons->size();i++){
+            if(!buttons->at(i).isPlaying)continue;
             buttons->at(i).box2Dcircle->setPosition(buttons->at(i).getPosRaw().x, 1040);
         }
     };

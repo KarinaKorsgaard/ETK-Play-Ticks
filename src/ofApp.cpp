@@ -95,7 +95,6 @@ void ofApp::setup(){
     physics.setName("physics");
     physics.add(co.attraction.set("attraction",1000,0,5000));
     physics.add(co.fc.set("low pass position",0.05,0.00,1.));
-    
     physics.add(co.gravity.set("gravity",1,0,50));
     
     gameMechs.setName("game controls");
@@ -108,6 +107,9 @@ void ofApp::setup(){
     gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,10));
     gameMechs.add(co.drainCoefficient2.set("drain team 2",1,0,10));
 
+    gravity.setName("gravity game");
+    gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
+    
     spyGame.setName("spy game");
     spyGame.add(co.spyDrainer.set("drain on collide",0.2,0.,2));
     
@@ -124,6 +126,7 @@ void ofApp::setup(){
     gui.add(co.logReport.set("log report",true));
     gui.add(time_energy.set("time/energy balance",0.5,0,1));
     gui.add(physics);
+    gui.add(gravity);
     gui.add(spyGame);
     gui.add(gameMechs);
     
@@ -182,19 +185,16 @@ void ofApp::update(){
                     Button *b = &teams[t].buttons[i];
                     if (m.getAddress()==b->secondAdress){
                         if(m.getArgAsInt32(0)==0){
-//                            if(teams[t].s04.spyId == -1)
-//                                teams[t].s04.spyId=i;
-//                            b->on = true;
-//                            b->isPlaying = true;
-//                        }
-//                        else{
                             b->on = false;
                         }
                         
                     }
                     else if( m.getAddress()==b->address ){
                         b->on = true;
-                        b->isPlaying = true;
+                        if(!b->isPlaying){
+                            b->isPlaying = true;
+                            b->box2Dcircle->setPosition(ofRandom(200,400), ofRandom(200,400));
+                        }
                         double x = reverseX ? 1.- (m.getArgAsFloat(0)/127.0f) : m.getArgAsFloat(0)/127.0f;
                         double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
                         b->set( x , y , m.getArgAsFloat(2) );

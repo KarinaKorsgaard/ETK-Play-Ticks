@@ -2,7 +2,7 @@
 	<log_report>1</log_report>
 	<time_energy_balance>0.5</time_energy_balance>
 	<physics>
-		<attraction>1000</attraction>
+		<attraction>3520</attraction>
 		<low_pass_position>0.05</low_pass_position>
 		<gravity>16</gravity>
 	</physics>
@@ -24,4 +24,7 @@
 <group/>
 <reverse_X>0</reverse_X>
 	<reverse_Y>0</reverse_Y>
+<gravity_game>
+		<jumpiness_for_gravity>1</jumpiness_for_gravity>
+	</gravity_game>
 </group>

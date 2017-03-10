@@ -50,7 +50,7 @@ public:
     ofParameter<bool>refill1;
     ofParameter<bool>refill2;
 
-    
+    ofParameter<float>jump;
 
     ofxTrueTypeFontUC * font_x_small;
     ofxTrueTypeFontUC * font_small;

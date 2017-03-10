@@ -133,24 +133,20 @@ public:
         updateRadius();
     }
     
-    void updateWithGravity(int attraction ){
+    void updateWithGravity(float jump ){
         if(isPlaying && !isDead()){
-            if(!prev_on && on){
-                prev_on=true;
-                filterLowPass.clear(ofVec2f(getPos()));
-            }
             if(on){
                 ofPoint o = getPosRaw();
                 if(on && prev_on){
-                    dx = abs(getPos().x-o.x);
+                    dx = abs(px-o.x);
                     dy = abs(py-o.y);
                 }
                 else{
                     dx=0.0;
                     dy=0.0;
                 }
-                
-                if(dx>0||dy>0)box2Dcircle->addForce(ofVec2f( -(px-x)*10. ,-( py-y )*10. ),attraction);
+            
+                if(dx>0||dy>0)box2Dcircle->addForce(ofVec2f( -(px-x)*10. ,-CLAMP( py-y,0,10000 )*10. ),jump);
                 else box2Dcircle->addForce(ofVec2f(dx,0), 10. );
                 
                 filterLowPass.update(getPos());
@@ -158,15 +154,15 @@ public:
                 if(value <= 0.0){
                     on = false;
                 }
-                
+                if(!prev_on){
+                    prev_on=true;
+                }
             }
             else {
                 prev_on = false;
             }
         }
-        else {
-            prev_on = false;
-        }
+        
         updateRadius();
     }
     

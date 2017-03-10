@@ -56,6 +56,7 @@ class ofApp : public ofBaseApp{
     ofParameterGroup spyGame;
     
     ofParameterGroup gameMechs;
+    ofParameterGroup gravity;
     ofParameter<bool>reverseX,reverseY;
     ofParameterGroup scenes;
     vector< ofParameter<bool> >b_scenes;

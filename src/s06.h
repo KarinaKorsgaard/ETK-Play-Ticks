@@ -262,9 +262,9 @@ public:
     void begin(){
         stopGivingPoints = false;
         countDown = static_countDown;
-        for(int i = 0; i<buttons->size();i++){
-            buttons->at(i).box2Dcircle->setPosition(buttons->at(i).getPosRaw().x, 1040);
-        }
+//        for(int i = 0; i<buttons->size();i++){
+//            //buttons->at(i).box2Dcircle->setPosition(buttons->at(i).getPosRaw().x, 1040);
+//        }
         timeGained=0.0;
        // done = false;
     };
