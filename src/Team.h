@@ -262,8 +262,10 @@ public:
     float getDistVal(){
         float r=0.f;
         for(int i = 0 ; i<buttons.size();i++)
-            if(!(co->sceneNumber == 4 && i == s04.spyId ))
-                r+=buttons[i].value;
+            if(buttons[i].isPlaying){
+                if(!(co->sceneNumber == 4 && i == s04.spyId ))
+                    r+=buttons[i].value;
+            }
         return r;
     }
     

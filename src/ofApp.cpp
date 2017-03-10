@@ -181,12 +181,14 @@ void ofApp::update(){
                         teams[t].buttons[i].set(m.getArgAsFloat(0)/127.0f, m.getArgAsFloat(1)/127.0f, m.getArgAsFloat(2));
                         int table = teams[t].buttons[i].table + teams[t].teamId*NUM_TABLES/2;
                         receivingTables[table]=true;
+                        break;
                     }
                     if (m.getAddress()==teams[t].buttons[i].secondAdress){
                         if(m.getArgAsInt32(0)==1){
                             if(teams[t].s04.spyId == -1)teams[t].s04.spyId=i;
                             teams[t].buttons[i].on = true;
                             teams[t].buttons[i].isPlaying = true;
+                            break;
                         }
                         else teams[t].buttons[i].on = false;
                     }
@@ -413,6 +415,7 @@ void ofApp::exit(){
 void ofApp::keyPressed(int key){
     
     if(key == 'd')co.debug=!co.debug;
+    if(key == 'p')co.lock=!co.lock;
     
 }
 void ofApp::drawScores(){

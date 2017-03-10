@@ -154,6 +154,11 @@ public:
                 box2Dcircle->setRadius(0);
                 prev_on = false;
             }
+        
+        }
+        else {
+            box2Dcircle->setRadius(0);
+            prev_on = false;
         }
     }
     
