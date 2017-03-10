@@ -119,6 +119,8 @@ void ofApp::setup(){
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
+    gui.add(reverseX.set("reverse X",false));
+    gui.add(reverseY.set("reverse Y",false));
     gui.add(co.logReport.set("log report",true));
     gui.add(time_energy.set("time/energy balance",0.5,0,1));
     gui.add(physics);
@@ -193,7 +195,9 @@ void ofApp::update(){
                     else if( m.getAddress()==b->address ){
                         b->on = true;
                         b->isPlaying = true;
-                        b->set(m.getArgAsFloat(0)/127.0f, m.getArgAsFloat(1)/127.0f, m.getArgAsFloat(2));
+                        double x = reverseX ? 1.- (m.getArgAsFloat(0)/127.0f) : m.getArgAsFloat(0)/127.0f;
+                        double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
+                        b->set( x , y , m.getArgAsFloat(2) );
                         int table = b->table + teams[t].teamId*NUM_TABLES/2;
                         receivingTables[table]=true;
                         

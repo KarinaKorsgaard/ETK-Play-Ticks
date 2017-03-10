@@ -269,8 +269,8 @@ public:
     
 private:
     float r;
-    float x;
-    float y;
+    double x;
+    double y;
 };
 
 #endif /* Button_h */
