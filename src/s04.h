@@ -53,11 +53,11 @@ public:
             }
         }
         if(spyId!=-1){
-            
-            buttons->at(spyId).on = true;
-            buttons->at(spyId).box2Dcircle->setPosition(1920/2,1080/2);
+            if(!buttons->at(spyId).on){
+                buttons->at(spyId).on = true;
+                buttons->at(spyId).box2Dcircle->setPosition(1920/2,1080/2);
                 // buttons->at(spyId).value -=1;
-            
+            }
         }
         
     }

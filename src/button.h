@@ -14,7 +14,7 @@
 #include "ofxTrueTypeFontUC.h"
 #include "ofxBox2d.h"
 #include "ofxBiquadFilter.h"
-
+//#include "common.h"
 #include "ButtonData.h"
 
 class Button{
@@ -48,6 +48,8 @@ public:
         
         fc = 0.05f;
         filterLowPass.setFc(fc);
+        
+        deadImg.load("characters/dead.png");
         
     }
     
@@ -96,6 +98,7 @@ public:
             }
             else {
             //    ofDrawRectangle(0,0,40,40);
+                deadImg.draw(-15,-15,30,30);
             }
             if(transform)ofPopMatrix();
         }
@@ -112,12 +115,15 @@ public:
             if(!prev_on && on){
                 prev_on=true;
                 filterLowPass.clear(ofVec2f(getPos()));
+                //box2Dcircle->setPosition(getPosRaw());
             }
             
             if(on){
-                ofPoint o = getPosRaw();
+                //ofPoint o = getPosRaw();
+                //if(abs(getBiquadPos().x-o.x) < 3 && abs(getBiquadPos().y-o.y) < 3){
                 box2Dcircle->setVelocity(0,0);
-                box2Dcircle->addAttractionPoint(o.x,o.y, attraction );
+                box2Dcircle->addAttractionPoint(getPosRaw(), attraction );
+                //}
                 filterLowPass.update(getPos());
                 
                 if(value <= 0.0){
@@ -168,7 +174,10 @@ public:
     
     void updateRadius(){
         if(on){
-            radius = ofMap(CLAMP(value,0,100),0,100,10,100);
+            if(value > 0)radius = (size_lim - (size_break/value)) / (1 + (size_break/value));
+            else radius = 0;
+            //if(ID == 0 && teamNumber == 0 && table == 0)cout << ofToString(value) +" : "+ofToString(radius)  << endl;
+            //ofMap(CLAMP(value,0,100),0,100,10,100);
             if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
             else box2Dcircle->setRadius(radius);
             box2Dcircle->alive = true;
@@ -263,10 +272,16 @@ public:
     bool on = false;
     bool prev_on = false;
     
+    float size_break;
+    float size_lim;
+    
+  //  commonObjects *co;
+    
 private:
     float r;
     double x;
     double y;
+    ofImage deadImg;
 };
 
 #endif /* Button_h */

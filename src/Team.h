@@ -21,7 +21,8 @@
 #include "designCharacter.h"
 #include "drainTest.h"
 #include "finale.h"
-#include "pingPong.h"
+#include "idle.h"
+//#include "pingPong.h"
 
 class Team{
 
@@ -33,12 +34,13 @@ public:
     
     bool isDone;
     bool logDone = false;
+    bool playAnimation = false;
     vector<Button>buttons;
     int teamId;
 
     commonObjects *co;
     int p_sceneNum=0;
-    
+    ofVideoPlayer celebration;
     
     Scene01 s01; // area
     Scene02 s02; // getup
@@ -46,8 +48,8 @@ public:
     Scene04 s04; // spy
     Scene05 s05; // gravity
     Scene06 s06; // market
-    
-    PingPong pingPong;
+    Idle idle;
+  //  PingPong pingPong;
     Finale finale;
     DesignACharacter sDesign;
     DrainTest drainTest;
@@ -61,6 +63,7 @@ public:
         box2d.enableEvents();
         //box2d.registerGrabbing();
         co = c;
+        celebration.load("celebration.mov");
     }
     void setupScenes(){
         sDesign.setup(co,&buttons);
@@ -71,13 +74,15 @@ public:
         s04.setup(co,&buttons);
         s05.setup(co,&buttons);
         s06.setup(co,&buttons);
-        pingPong.setup(co,&buttons);
+        idle.setup(co,&buttons);
+        //pingPong.setup(co,&buttons);
         if(teamId == 0)finale.setup(co,&buttons);
     }
     
     void update(){
         if(p_sceneNum != co->sceneNumber){
             logDone = false;
+            playAnimation = false;
             destroyMaze();
           //  box2d.disableEvents();
 
@@ -151,16 +156,16 @@ public:
         if(co->sceneNumber==3)drainTest.update();
         if(co->sceneNumber==4 && s04.spyId !=-1)s04.update();
         if(co->sceneNumber==5)s05.update();
-        
         if(co->sceneNumber==6)s06.update();
         //if(teamId == 1 && co->sceneNumber==6)s06.update();
-        
+        if(co->sceneNumber==10)idle.update();
         
         
         if(teamId == 0 && co->sceneNumber==7)finale.update();
-        if(co->sceneNumber==8)pingPong.update();
+       //if(co->sceneNumber==8)pingPong.update();
         
         if(co->sceneNumber==9)sDesign.update();
+        
         box2d.update();
 
         
@@ -172,8 +177,8 @@ public:
         if(co->sceneNumber==3)isDone= drainTest.isDone();
         if(co->sceneNumber==4&& s04.spyId !=-1)isDone= s04.isDone();
         if(co->sceneNumber==5)isDone= s05.isDone();
-        if(co->sceneNumber==8)isDone=pingPong.isDone();
-        
+        if(co->sceneNumber==8)isDone=true;
+        if(co->sceneNumber==10)isDone=true;
         if(co->sceneNumber==6){
             bool b = teamId == 0 ? co->marketDone1:co->marketDone2;
             isDone = s06.isDone(b);
@@ -196,6 +201,26 @@ public:
         if(!isDone){
             drainTime();
             drainIndividuals();
+            playAnimation=false;
+        }
+        
+        if(isDone){
+            
+            if(!playAnimation){
+                vector<int>win={0,1,2,4,5};
+                for(int i = 0 ; i<win.size();i++){
+                    if(co->sceneNumber == win[i]){
+                        if(co->sceneNumber == 4 && s04.areWeDone()){
+                            playAnimation = false;
+                        }else{
+                            celebration.play();
+                            playAnimation = true;
+                        }
+                        
+                    }
+                }
+            }
+            if(playAnimation)celebration.update();
         }
         
         
@@ -229,13 +254,13 @@ public:
         if(co->sceneNumber==5)s05.draw();
         if(co->sceneNumber==6)s06.draw();
         if(co->sceneNumber==7 && teamId == 0)finale.draw();
-        if(co->sceneNumber==8)pingPong.draw();
+        //if(co->sceneNumber==8)pingPong.draw();
         if(co->sceneNumber==9) sDesign.draw();
-        
+        if(co->sceneNumber==10) idle.draw();
         
         drawResult();
         
-        
+        if(playAnimation)celebration.draw( 1920/2 - celebration.getWidth()/2,1080/2 - celebration.getHeight()/2 );
     }
     
     

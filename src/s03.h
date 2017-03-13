@@ -14,7 +14,9 @@ public:
         svg.load("svg/s03.svg");
         polys = getPolyline(svg);
         
-        winningArea = ofRectangle(0,1080/2-161/2,267,161);
+        ofxSVG svg2;
+        svg2.load("svg/s03_winningArea.svg");
+        winningArea = getPolyline(svg2)[0].getBoundingBox();
         
         head = transformToCollumn(getLine("text/03.txt",0),800, co->font_medium);
         bread = transformToCollumn(getLine("text/03.txt",1),800, co->font_small);
@@ -71,8 +73,8 @@ public:
                 buttons->at(i).drawDebug();
             }
         }
-        ofSetColor(255,100);
-        ofDrawRectangle(winningArea);
+       // ofSetColor(255,100);
+       // ofDrawRectangle(winningArea);
         
 //        ofSetColor(ofColor::royalBlue);
 //        for(int i = 0; i< head.size();i++)

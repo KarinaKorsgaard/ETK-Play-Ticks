@@ -136,7 +136,7 @@ public:
         
         if(countDown <= 0){
             countDown = 0;
-            recDone = true;
+            //recDone = true; -- ?
         }
 
         if(forceTrue) recDone = true;
@@ -254,7 +254,7 @@ public:
 //            co->font_small->drawString(bread[i], 50, 180+i*co->font_small->getLineHeight());
 //        
 //        co->font_medium->drawString("gained: "+timeToString(timeGained), 50, 80);
-        co->font_large->drawString(timeToString(countDown), 50, 180);
+        //co->font_large->drawString(timeToString(countDown), 50, 180);
         
     };
     

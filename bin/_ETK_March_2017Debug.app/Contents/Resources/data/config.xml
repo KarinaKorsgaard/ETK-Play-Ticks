@@ -6,5 +6,9 @@
 	<NUM_TABLES>12</NUM_TABLES>
     <BUTTONS_PR_TABLE>6</BUTTONS_PR_TABLE>
     <num_teams>2</num_teams>
+    
+    
+    <size_break_point>50.</size_break_point>
+    <size_limit>100.</size_limit>
 <config/>
 </config>

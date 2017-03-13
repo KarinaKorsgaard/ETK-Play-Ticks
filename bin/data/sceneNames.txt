@@ -8,3 +8,4 @@
 7-Battle
 8-ping pong
 9-Design
+10-idle

@@ -14,9 +14,10 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        winningArea = ofRectangle(1920/2,100,100,100);
-//        svg.load("svg/s05.svg");
-//        poly = getPolyline(svg)[0];
+        
+        ofxSVG svg2;
+        svg2.load("svg/s05_winningArea.svg");
+        winningArea = getPolyline(svg2)[0].getBoundingBox();
         
         svg.load("svg/s05.svg");
         polys = getPolyline(svg);

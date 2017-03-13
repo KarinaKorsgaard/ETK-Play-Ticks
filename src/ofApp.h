@@ -11,6 +11,7 @@
 #include "ofxXmlSettings.h"
 #include "ofxSyphonServer.h"
 #include "ButtonData.h"
+#include "pingPong.h"
 
 class ofApp : public ofBaseApp{
 
@@ -91,6 +92,7 @@ class ofApp : public ofBaseApp{
     }
     
     ofxBox2d world;
+    PingPong pingPong;
    // vector<Button>giantButtonMap;
 
 };

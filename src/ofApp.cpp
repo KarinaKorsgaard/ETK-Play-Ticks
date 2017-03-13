@@ -27,7 +27,8 @@ void ofApp::setup(){
     for(int i = 0; i<2;i++){
         teams[i].setup(i,&co);
         teams[i].time = xml.getValue("startTime", 0.0);
-        //teams[i].distance = xml.getValue("startDist", 0.0);
+        co.size_break = xml.getValue("size_break_point", 0.0);
+        co.size_lim = xml.getValue("size_limit", 0.0);
     }
     float startDist = xml.getValue("startDist", 0.0);
     PORT = xml.getValue("PORT", 0);
@@ -52,14 +53,19 @@ void ofApp::setup(){
             
             Button b = * new Button;
             
-            teams[teamNum].buttons.push_back(b);
-            teams[teamNum].buttons.back().setup(j,tableIndx,teamNum, getAdress(0, i, j), getAdress(1, i, j), startDist/2, &teams[teamNum].box2d);
-            teams[teamNum].buttons.back().box2Dcircle.get()->setData(new ButtonData());
-            ButtonData * sd = (ButtonData*)teams[teamNum].buttons.back().box2Dcircle.get()->getData();
+            
+            b.setup(j,tableIndx,teamNum, getAdress(0, i, j), getAdress(1, i, j), startDist/2, &teams[teamNum].box2d);
+            b.size_lim = co.size_lim;
+            b.size_break= co.size_break;
+            
+            b.box2Dcircle.get()->setData(new ButtonData());
+            ButtonData * sd = (ButtonData*)b.box2Dcircle.get()->getData();
             sd->buttonID = indx - (teamNum * ((BUTTONS_PR_TABLE*NUM_TABLES)/2));
             sd->teamID = teamNum;
             sd->bHit	= false;
             indx++;
+            
+            teams[teamNum].buttons.push_back(b);
             
         }
     }
@@ -73,7 +79,7 @@ void ofApp::setup(){
     ofAddListener(teams[1].box2d.contactStartEvents, this, &ofApp::contactStart);
     ofAddListener(teams[1].box2d.contactEndEvents, this, &ofApp::contactEnd);
 
-    
+    pingPong.setup(&co,&teams[0].buttons,&teams[1].buttons);
     
     //allocate framebuffer
     fbo.allocate(1920*2, 1080, GL_RGBA);
@@ -81,7 +87,7 @@ void ofApp::setup(){
     
     scenes.setName("scenes");
         
-    for(int i = 0; i<10;i++){
+    for(int i = 0; i<11;i++){
         string name = cc.getLine("sceneNames.txt", i);
         if(name.length()>0){
             ofParameter<bool>p;
@@ -148,6 +154,8 @@ void ofApp::setup(){
         receivingTables[i]=false;
     }
     
+    
+    
 }
 
 //--------------------------------------------------------------
@@ -170,13 +178,14 @@ void ofApp::update(){
         }
         handleSceneChange();
     }
+    
     double beforeOSC;
     if(co.debug)beforeOSC = ofGetElapsedTimef();
     // update from incoming osc
     while (receiver.hasWaitingMessages()) {
         ofxOscMessage m;
         receiver.getNextMessage(m);
-        if(co.debug)cout<<m.getAddress()<<endl;
+        //if(co.debug)cout<<m.getAddress()<<endl;
         // set button values
         if(!co.lock){
             for(int t = 0; t < 2; t++){
@@ -211,22 +220,28 @@ void ofApp::update(){
         }
     }
     //if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
-    
-    if(!co.refill1){
+    if(co.sceneNumber!=8){
+        if(!co.refill1){
+            teams[0].update();
+            if(co.sceneNumber == 4){
+                if(teams[0].s04.areWeDone() && co.logReport){
+                    co.log("the spy outsmarted team 0");
+                }
+            }
+        }
+        if(!co.refill2){
+            teams[1].update();
+            if(co.sceneNumber == 8)pingPong.update();
+            if(co.sceneNumber == 4){
+                if(teams[1].s04.areWeDone() && co.logReport){
+                    co.log("the spy outsmarted team 1");
+                }
+            }
+        }
+    }else if(co.sceneNumber == 8){
+        pingPong.update();
         teams[0].update();
-        if(co.sceneNumber == 4){
-            if(teams[0].s04.areWeDone() && co.logReport){
-                co.log("the spy outsmarted team 0");
-            }
-        }
-    }
-    if(!co.refill2){
         teams[1].update();
-        if(co.sceneNumber == 4){
-            if(teams[1].s04.areWeDone() && co.logReport){
-                co.log("the spy outsmarted team 1");
-            }
-        }
     }
     
     
@@ -252,29 +267,33 @@ void ofApp::draw(){
     ofSetColor(255, 220, 220);
     ofDrawRectangle(1920,0,1920,1080);
 
-        
-    if(co.refill1){
-        refill(0,easeRefill1);
-        
-    }else{
-        teams[0].draw();
-        easeRefill1 = ofGetElapsedTimef();
-        teams[0].recordValues();
-    }
-    
-    if(co.sceneNumber != 7){
-        if(co.refill2){
-            refill(1,easeRefill2);
-        }
-        else {
-            ofPushMatrix();
-            ofTranslate(1920, 0);
-            teams[1].draw();
-            ofPopMatrix();
+    if(co.sceneNumber!=8){
+        if(co.refill1){
+            refill(0,easeRefill1);
             
-            easeRefill2 = ofGetElapsedTimef();
-            teams[1].recordValues();
+        }else{
+            teams[0].draw();
+            easeRefill1 = ofGetElapsedTimef();
+            teams[0].recordValues();
         }
+        
+        if(co.sceneNumber != 7){
+            if(co.refill2){
+                refill(1,easeRefill2);
+            }
+            else {
+                ofPushMatrix();
+                ofTranslate(1920, 0);
+                teams[1].draw();
+                ofPopMatrix();
+                
+                easeRefill2 = ofGetElapsedTimef();
+                teams[1].recordValues();
+            }
+        }
+    }else{
+        pingPong.draw();
+        
     }
   //  drawScores();
     fbo.end();
@@ -298,7 +317,8 @@ void ofApp::handleSceneChange(){
     for(int i = 0;i<receivingTables.size();i++){
         receivingTables[i]=false;
     }
-    
+    if(co.sceneNumber == 8)pingPong.begin();
+    else pingPong.reset();
     //if(key-'0'<10){
      //   co.sceneNumber = key-'0';
     co.log("");

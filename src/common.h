@@ -31,6 +31,8 @@ public:
     string timeStamp = "%H:%M";
     
     int sceneNumber;
+    float size_break;
+    float size_lim;
     
     ofParameter<bool>logReport;
     ofParameter<int> attraction;
@@ -162,20 +164,20 @@ public:
         }
     }
     
-    void drawGrid(int t, int b, map<int,Button>*buttons){
-        ofPushStyle();
-        ofSetLineWidth(4);
-        ofSetColor(255);
-        ofNoFill();
-        for(auto b: *buttons){
-            ofPushMatrix();
-            ofTranslate(b.second.getGridPos());
-            ofDrawRectangle(-35,-35,70,70);
-            
-            ofPopMatrix();
-        }
-        ofPopStyle();
-    }
+//    void drawGrid(int t, int b, map<int,Button>*buttons){
+//        ofPushStyle();
+//        ofSetLineWidth(4);
+//        ofSetColor(255);
+//        ofNoFill();
+//        for(auto b: *buttons){
+//            ofPushMatrix();
+//            ofTranslate(b.second.getGridPos());
+//            ofDrawRectangle(-35,-35,70,70);
+//            
+//            ofPopMatrix();
+//        }
+//        ofPopStyle();
+//    }
     
     
     vector<ofPolyline> getPolyline(ofxSVG svg){
