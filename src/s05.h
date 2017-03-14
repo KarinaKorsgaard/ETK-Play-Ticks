@@ -31,15 +31,18 @@ public:
     
     bool reached(){
         bool isInside=false;
+        bool allAreDead = true;
         for(int i = 0; i<buttons->size();i++){
             Button *b =&buttons->at(i);
             if(!b->isPlaying || !b->on)continue; // if b is not playing or not on, dont check.
-            if(ofDist(winningArea.x,winningArea.y,b->getBiquadPos().x,b->getBiquadPos().y) < 100+b->radius){
+            if(winningArea.inside(b->getBiquadPos())){
                 isInside = true;
                 theWinner = i;
                 break;
             }
+            if(b->isDead())allAreDead=false;
         }
+        if(allAreDead)isInside = false;
         return isInside;
     };
     
@@ -55,7 +58,7 @@ public:
         if(!isDone()){ // freeze when has reached...
             for(int i=0; i<buttons->size(); i++) {
                 
-                buttons->at(i).updateWithGravity(co->jump);
+                buttons->at(i).updateWithGravity(co->jump, co->x_jump);
             }
         }
     }
@@ -64,15 +67,20 @@ public:
         
         ofSetColor(255);
         svg.draw();
-        int red = reached() ? 0:255;
-        ofSetColor(red,0,255-red);
-        ofDrawRectangle(winningArea);
+        if(co->debug){
+            int red = reached() ? 0:255;
+            ofSetColor(red,0,255-red);
+            ofDrawRectangle(winningArea);
+        }
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             if(co->debug){
                 buttons->at(i).drawDebug();
+                ofSetColor(255,255,0);
+               // ofDrawCircle(buttons->at(i).getPos().x, buttons->at(i).lowestY, 30);
+                if(theWinner!=-1)ofDrawCircle(buttons->at(theWinner).getBiquadPos(),20);
             }
-            if(theWinner!=-1)ofDrawCircle(buttons->at(theWinner).getBiquadPos(),20);
+            
         }
         
 //        ofSetColor(ofColor::royalBlue);
@@ -87,7 +95,8 @@ public:
         theWinner=-1;
         for(int i = 0; i<buttons->size();i++){
             if(!buttons->at(i).isPlaying)continue;
-            buttons->at(i).box2Dcircle->setPosition(buttons->at(i).getPosRaw().x, 1040);
+            buttons->at(i).box2Dcircle->setPosition(ofRandom(60,400), 1040);
+         //   buttons->at(i).lowestY = 1080;
         }
     };
     void reset(){

@@ -160,6 +160,8 @@
 		20F35AFADAF0068B067E713F /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		21A9BC861E72C76B005F90E3 /* pingPong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pingPong.h; sourceTree = "<group>"; };
 		21A9BC8E1E7694CE005F90E3 /* Idle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Idle.h; sourceTree = "<group>"; };
+		21A9BC8F1E76C0AD005F90E3 /* finale2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = finale2.h; sourceTree = "<group>"; };
+		21A9BC921E7828F8005F90E3 /* push_game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = push_game.h; sourceTree = "<group>"; };
 		21AE24D61E6DF68700150433 /* s03.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s03.h; sourceTree = "<group>"; };
 		21AE24DA1E6EBE1900150433 /* ofxBiquadFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBiquadFilter.cpp; sourceTree = "<group>"; };
 		21AE24DB1E6EBE1900150433 /* ofxBiquadFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBiquadFilter.h; sourceTree = "<group>"; };
@@ -498,6 +500,8 @@
 			isa = PBXGroup;
 			children = (
 				21AE24EE1E717B8A00150433 /* finale.h */,
+				21A9BC921E7828F8005F90E3 /* push_game.h */,
+				21A9BC8F1E76C0AD005F90E3 /* finale2.h */,
 				21A9BC8E1E7694CE005F90E3 /* Idle.h */,
 				21AE24E31E6EDDE000150433 /* drainTest.h */,
 				21E6CA5F1E6D80CF00E0C55D /* s01.h */,

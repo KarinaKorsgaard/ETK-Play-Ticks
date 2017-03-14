@@ -24,7 +24,7 @@ public:
     };
     bool isDone(){
         bool isInside=true;
-        
+        bool allAreDead=true;
         isInside = winningArea.inside(average->getPosition());
        
         if(isInside){ // all playing and alive buttons must be on for the average to count!
@@ -36,10 +36,14 @@ public:
                     isInside=false;
                     break;
                 }
+                
+                if(!buttons->at(i).isDead()){
+                    allAreDead =false;
+                }
             }
         }
         
-        
+        if(allAreDead)isInside=false;
         return isInside;
     };
     
@@ -49,7 +53,7 @@ public:
         float y = 0.0;
         float indx = 0.0;
         for(int i=0; i<buttons->size(); i++) {
-            buttons->at(i).update(co->attraction); // the is on is checked in button! 
+            buttons->at(i).update(co->attraction * 0.5 ); // the is on is checked in button!
             
             if(!buttons->at(i).isDead() && buttons->at(i).on){ // its on, not dead. (if it is not playing, it can not be on)
                 x+=buttons->at(i).getBiquadPos().x;
@@ -59,7 +63,7 @@ public:
         }
         
         average->setVelocity(0,0);
-        if(indx>0)average->addAttractionPoint(ofPoint(x/indx , y/indx),co->attraction);
+        if(indx>0)average->addAttractionPoint(ofPoint(x/indx , y/indx),co->attraction*100);
     }
 
     void draw(){
@@ -114,12 +118,19 @@ public:
     };
 
     
-    void begin(){
+    void begin(ofxBox2d * world){
+        average = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
+        //virtual void setPhysics(float density, float bounce, float friction);
+        average.get()->setPhysics(3.0, 0.0, 400.0);
+        average.get()->setup(world->getWorld(), 1920-120, 1080-120, 60);
+        
         for(int i = 0; i<buttons->size();i++){
             buttons->at(i).box2Dcircle->setPosition(1900, 1040);
         }
     };
-    void reset(){}
+    void reset(){
+        average->destroy();
+    }
     
     commonObjects * co;
     ofxSVG svg;

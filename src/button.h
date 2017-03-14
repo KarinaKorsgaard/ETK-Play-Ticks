@@ -32,7 +32,7 @@ public:
         
         box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
-        box2Dcircle.get()->setPhysics(3.0, 0.0, 400.0);
+        box2Dcircle.get()->setPhysics(3.0, 0.0, 40.0);
         box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), 1);
         box2Dcircle.get()->alive = false;
         
@@ -87,7 +87,7 @@ public:
                 ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
                 
                 //eyes
-                if(!isColliding()){
+                if(!freezeUpdate){
                     ofSetColor(0);
                     ofDrawCircle(rad*0.3 ,eye, 6);
                     ofDrawCircle(-rad*0.3,eye ,6);
@@ -110,79 +110,100 @@ public:
         r=_r;
     }
     
-    void update(int attraction ){
+    void update(float attraction ){
         if(isPlaying && !isDead()){
-            if(!prev_on && on){
-                prev_on=true;
-                filterLowPass.clear(ofVec2f(getPos()));
-                //box2Dcircle->setPosition(getPosRaw());
+            if(on){
+                distToOrg = abs(getPosRaw().x - getPos().x) + abs(getPosRaw().y - getPos().y);
+                distToOrg /= (1980+1080);
+                
+                lastPos = getPos();
+                box2Dcircle->setVelocity(0,0);
+                if(!freezeUpdate){
+                    box2Dcircle->addAttractionPoint( getPosRaw() , attraction*distToOrg  );
+                }
+            }
+            if(!on) {
+                prev_on = false;
+                box2Dcircle->setVelocity(0,0);
+                box2Dcircle->setPosition(lastPos);
             }
             
-            if(on){
-                //ofPoint o = getPosRaw();
-                //if(abs(getBiquadPos().x-o.x) < 3 && abs(getBiquadPos().y-o.y) < 3){
-                box2Dcircle->setVelocity(0,0);
-                box2Dcircle->addAttractionPoint(getPosRaw(), attraction );
-                //}
-                filterLowPass.update(getPos());
-                
-                if(value <= 0.0){
-                    on = false;
-                }
-                
-                //if(getPos().x<10||getPos().x>1970)box2Dcircle->setPosition(, <#float y#>)
-            }
-            else {
-                prev_on = false;
-            }
+//            ofRectangle r = ofRectangle(0,0,1980,1080);
+//            if(!r.inside(getPos())){
+//                printInfo();
+//                box2Dcircle->setPosition(lastPos);
+//            }
+            filterLowPass.update(getPos());
+            updateRadius();
         }
-        updateRadius();
     }
     
-    void updateWithGravity(float jump ){
-        if(isPlaying && !isDead()){
-            if(on){
-                ofPoint o = getPosRaw();
-                if(on && prev_on){
-                    dx = abs(px-o.x);
-                    dy = abs(py-o.y);
-                }
-                else{
-                    dx=0.0;
-                    dy=0.0;
-                }
-            
-                if(dx>0||dy>0)box2Dcircle->addForce(ofVec2f( -(px-x)*10. ,-CLAMP( py-y,0,10000 )*10. ),jump);
-                else box2Dcircle->addForce(ofVec2f(dx,0), 10. );
-                
-                filterLowPass.update(getPos());
-                
-                if(value <= 0.0){
-                    on = false;
-                }
-                if(!prev_on){
-                    prev_on=true;
-                }
-            }
-            else {
-                prev_on = false;
-            }
+    void freezeControl(float thres){
+        if(freezeUpdate){
+            freezeTimer+=ofGetLastFrameTime();
+            if(freezeTimer>thres)freezeUpdate=false;
+        }
+        if(updatefinaleValue){
+            finaleValueTimer+=ofGetLastFrameTime();
+            if(finaleValueTimer>thres/2.f)updatefinaleValue=false;
+        }else{
+            finaleValue = value;
         }
         
-        updateRadius();
     }
     
-    void updateRadius(){
-        if(on){
-            if(value > 0)radius = (size_lim - (size_break/value)) / (1 + (size_break/value));
-            else radius = 0;
-            //if(ID == 0 && teamNumber == 0 && table == 0)cout << ofToString(value) +" : "+ofToString(radius)  << endl;
-            //ofMap(CLAMP(value,0,100),0,100,10,100);
+    void updateWithGravity(float jump , float x_jump){
+        if(isPlaying && !isDead()){
+            
+            if(on){
+                lastPos = getPos();
+                prev_on=true;
+                
+                float dif_y = dy_jump - getPosRaw().y;
+                dy_jump = getPosRaw().y;
+                
+                float dif_x = getBiquadPos().x - getPosRaw().x;
+                
+                if( abs(box2Dcircle->getVelocity().y) < 0.001)isJumping = false;
+                else isJumping = true;
+
+                if(!isJumping && dif_y>0)box2Dcircle->addForce(ofVec2f(0,-1), jump);
+                if(abs(dif_x)>0){
+                    box2Dcircle->addForce(ofVec2f(-dif_x*x_jump,0),0.1);
+                }
+            }
+            if(!on) {
+                prev_on = false;
+                box2Dcircle->setVelocity(0,0);
+                box2Dcircle->setPosition(lastPos);
+            }
+            
+            filterLowPass.update(getPos());
+            
+        }
+
+        // radius.
+        if(value > 0 && on ){
+            radius = 50;
+            
             if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
             else box2Dcircle->setRadius(radius);
             box2Dcircle->alive = true;
         }
-        else {
+        if (value <= 0 || !on || isDead()) {
+            box2Dcircle->setRadius(0);
+            box2Dcircle->alive = false;
+        }
+    }
+    
+    void updateRadius(){
+        if(on && value > 0){
+            radius = (size_lim - (size_break/value)) / (1 + (size_break/value));
+            if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
+            else box2Dcircle->setRadius(radius);
+            box2Dcircle->alive = true;
+        }
+        if (value <= 0 || !on || isDead()) {
             box2Dcircle->setRadius(0);
             box2Dcircle->alive = false;
         }
@@ -190,7 +211,7 @@ public:
     
     void drain(float f){
         if(value > 0){
-            if(on && prev_on){
+            if(on){
                 dx = abs(px-x);
                 dy = abs(py-y);
             }
@@ -198,21 +219,27 @@ public:
                 dx=0.0;
                 dy=0.0;
             }
-            
             px=x;
             py=y;
-            
-            if(dx+dy<50 && on)
+        
+            if(on)
                 value-=(dx+dy)*f;
         }
         if(value<0)value = 0;
+    }
+    
+    void printInfo(){
+        cout << "table: "+ofToString(table) +" ";
+        cout << "ID: "+ofToString(ID) + " ";
+        cout << "teamnumber: "+ofToString(teamNumber) + " ";
+        cout << "value: "+ofToString(value) + " ";
+        cout << " " << endl;
     }
     
     bool isColliding(){
         ButtonData * data = (ButtonData*)box2Dcircle.get()->getData();
         if(data){
             if(data->bHit && on && !isDead()) return true;
-        
             else return false;
         }else return false;
     }
@@ -220,8 +247,8 @@ public:
         return value==0.0;
     }
     
-    ofPoint getGridPos(){
-        return ofPoint(table * 140 + 140 , ID * 140 + 140);
+    ofPoint getGridPos(int t, int i){
+        return ofPoint(t * 140 + 140 , i * 140 + 140);
     }
     
     ofVec2f getPosRaw(){
@@ -275,13 +302,30 @@ public:
     float size_break;
     float size_lim;
     
+    // gravity shit :(
+    float dy_jump, dx_jump;
+    bool isJumping;
+    
+    // finale crap!! :(
+    bool freezeUpdate = false;
+    float freezeTimer = 0.;
+    float finaleValue;
+    bool updatefinaleValue = false;
+    float finaleValueTimer = 0.;
+    
+    float distToOrg;
   //  commonObjects *co;
+    
+    float p_drain;
     
 private:
     float r;
     double x;
     double y;
     ofImage deadImg;
+    
+    ofImage arm;
+    ofVec2f lastPos;
 };
 
 #endif /* Button_h */

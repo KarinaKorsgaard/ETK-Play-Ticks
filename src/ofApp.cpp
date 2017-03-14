@@ -35,6 +35,8 @@ void ofApp::setup(){
     NUM_TABLES = xml.getValue("NUM_TABLES", 0);
     BUTTONS_PR_TABLE = xml.getValue("BUTTONS_PR_TABLE", 0);
     
+    co.NUM_TABLES = NUM_TABLES;
+    co.BUTTONS_PR_TABLE = BUTTONS_PR_TABLE;
     //co.refillCoef = xml.getValue("refillCoef", 0.0);
     
     receiver.setup(PORT);
@@ -54,7 +56,7 @@ void ofApp::setup(){
             Button b = * new Button;
             
             
-            b.setup(j,tableIndx,teamNum, getAdress(0, i, j), getAdress(1, i, j), startDist/2, &teams[teamNum].box2d);
+            b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startDist/2, &teams[teamNum].box2d);
             b.size_lim = co.size_lim;
             b.size_break= co.size_break;
             
@@ -87,7 +89,7 @@ void ofApp::setup(){
     
     scenes.setName("scenes");
         
-    for(int i = 0; i<11;i++){
+    for(int i = 0; i<12;i++){
         string name = cc.getLine("sceneNames.txt", i);
         if(name.length()>0){
             ofParameter<bool>p;
@@ -99,8 +101,8 @@ void ofApp::setup(){
     p_b_scenes.resize(b_scenes.size());
     
     physics.setName("physics");
-    physics.add(co.attraction.set("attraction",1000,0,5000));
-    physics.add(co.fc.set("low pass position",0.05,0.00,1.));
+    physics.add(co.attraction.set("attraction",1,0,100));
+    physics.add(co.fc.set("low pass position",0.05,0.01,0.4));
     physics.add(co.gravity.set("gravity",1,0,50));
     
     gameMechs.setName("game controls");
@@ -115,6 +117,7 @@ void ofApp::setup(){
 
     gravity.setName("gravity game");
     gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
+    gravity.add(co.x_jump.set("attraction to x",0.01,0,0.2));
     
     spyGame.setName("spy game");
     spyGame.add(co.spyDrainer.set("drain on collide",0.2,0.,2));
@@ -123,17 +126,26 @@ void ofApp::setup(){
     market.add(co.marketDone1.set("calculate market 1",false));
     market.add(co.marketDone2.set("calculate market 2",false));
     
+    finale.setName("Final Battle");
+    finale.add(co.startFinale.set("begin",false));
+    finale.add(co.deadTimeFinale.set("push",0.1,0.,2));
+    finale.add(finalePushDrain.set("push drain",0.01,0.,0.1));
+    
+    
     guiScenes.setup(scenes);
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
     gui.add(reverseX.set("reverse X",false));
     gui.add(reverseY.set("reverse Y",false));
-    gui.add(co.logReport.set("log report",true));
-    gui.add(time_energy.set("time/energy balance",0.5,0,1));
+    gui.add(co.logReport.set("log report",false));
+    gui.add(co.playSound.set("play sound",false));
+    
+  //  gui.add(time_energy.set("time energy balance",0.5,0,1));
     gui.add(physics);
     gui.add(gravity);
     gui.add(spyGame);
+    gui.add(finale);
     gui.add(gameMechs);
     
     gui.add(market);
@@ -207,8 +219,9 @@ void ofApp::update(){
                         double x = reverseX ? 1.- (m.getArgAsFloat(0)/127.0f) : m.getArgAsFloat(0)/127.0f;
                         double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
                         b->set( x , y , m.getArgAsFloat(2) );
-                        int table = b->table + teams[t].teamId*NUM_TABLES/2;
-                        receivingTables[table]=true;
+                        
+                        //int table = b->table + teams[t].teamId*NUM_TABLES/2;
+                        receivingTables[b->table]=true;
                         
                         if(teams[t].s04.spyId == -1)
                             teams[t].s04.spyId=i;
@@ -220,41 +233,48 @@ void ofApp::update(){
         }
     }
     //if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
-    if(co.sceneNumber!=8){
-        if(!co.refill1){
-            teams[0].update();
-            if(co.sceneNumber == 4){
-                if(teams[0].s04.areWeDone() && co.logReport){
-                    co.log("the spy outsmarted team 0");
-                }
-            }
-        }
-        if(!co.refill2){
-            teams[1].update();
-            if(co.sceneNumber == 8)pingPong.update();
-            if(co.sceneNumber == 4){
-                if(teams[1].s04.areWeDone() && co.logReport){
-                    co.log("the spy outsmarted team 1");
-                }
-            }
-        }
-    }else if(co.sceneNumber == 8){
-        pingPong.update();
+  
+    if(!co.refill1){
         teams[0].update();
+        if(co.sceneNumber == 4){
+            if(teams[0].s04.areWeDone() && co.logReport){
+                co.log("the spy outsmarted team 0");
+            }
+        }
+    }
+    if(!co.refill2){
         teams[1].update();
+        if(co.sceneNumber == 4){
+            if(teams[1].s04.areWeDone() && co.logReport){
+                co.log("the spy outsmarted team 1");
+            }
+        }
+    }
+    if(co.sceneNumber == 8 && !co.refill2 && !co.refill1){
+        pingPong.update();
     }
     
-    
-//    for(int i = 0; i<2;i++){
-//        for(int b = 0; b<teams[i].buttons.size();b++){
-//            if(teams[i].buttons[b].isColliding() && !sound[i].isPlaying()){
-//               // sound[i].play();
-//            }
-//        }
-//    }
-
+    if(co.playSound){
+        for(int i = 0; i<2;i++){
+            for(int b = 0; b<teams[i].buttons.size();b++){
+                if(teams[i].buttons[b].isColliding()){
+                    sound[i].play();
+                }
+                
+//                if(teams[i].buttons[b].distToOrg > 0){
+//                    sound[i + 2].play();
+//                }
+            }
+        }
+    }
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    
+    
+    if(co.sceneNumber == 11){
+     //   teams[0].push_game.updateOtherTeam
+        
+    }
 }
 
 //--------------------------------------------------------------
@@ -371,30 +391,42 @@ void ofApp::handleSceneChange(){
     
     if(co.sceneNumber == 7){
         teamSize=teams[1].buttons.size();
-        
+        teams[0].box2d.getWorld()->ClearForces();
+        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
         if(teams[0].buttons.size() == teamSize ){
+            
             for(int i = 0;i<teams[1].buttons.size();i++){
-                Button b = * new Button;
-                b = teams[1].buttons[i];
-                // b.box2Dcircle->destroy();
+                Button * old = &teams[1].buttons[i];
                 
-                b.box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-                //virtual void setPhysics(float density, float bounce, float friction);
-                b.box2Dcircle.get()->setPhysics(3.0, 0.0, 400.0);
-                b.box2Dcircle.get()->setup(teams[0].box2d.getWorld(), 0, 0, 0);
-                b.box2Dcircle.get()->alive = false;
+                Button b = * new Button;
+                
+                
+                
+                b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->value, &teams[0].box2d);
+                b.colors = old->colors;
+                b.radius = old->radius;
+                b.isPlaying = old->isPlaying;
+                b.on = old->on;
+                b.size_lim = old->size_lim;
+                b.size_break = old->size_break;
+                
                 teams[0].buttons.push_back(b);
+                //teams[0].buttons.back().printInfo();
+                
                 
                 teams[0].buttons.back().box2Dcircle.get()->setData(new ButtonData());
                 ButtonData * sd = (ButtonData*)teams[0].buttons.back().box2Dcircle.get()->getData();
                 sd->buttonID = teams[0].buttons.size() - 1;
-                sd->teamID = 0;
-                sd->bHit	= false;
+                sd->bHit   = false;
             }
+            cout << "team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+            
+            teams[0].finale.begin(&teams[0].buttons);
         }
     }
     
     if(co.sceneNumber != 7 && teamSize!=-1){
+        teams[0].finale.reset();
         if(teams[0].buttons.size() != teamSize ){
             for(int i = 0;i<teamSize;i++){
                 teams[1].buttons[i].value = teams[0].buttons[i+teamSize].value;
@@ -430,7 +462,7 @@ void ofApp::refill(int team, float timef){
             
             
             ofPushMatrix();
-            ofTranslate(b->getGridPos());
+            ofTranslate(b->getGridPos( b->table - (NUM_TABLES/2)*team , b->ID));
             ofTranslate(1920 * team,0);
             ofTranslate(800,0);
             b->draw(false, true, true);
@@ -454,6 +486,7 @@ void ofApp::exit(){
         }
         newFile.close();
     }
+    
     gui.saveToFile("settings.xml");
 }
 
@@ -493,8 +526,6 @@ void ofApp::drawScores(){
 void ofApp::contactStart(ofxBox2dContactArgs &e) {
     if(e.a != NULL && e.b != NULL) {
         
-        // if we collide with the ground we do not
-        // want to play a sound. this is how you do that
         if(e.a->GetType() == b2Shape::e_circle && e.b->GetType() == b2Shape::e_circle) {
             
             ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
@@ -504,41 +535,46 @@ void ofApp::contactStart(ofxBox2dContactArgs &e) {
             if(aData && bData) {
                 
                 //sound[aData->teamID].play();
-                if(!teams[bData->teamID].buttons[bData->buttonID].isDead())aData->bHit = true;
-                if(!teams[aData->teamID].buttons[aData->buttonID].isDead())bData->bHit = true;
+                if(!teams[bData->teamID].buttons[bData->buttonID].isDead() &&
+                   !teams[aData->teamID].buttons[aData->buttonID].isDead()
+                   )
+                {
+                    aData->bHit = true;
+                    bData->bHit = true;
+                }
                 
                 if(co.sceneNumber==7 && aData->bHit && bData->bHit){
                     
                     Button * b1 = &teams[aData->teamID].buttons[aData->buttonID];
                     Button * b2 = &teams[bData->teamID].buttons[bData->buttonID];
                     
-//                    if(teams[0].finale.getTeamOne()!=0 || teams[0].finale.getTeamTwo()!=0){
-//                        if(b1->teamNumber != b2->teamNumber){
-//                            if(b1->value > b2->value){
-//                                b1->value++;
-//                                b2->value--;
-//                            }
-//                            else if(b1->value < b2->value){
-//                                b2->value++;
-//                                b1->value--;
-//                            }else{
-//                                b1->value--;
-//                                b2->value--;
-//                            }
-//                        }
-//                    }else{
-                        if(b1->value > b2->value){
-                            b1->value++;
-                            b2->value--;
+
+                        if(b1->finaleValue > b2->finaleValue){
+                            b2->freezeUpdate = true;
+                            b2->freezeTimer = 0.;
+                            
+                            b1->value-= b2->value*finalePushDrain;
+
+
                         }
-                        else if(b1->value < b2->value){
-                            b2->value++;
-                            b1->value--;
-                        }else{
-                            b1->value--;
-                            b2->value--;
+                        else if(b1->finaleValue < b2->finaleValue){
+                            b1->freezeUpdate = true;
+                            b1->freezeTimer = 0.;
+                            
+                            b2->value-= b1->value*finalePushDrain;
+                            
+
                         }
-                   // }
+                    if(abs(b1->finaleValue-b2->finaleValue)>0){
+                        b1->finaleValue-=b2->value;
+                        b1->updatefinaleValue = true;
+                        b1->finaleValueTimer=0.;
+                        
+                        b2->finaleValue-=b1->value;
+                        b2->updatefinaleValue = true;
+                        b2->finaleValueTimer=0.;
+
+                    }
                 }
             }
         }

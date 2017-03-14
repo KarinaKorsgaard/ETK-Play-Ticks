@@ -31,11 +31,12 @@ public:
     
     void draw(){
         
-        for(int i=0; i<buttons->size(); i++) {
+        for(int i = 0 ; i<buttons->size();i++) {
+            Button b = buttons->at(i);
             ofPushMatrix();
-            ofTranslate(buttons->at(i).getGridPos());
+            ofTranslate(b.getGridPos(   b.table - (co->NUM_TABLES/2)* b.teamNumber , b.ID )   );
             ofTranslate(800,0);
-            buttons->at(i).draw(false, false);
+            b.draw(false, false);
             ofPopMatrix();
 
         }

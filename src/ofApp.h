@@ -63,6 +63,9 @@ class ofApp : public ofBaseApp{
     vector< ofParameter<bool> >b_scenes;
     vector<bool>p_b_scenes;
     ofParameter<float>time_energy;
+    ofParameter<float>finalePushDrain;
+    ofParameterGroup finale;
+
     
     void handleSceneChange();
     void drawScores();

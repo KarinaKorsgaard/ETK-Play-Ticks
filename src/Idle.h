@@ -5,7 +5,7 @@ class Idle : public commonFunctions{
     
 public:
     vector<Button>*buttons;
-    Blob blob;
+    //Blob blob;
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
@@ -28,7 +28,7 @@ public:
     void draw(){
         ofSetColor(255);
         //   svg.draw();
-        blob.draw();
+        //blob.draw();
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             if(co->debug){

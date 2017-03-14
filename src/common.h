@@ -53,11 +53,20 @@ public:
     ofParameter<bool>refill2;
 
     ofParameter<float>jump;
+    ofParameter<float>x_jump;
+    
+    ofParameter<bool>playSound;
+    
+    ofParameter<bool>startFinale;
+    ofParameter<float>deadTimeFinale;
 
     ofxTrueTypeFontUC * font_x_small;
     ofxTrueTypeFontUC * font_small;
     ofxTrueTypeFontUC * font_medium;
     ofxTrueTypeFontUC * font_large;
+    
+    int NUM_TABLES;
+    int BUTTONS_PR_TABLE;
     
     void log(string l){
         if(logReport){
@@ -188,7 +197,7 @@ public:
             ofPath p = svg.getPathAt(j);
             p.setPolyWindingMode(OF_POLY_WINDING_ODD);
             vector<ofPolyline>& lines = const_cast<vector<ofPolyline>&>(p.getOutline());
-            if(lines[0].getBoundingBox().width<1920 || lines[0].getBoundingBox().height<1080)
+            if(lines[0].getBoundingBox().width<1919 || lines[0].getBoundingBox().height<1079)
                 polys.push_back(lines[0]);
         }
         return polys;

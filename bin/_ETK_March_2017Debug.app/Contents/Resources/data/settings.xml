@@ -1,20 +1,32 @@
 <group>
-	<log_report>1</log_report>
+	<reverse_X>0</reverse_X>
+	<reverse_Y>0</reverse_Y>
+	<log_report>0</log_report>
 	<time_energy_balance>0.5</time_energy_balance>
 	<physics>
-		<attraction>25</attraction>
-		<low_pass_position>0.05</low_pass_position>
-		<gravity>16</gravity>
+		<attraction>66</attraction>
+		<low_pass_position>0.0871939</low_pass_position>
+		<gravity>28</gravity>
 	</physics>
+	<gravity_game>
+		<jumpiness_for_gravity>10</jumpiness_for_gravity>
+	<attraction_to_x>0</attraction_to_x>
+	</gravity_game>
 	<spy_game>
 		<drain_on_collide>0.2</drain_on_collide>
 	</spy_game>
+	<Final_Battle>
+		<Begin>0</Begin>
+		<push>0.72449</push>
+	<begin>0</begin>
+	<push_drain>0</push_drain>
+	</Final_Battle>
 	<game_controls>
 		<refill_1>0</refill_1>
 		<refill_2>0</refill_2>
 		<refill_amount>50</refill_amount>
 		<refill_animation_time>5</refill_animation_time>
-		<drain_team_1>1</drain_team_1>
+		<drain_team_1>0.867347</drain_team_1>
 		<drain_team_2>1</drain_team_2>
 	</game_controls>
 	<market_control>
@@ -22,9 +34,5 @@
 		<calculate_market_2>0</calculate_market_2>
 	</market_control>
 <group/>
-<reverse_X>0</reverse_X>
-	<reverse_Y>1</reverse_Y>
-<gravity_game>
-		<jumpiness_for_gravity>2.19388</jumpiness_for_gravity>
-	</gravity_game>
+<play_sound>0</play_sound>
 </group>

@@ -20,7 +20,7 @@ public:
     };
     bool isDone(){
         bool isInside=true;
-        
+        bool allAreDead = true;
         for(int i = 0; i<buttons->size();i++){
             Button *b = &buttons->at(i);
             if(!b->isPlaying||b->isDead())continue; // if b is not playing or is dead dont account.
@@ -29,7 +29,12 @@ public:
                 isInside=false; // if 1 b is not on or is under the line, is false and break loop
                 break;
             }
+            
+            if(!buttons->at(i).isDead()){
+                allAreDead =false;
+            }
         }
+        if(allAreDead)isInside=false;
         return isInside;
     };
     

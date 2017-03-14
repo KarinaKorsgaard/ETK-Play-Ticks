@@ -64,7 +64,7 @@ public:
         
         float x = ball->getPosition().x;
         float y = ball->getPosition().y;
-        if(y > 1080 + 700){
+        if(y > 1080 + 600){
             if(x>1920){
                 score1++;
                 ball->setPosition( ofVec2f( 1920 , 200 ));
