@@ -31,12 +31,12 @@ public:
             Button * b = &buttons->at(players[i]);
             b->update(co->attraction);
             
-            if(!board.inside(b->getPos()) && co->startFinale &&  b->on)
+            if(!board.inside(b->getPos()) && co->startFinale &&  b->on && b->value>0){
                  b->value-=5;
-            
-             b->freezeControl(co->deadTimeFinale);
-        }
-        
+                if(b->value<0)b->value=0;
+            }
+            b->freezeControl(co->deadTimeFinale);
+        }  
     }
 
     void draw(){
@@ -49,18 +49,18 @@ public:
         for(int i=0; i<players.size(); i++) {
             buttons->at(players[i]).draw();
             
-            if(!buttons->at(players[i]).isDead() && co->debug){
-                ofPushMatrix();
-                ofTranslate(buttons->at(players[i]).getBiquadPos());
-                string s = ofToString(buttons->at(players[i]).value,0);
-                ofSetColor(255);
-                ofRectangle r = co->font_medium->getStringBoundingBox(s, 0, 0);
-                co->font_medium->drawString(s,-r.width/2,0);
-                
-                ofPopMatrix();
-
-                buttons->at(players[i]).drawDebug();
-            }
+//            if(!buttons->at(players[i]).isDead() && co->debug){
+//                ofPushMatrix();
+//                ofTranslate(buttons->at(players[i]).getBiquadPos());
+//                string s = ofToString(buttons->at(players[i]).value,0);
+//                ofSetColor(255);
+//                ofRectangle r = co->font_medium->getStringBoundingBox(s, 0, 0);
+//                co->font_medium->drawString(s,-r.width/2,0);
+//                
+//                ofPopMatrix();
+//
+//                buttons->at(players[i]).drawDebug();
+//            }
         }
         
     };

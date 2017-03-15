@@ -26,11 +26,13 @@ void ofApp::setup(){
     
     for(int i = 0; i<2;i++){
         teams[i].setup(i,&co);
-        teams[i].time = xml.getValue("startTime", 0.0);
+        teams[i].time = 0;//xml.getValue("startTime", 0.0);
         co.size_break = xml.getValue("size_break_point", 0.0);
         co.size_lim = xml.getValue("size_limit", 0.0);
     }
-    float startDist = xml.getValue("startDist", 0.0);
+    float startRad = xml.getValue("size", 0.0);
+    float startVal = xml.getValue("startValue", 0.0);
+    
     PORT = xml.getValue("PORT", 0);
     NUM_TABLES = xml.getValue("NUM_TABLES", 0);
     BUTTONS_PR_TABLE = xml.getValue("BUTTONS_PR_TABLE", 0);
@@ -56,7 +58,7 @@ void ofApp::setup(){
             Button b = * new Button;
             
             
-            b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startDist/2, &teams[teamNum].box2d);
+            b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startVal, startRad, &teams[teamNum].box2d);
             b.size_lim = co.size_lim;
             b.size_break= co.size_break;
             
@@ -82,6 +84,7 @@ void ofApp::setup(){
     ofAddListener(teams[1].box2d.contactEndEvents, this, &ofApp::contactEnd);
 
     pingPong.setup(&co,&teams[0].buttons,&teams[1].buttons);
+    pushGame.setup(&co);
     
     //allocate framebuffer
     fbo.allocate(1920*2, 1080, GL_RGBA);
@@ -101,7 +104,7 @@ void ofApp::setup(){
     p_b_scenes.resize(b_scenes.size());
     
     physics.setName("physics");
-    physics.add(co.attraction.set("attraction",1,0,100));
+    physics.add(co.attraction.set("attraction",1,0,200));
     physics.add(co.fc.set("low pass position",0.05,0.01,0.4));
     physics.add(co.gravity.set("gravity",1,0,50));
     
@@ -109,7 +112,7 @@ void ofApp::setup(){
     //gameMechs.add(co.lessIsMore.set("less is more", false));
     gameMechs.add(co.refill1.set("refill 1", false));
     gameMechs.add(co.refill2.set("refill 2", false));
-    gameMechs.add(co.refillCoef.set("refill amount",startDist/2,0,startDist));
+    gameMechs.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
     gameMechs.add(co.refillTime.set("refill animation time",5,1,30));
     
     gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,10));
@@ -117,7 +120,7 @@ void ofApp::setup(){
 
     gravity.setName("gravity game");
     gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
-    gravity.add(co.x_jump.set("attraction to x",0.01,0,0.2));
+    gravity.add(co.x_jump.set("attraction to x",0.001,0,0.002));
     
     spyGame.setName("spy game");
     spyGame.add(co.spyDrainer.set("drain on collide",0.2,0.,2));
@@ -126,11 +129,14 @@ void ofApp::setup(){
     market.add(co.marketDone1.set("calculate market 1",false));
     market.add(co.marketDone2.set("calculate market 2",false));
     
-    finale.setName("Final Battle");
-    finale.add(co.startFinale.set("begin",false));
-    finale.add(co.deadTimeFinale.set("push",0.1,0.,2));
-    finale.add(finalePushDrain.set("push drain",0.01,0.,0.1));
+//    finale.setName("Final Battle");
+//    finale.add(co.startFinale.set("begin",false));
+//    finale.add(co.deadTimeFinale.set("push time",0.1,0.,2));
+//    finale.add(finalePushDrain.set("push drain",0.01,0.,0.1));
     
+    idle.setName("charades");
+    idle.add(co.idleA.set("a is done",false));
+    idle.add(co.idleB.set("b is done",false));
     
     guiScenes.setup(scenes);
     guiScenes.saveToFile("scenes.xml");
@@ -145,7 +151,7 @@ void ofApp::setup(){
     gui.add(physics);
     gui.add(gravity);
     gui.add(spyGame);
-    gui.add(finale);
+    gui.add(idle);
     gui.add(gameMechs);
     
     gui.add(market);
@@ -197,18 +203,24 @@ void ofApp::update(){
     while (receiver.hasWaitingMessages()) {
         ofxOscMessage m;
         receiver.getNextMessage(m);
-        //if(co.debug)cout<<m.getAddress()<<endl;
-        // set button values
+
+        for (int i = 0 ; i<alive.size(); i++) {
+            if(!receivingTables[i])if(m.getAddress() == alive[i])receivingTables[i]=true;
+        }
+        
         if(!co.lock){
-            for(int t = 0; t < 2; t++){
+            int uT=2;
+            if(co.sceneNumber == 6)uT = 1;
+            for(int t = 0; t < uT ; t++){
                 for(int i = 0; i < teams[t].buttons.size(); i++){
                     
                     Button *b = &teams[t].buttons[i];
+                    
                     if (m.getAddress()==b->secondAdress){
                         if(m.getArgAsInt32(0)==0){
                             b->on = false;
+                            break;
                         }
-                        
                     }
                     else if( m.getAddress()==b->address ){
                         b->on = true;
@@ -221,11 +233,12 @@ void ofApp::update(){
                         b->set( x , y , m.getArgAsFloat(2) );
                         
                         //int table = b->table + teams[t].teamId*NUM_TABLES/2;
-                        receivingTables[b->table]=true;
                         
-                        if(teams[t].s04.spyId == -1)
-                            teams[t].s04.spyId=i;
                         
+                        if(teams[t].spy04.spyId == -1)
+                            teams[t].spy04.spyId=i;
+                        
+                        break;
                     }
                     
                 }
@@ -233,25 +246,29 @@ void ofApp::update(){
         }
     }
     //if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
-  
-    if(!co.refill1){
-        teams[0].update();
-        if(co.sceneNumber == 4){
-            if(teams[0].s04.areWeDone() && co.logReport){
-                co.log("the spy outsmarted team 0");
+    if(co.sceneNumber != 6){
+        if(!co.refill1){
+            teams[0].update();
+            if(co.sceneNumber == 4){
+                if(teams[0].spy04.areWeDone() && co.logReport){
+                    co.log("the spy outsmarted team 0");
+                }
+            }
+        }
+        if(!co.refill2){
+            teams[1].update();
+            if(co.sceneNumber == 4){
+                if(teams[1].spy04.areWeDone() && co.logReport){
+                    co.log("the spy outsmarted team 1");
+                }
             }
         }
     }
-    if(!co.refill2){
-        teams[1].update();
-        if(co.sceneNumber == 4){
-            if(teams[1].s04.areWeDone() && co.logReport){
-                co.log("the spy outsmarted team 1");
-            }
-        }
-    }
-    if(co.sceneNumber == 8 && !co.refill2 && !co.refill1){
+    if(co.sceneNumber == 9 && !co.refill2 && !co.refill1){
         pingPong.update();
+    }
+    if(co.sceneNumber == 6 && !co.refill2 && !co.refill1){
+        pushGame.update();
     }
     
     if(co.playSound){
@@ -260,21 +277,12 @@ void ofApp::update(){
                 if(teams[i].buttons[b].isColliding()){
                     sound[i].play();
                 }
-                
-//                if(teams[i].buttons[b].distToOrg > 0){
-//                    sound[i + 2].play();
-//                }
             }
         }
     }
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
-    
-    
-    if(co.sceneNumber == 11){
-     //   teams[0].push_game.updateOtherTeam
-        
-    }
+
 }
 
 //--------------------------------------------------------------
@@ -287,7 +295,7 @@ void ofApp::draw(){
     ofSetColor(255, 220, 220);
     ofDrawRectangle(1920,0,1920,1080);
 
-    if(co.sceneNumber!=8){
+    if(co.sceneNumber!=9 || co.sceneNumber!=6 ){
         if(co.refill1){
             refill(0,easeRefill1);
             
@@ -297,31 +305,32 @@ void ofApp::draw(){
             teams[0].recordValues();
         }
         
-        if(co.sceneNumber != 7){
-            if(co.refill2){
-                refill(1,easeRefill2);
-            }
-            else {
-                ofPushMatrix();
-                ofTranslate(1920, 0);
-                teams[1].draw();
-                ofPopMatrix();
-                
-                easeRefill2 = ofGetElapsedTimef();
-                teams[1].recordValues();
-            }
+        
+        if(co.refill2){
+            refill(1,easeRefill2);
         }
-    }else{
-        pingPong.draw();
+        else {
+            ofPushMatrix();
+            ofTranslate(1920, 0);
+            teams[1].draw();
+            ofPopMatrix();
+            
+            easeRefill2 = ofGetElapsedTimef();
+            teams[1].recordValues();
+        }
         
     }
-  //  drawScores();
-    fbo.end();
+    if(co.sceneNumber==9)
+        pingPong.draw();
     
-   // fbo.draw(0,0,fbo.getWidth()/3,fbo.getHeight()/3);
+    if (co.sceneNumber==6)
+        pushGame.draw();
+    
+    
+    fbo.end();
+
     syphon.publishTexture(&fbo.getTexture());
     gui.draw();
-   // ofTranslate(gui.getWidth()+20, 0);
     guiScenes.draw();
     
     for(int i = 0 ; i<NUM_TABLES;i++){
@@ -337,8 +346,11 @@ void ofApp::handleSceneChange(){
     for(int i = 0;i<receivingTables.size();i++){
         receivingTables[i]=false;
     }
-    if(co.sceneNumber == 8)pingPong.begin();
-    else pingPong.reset();
+    
+    if(co.sceneNumber == 9)pingPong.begin();
+    if(p_sceneNumber  == 9) pingPong.reset();
+
+    
     //if(key-'0'<10){
      //   co.sceneNumber = key-'0';
     co.log("");
@@ -348,94 +360,122 @@ void ofApp::handleSceneChange(){
    // }
     // spy fuckups....
     
-    if(teams[0].s04.spyId!=-1 && teams[1].s04.spyId!=-1){
+    if(teams[0].spy04.spyId!=-1 && teams[1].spy04.spyId!=-1){
         if(co.sceneNumber == 4){
-            if(teams[0].s05.theWinner!=-1)teams[0].s04.spyId = teams[0].s05.theWinner;
-            if(teams[1].s05.theWinner!=-1)teams[1].s04.spyId = teams[1].s05.theWinner;
+            if(teams[0].gravity03.theWinner!=-1)teams[0].spy04.spyId = teams[0].gravity03.theWinner;
+            if(teams[1].gravity03.theWinner!=-1)teams[1].spy04.spyId = teams[1].gravity03.theWinner;
             
-            Button a = teams[0].buttons[teams[0].s04.spyId]; // 5
-            Button b = teams[1].buttons[teams[1].s04.spyId]; // 8
+            Button a = teams[0].buttons[teams[0].spy04.spyId]; // 5
+            Button b = teams[1].buttons[teams[1].spy04.spyId]; // 8
             
             if(a.teamNumber == 0 && b.teamNumber == 1){
                 if(a.isDead())a.value+=10;
                 if(b.isDead())b.value+=10;
                 
-                teams[0].buttons[teams[0].s04.spyId] = b;
-                teams[1].buttons[teams[1].s04.spyId] = a;
+                teams[0].buttons[teams[0].spy04.spyId] = b;
+                teams[1].buttons[teams[1].spy04.spyId] = a;
                 
-                shared_ptr <ofxBox2dCircle> c = teams[0].buttons[teams[0].s04.spyId].box2Dcircle;
-                shared_ptr <ofxBox2dCircle> d = teams[1].buttons[teams[1].s04.spyId].box2Dcircle;
+                shared_ptr <ofxBox2dCircle> c = teams[0].buttons[teams[0].spy04.spyId].box2Dcircle;
+                shared_ptr <ofxBox2dCircle> d = teams[1].buttons[teams[1].spy04.spyId].box2Dcircle;
                 
-                teams[0].buttons[teams[0].s04.spyId].box2Dcircle = d;
-                teams[1].buttons[teams[1].s04.spyId].box2Dcircle = c;
+                teams[0].buttons[teams[0].spy04.spyId].box2Dcircle = d;
+                teams[1].buttons[teams[1].spy04.spyId].box2Dcircle = c;
                 
             }
         }
-        if(co.sceneNumber != 4){
+        if(p_sceneNumber == 4){
             
-            Button a = teams[0].buttons[teams[0].s04.spyId];
-            Button b = teams[1].buttons[teams[1].s04.spyId];
+            Button a = teams[0].buttons[teams[0].spy04.spyId];
+            Button b = teams[1].buttons[teams[1].spy04.spyId];
             if(a.teamNumber == 1 && b.teamNumber == 0){
-                teams[0].buttons[teams[0].s04.spyId] = b;
-                teams[1].buttons[teams[1].s04.spyId] = a;
+                teams[0].buttons[teams[0].spy04.spyId] = b;
+                teams[1].buttons[teams[1].spy04.spyId] = a;
                 
-                shared_ptr <ofxBox2dCircle> c = teams[0].buttons[teams[0].s04.spyId].box2Dcircle;
-                shared_ptr <ofxBox2dCircle> d = teams[1].buttons[teams[1].s04.spyId].box2Dcircle;
+                shared_ptr <ofxBox2dCircle> c = teams[0].buttons[teams[0].spy04.spyId].box2Dcircle;
+                shared_ptr <ofxBox2dCircle> d = teams[1].buttons[teams[1].spy04.spyId].box2Dcircle;
                 
-                teams[0].buttons[teams[0].s04.spyId].box2Dcircle = d;
-                teams[1].buttons[teams[1].s04.spyId].box2Dcircle = c;
+                teams[0].buttons[teams[0].spy04.spyId].box2Dcircle = d;
+                teams[1].buttons[teams[1].spy04.spyId].box2Dcircle = c;
                 
             }
         }
     }
     
-    if(co.sceneNumber == 7){
+    if(co.sceneNumber == 6 ){
+        
         teamSize=teams[1].buttons.size();
+        
         teams[0].box2d.getWorld()->ClearForces();
+        
         cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+        
         if(teams[0].buttons.size() == teamSize ){
             
             for(int i = 0;i<teams[1].buttons.size();i++){
                 Button * old = &teams[1].buttons[i];
                 
                 Button b = * new Button;
-                
-                
-                
-                b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->value, &teams[0].box2d);
+            
+                b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
                 b.colors = old->colors;
+                
                 b.radius = old->radius;
+                b.value = old->value;
                 b.isPlaying = old->isPlaying;
                 b.on = old->on;
                 b.size_lim = old->size_lim;
                 b.size_break = old->size_break;
-                
+//
                 teams[0].buttons.push_back(b);
-                //teams[0].buttons.back().printInfo();
+
                 
-                
-                teams[0].buttons.back().box2Dcircle.get()->setData(new ButtonData());
-                ButtonData * sd = (ButtonData*)teams[0].buttons.back().box2Dcircle.get()->getData();
-                sd->buttonID = teams[0].buttons.size() - 1;
-                sd->bHit   = false;
             }
             cout << "team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
             
-            teams[0].finale.begin(&teams[0].buttons);
+            pushGame.begin(&teams[0].buttons);
+            
+            for(int b = 0; b<teams[1].buttons.size();b++){
+                teams[1].buttons[b].box2Dcircle->alive = false;
+                teams[1].buttons[b].box2Dcircle->setRadius(0);
+            }
+            
+            
+            
         }
     }
     
-    if(co.sceneNumber != 7 && teamSize!=-1){
-        teams[0].finale.reset();
+    if( (p_sceneNumber== 6 && teamSize!=-1) ){
+        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+        pushGame.reset();
+        
         if(teams[0].buttons.size() != teamSize ){
             for(int i = 0;i<teamSize;i++){
-                teams[1].buttons[i].value = teams[0].buttons[i+teamSize].value;
-                teams[0].buttons.back().box2Dcircle->destroy();
+                
+                
+                teams[0].buttons.at(i).box2Dcircle->destroy();
+                teams[0].buttons.at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
+                //virtual void setPhysics(float density, float bounce, float friction);
+                teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
+                teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
+                
+                
+                teams[1].buttons[i].value = teams[0].buttons[i+teamSize].value; // update value
+                teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
                 teams[0].buttons.pop_back();
+                
+                //destroy and create!
+    
+                
+                
+                
             }
+            
         }
-        //finaleWorld.disableEvents();
+        cout << "team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
     }
+    
+    
+    p_sceneNumber = co.sceneNumber;
 }
 
 void ofApp::refill(int team, float timef){
@@ -448,17 +488,8 @@ void ofApp::refill(int team, float timef){
             float oldValue = b->beforeRefillValue;
             
             float newValue = oldValue + co.refillCoef;
-//            cout << oldValue<< endl;
-//            cout << newValue<< endl;
-//            cout << "" << endl;
-            //  if(co.lessIsMore)newValue =oldValue + (b->beginningValue - b->value) * co.refillCoef;
-            //  else newValue = oldValue + b->value * co.refillCoef;
             b->value=CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue);
-            
-//            cout << b->value << endl;
-//            cout << "" << endl;
-            
-            b->updateRadius();
+           // b->updateRadius();
             
             
             ofPushMatrix();
@@ -543,39 +574,35 @@ void ofApp::contactStart(ofxBox2dContactArgs &e) {
                     bData->bHit = true;
                 }
                 
-                if(co.sceneNumber==7 && aData->bHit && bData->bHit){
-                    
-                    Button * b1 = &teams[aData->teamID].buttons[aData->buttonID];
-                    Button * b2 = &teams[bData->teamID].buttons[bData->buttonID];
-                    
-
-                        if(b1->finaleValue > b2->finaleValue){
-                            b2->freezeUpdate = true;
-                            b2->freezeTimer = 0.;
-                            
-                            b1->value-= b2->value*finalePushDrain;
-
-
-                        }
-                        else if(b1->finaleValue < b2->finaleValue){
-                            b1->freezeUpdate = true;
-                            b1->freezeTimer = 0.;
-                            
-                            b2->value-= b1->value*finalePushDrain;
-                            
-
-                        }
-                    if(abs(b1->finaleValue-b2->finaleValue)>0){
-                        b1->finaleValue-=b2->value;
-                        b1->updatefinaleValue = true;
-                        b1->finaleValueTimer=0.;
-                        
-                        b2->finaleValue-=b1->value;
-                        b2->updatefinaleValue = true;
-                        b2->finaleValueTimer=0.;
-
-                    }
-                }
+//                if(co.sceneNumber==7 && aData->bHit && bData->bHit){
+//                    
+//                    Button * b1 = &teams[aData->teamID].buttons[aData->buttonID];
+//                    Button * b2 = &teams[bData->teamID].buttons[bData->buttonID];
+//                    
+//
+//                        if(b1->finaleValue > b2->finaleValue){
+//                            b2->freezeUpdate = true;
+//                            b2->freezeTimer = 0.;
+//                            b2->box2Dcircle->setVelocity(0, 0);
+//                            //b1->value-= b2->value*finalePushDrain;
+//                        }
+//                        else if(b1->finaleValue < b2->finaleValue){
+//                            b1->freezeUpdate = true;
+//                            b1->freezeTimer = 0.;
+//                            b1->box2Dcircle->setVelocity(0, 0);
+//                           // b2->value-= b1->value*finalePushDrain;
+//                        }
+//                    if(abs(b1->finaleValue-b2->finaleValue)>0){
+//                        b1->finaleValue-=b2->value;
+//                        b1->updatefinaleValue = true;
+//                        b1->finaleValueTimer=0.;
+//                        
+//                        b2->finaleValue-=b1->value;
+//                        b2->updatefinaleValue = true;
+//                        b2->finaleValueTimer=0.;
+//
+//                    }
+//                }
             }
         }
     }
@@ -664,6 +691,8 @@ string ofApp:: getAdress(int _firstSecond, int _tabel, int _button){
 #ifdef TARGET_WIN32
         str = cc.encode(str, "UTF-8", "Windows-1252");
 #endif
+        if(alive.size()<12)alive.push_back(str + "/alive");
+        
         if(indx == _tabel){
             result = str;
             if(_firstSecond == 1)

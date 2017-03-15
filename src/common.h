@@ -47,6 +47,9 @@ public:
     ofParameter<bool>marketDone1;
     ofParameter<bool>marketDone2;
     
+    ofParameter<bool>idleA;
+    ofParameter<bool>idleB;
+    
     ofParameter<float>spyDrainer;
     
     ofParameter<bool>refill1;
@@ -189,7 +192,7 @@ public:
 //    }
     
     
-    vector<ofPolyline> getPolyline(ofxSVG svg){
+    vector<ofPolyline> getPolyline(ofxSVG svg, bool doble = false){
        // vector<ofPolyline> result;
         vector<ofPolyline>polys;
         
@@ -197,7 +200,8 @@ public:
             ofPath p = svg.getPathAt(j);
             p.setPolyWindingMode(OF_POLY_WINDING_ODD);
             vector<ofPolyline>& lines = const_cast<vector<ofPolyline>&>(p.getOutline());
-            if(lines[0].getBoundingBox().width<1919 || lines[0].getBoundingBox().height<1079)
+            int w = doble ? 1919*2 : 1919;
+            if(lines[0].getBoundingBox().width<w || lines[0].getBoundingBox().height<1079)
                 polys.push_back(lines[0]);
         }
         return polys;

@@ -4,7 +4,7 @@
 	<log_report>0</log_report>
 	<time_energy_balance>0.5</time_energy_balance>
 	<physics>
-		<attraction>66</attraction>
+		<attraction>100</attraction>
 		<low_pass_position>0.0871939</low_pass_position>
 		<gravity>28</gravity>
 	</physics>
@@ -20,6 +20,7 @@
 		<push>0.72449</push>
 	<begin>0</begin>
 	<push_drain>0</push_drain>
+	<push_time>0.1</push_time>
 	</Final_Battle>
 	<game_controls>
 		<refill_1>0</refill_1>

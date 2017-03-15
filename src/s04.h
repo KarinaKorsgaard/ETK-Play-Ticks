@@ -15,10 +15,6 @@ public:
     
         spyId = -1;
         
-        head = transformToCollumn(getLine("text/04_spy.txt",0),800, co->font_medium);
-        bread = transformToCollumn(getLine("text/04_spy.txt",1),800, co->font_small);
-        
-        
     };
     bool isDone(){
         
@@ -79,12 +75,6 @@ public:
                 buttons->at(i).drawDebug();
             }
         }
-//        ofSetColor(ofColor::royalBlue);
-//        for(int i = 0; i< head.size();i++)
-//            co->font_medium->drawString(head[i], 50, 100+i*co->font_medium->getLineHeight());
-//        
-//        for(int i = 0; i< bread.size();i++)
-//            co->font_small->drawString(bread[i], 50, 180+i*co->font_small->getLineHeight());
     };
     
     void begin(){
@@ -97,8 +87,6 @@ public:
     commonObjects * co;
     ofxSVG svg;
     ofPolyline poly;
-    
-    vector<string> head;
-    vector<string> bread;
+
     
 };

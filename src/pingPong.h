@@ -29,29 +29,7 @@ public:
         world.init();
         world.setGravity(0, 1);
         world.createBounds(ofRectangle(0,-100,1920*2, 1080 + 800));
-        world.setFPS(60.0);
         
-        ball = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-        //virtual void setPhysics(float density, float bounce, float friction);
-        ball.get()->setPhysics(.1, .5, 8.0);
-        ball.get()->setup(world.getWorld(), 1920, 1080/2, 70);
-        ball.get()->alive = false;
-        
-        pad1= shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-        pad2= shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-        wall= shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-        
-        pad1.get()->setPhysics(0.0, 0.53, 0.1);
-        pad1.get()->setup(world.getWorld(), 100, 1080/2, 40, 300);
-        pad1.get()->alive = false;
-        
-        pad2.get()->setPhysics(0.0, 0.53, 0.1);
-        pad2.get()->setup(world.getWorld(), 1920*2 - 100, 1080/2, 40, 300);
-        pad2.get()->alive = false;
-       
-        wall.get()->setPhysics(0.0, 0.53, 0.1);
-        wall.get()->setup(world.getWorld(), 1920 , 800 , 80 , 1080-500 );
-        wall.get()->alive = false;
         //box2d.enableEvents();
  
     };
@@ -141,19 +119,45 @@ public:
     };
     
     void begin(){
+        
+        ball = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
+        //virtual void setPhysics(float density, float bounce, float friction);
+        ball.get()->setPhysics(.1, .5, 8.0);
+        ball.get()->setup(world.getWorld(), 1920, 1080/2, 70);
+        ball.get()->alive = false;
+        
+        pad1= shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+        pad2= shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+        wall= shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+        
+        pad1.get()->setPhysics(0.0, 0.53, 0.1);
+        pad1.get()->setup(world.getWorld(), 100, 1080/2, 40, 300);
+        pad1.get()->alive = false;
+        
+        pad2.get()->setPhysics(0.0, 0.53, 0.1);
+        pad2.get()->setup(world.getWorld(), 1920*2 - 100, 1080/2, 40, 300);
+        pad2.get()->alive = false;
+        
+        wall.get()->setPhysics(0.0, 0.53, 0.1);
+        wall.get()->setup(world.getWorld(), 1920 , 800 , 80 , 1080-500 );
+        wall.get()->alive = false;
+        
+        
         ball.get()->alive = true;
         ball->setVelocity( ofVec2f( ofRandom(-45,45) , 0 ));
         pad1.get()->alive = true;
         pad2.get()->alive = true;
         wall.get()->alive = true;
+        
         score1=0;
         score2=0;
+        
     };
     void reset(){
-        ball.get()->alive = false;
-        pad1.get()->alive = false;
-        pad2.get()->alive = false;
-        wall.get()->alive = false;
+        ball.get()->destroy();
+        pad1.get()->destroy();
+        pad2.get()->destroy();
+        wall.get()->destroy();
     };
     
     commonObjects * co;

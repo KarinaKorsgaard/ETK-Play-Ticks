@@ -95,7 +95,7 @@ public:
     vector<Button>*buttons;
     ofImage basket;
     ofImage basketTop;
-    //map <int, int > buttonsInBasket;
+
     float timeGained;
     map <int,ofVec3f> buttonInfo;
     double countDown;
@@ -104,17 +104,19 @@ public:
     bool stopGivingPoints = false;
     vector<Basket>baskets;
     
-    void setup(commonObjects*_co, vector<Button>*b, float counter = 300.){
+    ofRectangle win;
+    
+    void setup(commonObjects*_co, vector<Button>*b, float counter = 5.){
         buttons = b;
         co = _co;
-        svg.load("svg/s06_empty.svg");
+        svg.load("svg/06_solid_objects.svg");
         polys = getPolyline(svg);
         
         countDown=counter;
         static_countDown = countDown;
         
         ofxSVG svg2;
-        svg2.load("svg/s06_baskets.svg");
+        svg2.load("svg/06_factory_areas.svg");
         polysOutline = getPolyline(svg2);
         for(int i = 0;i<polysOutline.size();i++){
             Basket basket;
@@ -122,48 +124,51 @@ public:
             baskets.back().setup(polysOutline[i]);
         }
         
-        basket.load("img/s06.png");
-        basketTop.load("img/s06_top.png");
+        basket.load("img/06_factories.png");
+        basketTop.load("img/06_factories_top_layer.png");
         
-        cout << polys.size()<<endl;
-        head = transformToCollumn(getLine("text/06.txt",0),800, co->font_medium);
-        bread = transformToCollumn(getLine("text/06.txt",1),800, co->font_small);
+        ofxSVG svg3;
+        svg3.load("svg/06_win_rect.svg");
+        win = getPolyline(svg3)[0].getBoundingBox();
         
+        winImg.load("img/06_win.png");
         
     };
+    
     bool isDone(bool forceTrue = false){
+        if(forceTrue) return true;
+        else return countDown = 0.0;
+    };
+    
+    void update(){
+        
+        
         recDone = false;
         
-        if(countDown <= 0){
-            countDown = 0;
-            //recDone = true; -- ?
+        for(int i = 0 ; i<buttons->size();i++){
+            if(win.inside(buttons->at(i).getBiquadPos())){
+                recDone = true;
+                break;
+            }
         }
-
-        if(forceTrue) recDone = true;
         
-        return recDone;
-    };
-    
-
-    
-
-
-    void update(){
-        if(!recDone){
-            
+        if(recDone){
             countDown-=ofGetLastFrameTime();
-            updateBaskets();
-        }
-        else{
+            if(countDown<0)countDown=0.0;
+        }else countDown=static_countDown;
+        
+        
+        if(isDone()){
             givePoints();
-            countDown = 0.;
-            timeGained = 0.;
+        }else{
+            updateBaskets();
+            for(int i=0; i<buttons->size(); i++) {
+                buttons->at(i).update(co->attraction);
+            }
         }
         
         
-        for(int i=0; i<buttons->size(); i++) {
-            buttons->at(i).update(co->attraction);
-        }
+        
     }
     void updateBaskets(){
         
@@ -203,6 +208,10 @@ public:
         ofSetColor(255,200);
         basketTop.draw(0,0);
         
+        int red = isDone()? 0 : 255;
+        ofSetColor(red,255-red,0);
+        
+        winImg.draw(win);
         
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
@@ -246,27 +255,12 @@ public:
             }
         }
         
-//        ofSetColor(ofColor::royalBlue);
-//        for(int i = 0; i< head.size();i++)
-//            co->font_medium->drawString(head[i], 80, 100+i*co->font_medium->getLineHeight());
-//        
-//        for(int i = 0; i< bread.size();i++)
-//            co->font_small->drawString(bread[i], 50, 180+i*co->font_small->getLineHeight());
-//        
-//        co->font_medium->drawString("gained: "+timeToString(timeGained), 50, 80);
-        //co->font_large->drawString(timeToString(countDown), 50, 180);
-        
     };
     
     
     void begin(){
         stopGivingPoints = false;
         countDown = static_countDown;
-//        for(int i = 0; i<buttons->size();i++){
-//            //buttons->at(i).box2Dcircle->setPosition(buttons->at(i).getPosRaw().x, 1040);
-//        }
-        timeGained=0.0;
-       // done = false;
     };
     
     void reset(){
@@ -277,11 +271,11 @@ public:
     
     commonObjects * co;
     ofxSVG svg;
+    ofImage winImg;
     vector<ofPolyline> polys;
     vector<ofPolyline> polysOutline;
     
     bool done = false;
-    vector<string> head;
-    vector<string> bread;
+
     
 };

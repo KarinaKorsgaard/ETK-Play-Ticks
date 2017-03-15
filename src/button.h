@@ -19,7 +19,7 @@
 
 class Button{
 public:
-    void setup(int _row, int _table,int _teamNum, string _address, string _secondAdress, float v, ofxBox2d *world){
+    void setup(int _row, int _table,int _teamNum, string _address, string _secondAdress, float val, float size, ofxBox2d *world){
         ID = _row;
         table = _table;
         address = _address;
@@ -27,14 +27,18 @@ public:
         
         teamNumber = _teamNum;
         
-        value = v;
-        beginningValue = value;
+        value = val;
+        beginningValue = val;
+        beginningRad = size;
+        
         
         box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
         box2Dcircle.get()->setPhysics(3.0, 0.0, 40.0);
         box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), 1);
         box2Dcircle.get()->alive = false;
+        
+        lastPos = ofVec2f(ofRandom(200,500),ofRandom(200,500));
         
         ofColor c;
         c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
@@ -50,6 +54,8 @@ public:
         filterLowPass.setFc(fc);
         
         deadImg.load("characters/dead.png");
+        legs[0].load("characters/arms/arm1.png");
+        legs[1].load("characters/arms/arm2.png");
         
     }
     
@@ -72,7 +78,7 @@ public:
             if(transform){
                 ofPushMatrix();
                 ofTranslate(getBiquadPos());
-                ofRotateZ(ofRadToDeg(r));
+                ofRotateZ(r);
             }
             if( !isDead() || !sizeMatters ){
                 float rad = sizeMatters ? box2Dcircle->getRadius() : 60 ;
@@ -81,8 +87,9 @@ public:
                 ofSetColor(colors[0]);
                 ofDrawCircle(0,0,rad);
                 
-                //head
-                ofSetColor(colors[1]);
+                float alpha = ((255 - (112/value)) / (1 + (112/value)));
+                //head                
+                ofSetColor(colors[1],alpha);
                 float eye = -rad + rad*0.45/2;
                 ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
                 
@@ -93,49 +100,72 @@ public:
                     ofDrawCircle(-rad*0.3,eye ,6);
                 }
                 //stomach
-                ofSetColor(colors[2]);
+                
+                
+                ofSetColor(colors[2], alpha);
                 ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
+                
+                
+                armSwapper+=(dx+dy)*10.;
+                if(armSwapper>0.2)armSwapper=0.;
+                
+                int aInd = armSwapper>.1 ? 0:1;
+                legs[aInd].draw(-(radius+10),-(radius+10),radius*2+20,radius*2+20);
+                
             }
             else {
-            //    ofDrawRectangle(0,0,40,40);
                 deadImg.draw(-15,-15,30,30);
             }
             if(transform)ofPopMatrix();
         }
     }
+    void setPosition(float x, float y){
+        setPosition(ofVec2f(x,y));
+    }
+    
+    void setPosition(ofVec2f v){
+        box2Dcircle->setPosition(v);
+        filterLowPass.clear(v);
+        lastPos = v;
+    }
     
     void set(float _x, float _y, float _r){
         x=_x;
         y=_y;
-        r=_r;
     }
     
-    void update(float attraction ){
+    void update(float attraction , bool doble = false){
         if(isPlaying && !isDead()){
             if(on){
-                distToOrg = abs(getPosRaw().x - getPos().x) + abs(getPosRaw().y - getPos().y);
+                ofVec2f p = doble ? ofVec2f(x*1920 + 1920*teamNumber , y*1080) : getPosRaw();
+                
+                if(!prev_on){
+                    box2Dcircle->setPosition(lastPos);
+                    box2Dcircle->setVelocity(0,0);
+                    prev_on=true;
+                }
+                
+                
+                distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
                 distToOrg /= (1980+1080);
                 
                 lastPos = getPos();
-                box2Dcircle->setVelocity(0,0);
+                
+                setDirection(doble);
+
                 if(!freezeUpdate){
-                    box2Dcircle->addAttractionPoint( getPosRaw() , attraction*distToOrg  );
+                    box2Dcircle->setVelocity(0,0);
+                    box2Dcircle->addAttractionPoint( p, attraction*distToOrg  );
                 }
+                
             }
             if(!on) {
                 prev_on = false;
-                box2Dcircle->setVelocity(0,0);
-                box2Dcircle->setPosition(lastPos);
             }
-            
-//            ofRectangle r = ofRectangle(0,0,1980,1080);
-//            if(!r.inside(getPos())){
-//                printInfo();
-//                box2Dcircle->setPosition(lastPos);
-//            }
             filterLowPass.update(getPos());
-            updateRadius();
         }
+        updateRadius();
+        
     }
     
     void freezeControl(float thres){
@@ -145,7 +175,7 @@ public:
         }
         if(updatefinaleValue){
             finaleValueTimer+=ofGetLastFrameTime();
-            if(finaleValueTimer>thres/2.f)updatefinaleValue=false;
+            if(finaleValueTimer>thres)updatefinaleValue=false;
         }else{
             finaleValue = value;
         }
@@ -154,10 +184,15 @@ public:
     
     void updateWithGravity(float jump , float x_jump){
         if(isPlaying && !isDead()){
-            
-            if(on){
+            if(on && box2Dcircle->getRadius()==beginningRad){
+                if(!prev_on){
+                    box2Dcircle->setPosition(lastPos);
+                    box2Dcircle->setVelocity(0,0);
+                    prev_on=true;
+                }
+                
                 lastPos = getPos();
-                prev_on=true;
+                setDirection();
                 
                 float dif_y = dy_jump - getPosRaw().y;
                 dy_jump = getPosRaw().y;
@@ -171,20 +206,18 @@ public:
                 if(abs(dif_x)>0){
                     box2Dcircle->addForce(ofVec2f(-dif_x*x_jump,0),0.1);
                 }
+                
             }
             if(!on) {
                 prev_on = false;
-                box2Dcircle->setVelocity(0,0);
-                box2Dcircle->setPosition(lastPos);
             }
-            
             filterLowPass.update(getPos());
             
         }
 
         // radius.
         if(value > 0 && on ){
-            radius = 50;
+            radius = beginningRad;
             
             if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
             else box2Dcircle->setRadius(radius);
@@ -196,9 +229,18 @@ public:
         }
     }
     
+    void setDirection(bool doble = false){
+        ofVec2f p = doble ? ofVec2f(x*1920 + 1920*teamNumber , y*1080) : getPosRaw();
+        ofVec2f up;
+        vel.x = -(p.x - filterLowPass.value().x);
+        vel.y = p.y - filterLowPass.value().y;
+        up.set(0,-1);
+        r = vel.angle(up);
+    }
+    
     void updateRadius(){
         if(on && value > 0){
-            radius = (size_lim - (size_break/value)) / (1 + (size_break/value));
+            radius = beginningRad;  //(size_lim - (size_break/value)) / (1 + (size_break/value));
             if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
             else box2Dcircle->setRadius(radius);
             box2Dcircle->alive = true;
@@ -222,8 +264,9 @@ public:
             px=x;
             py=y;
         
-            if(on)
+            if(on){
                 value-=(dx+dy)*f;
+            }
         }
         if(value<0)value = 0;
     }
@@ -314,18 +357,22 @@ public:
     float finaleValueTimer = 0.;
     
     float distToOrg;
-  //  commonObjects *co;
+
     
+    ofVec2f vel;
     float p_drain;
+    ofImage legs[2];
+    float armSwapper;
+    ofVec2f lastPos;
+    float beginningRad;
     
 private:
     float r;
     double x;
     double y;
     ofImage deadImg;
+
     
-    ofImage arm;
-    ofVec2f lastPos;
 };
 
 #endif /* Button_h */

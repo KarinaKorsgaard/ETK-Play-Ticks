@@ -16,16 +16,12 @@ public:
         co = _co;
         
         ofxSVG svg2;
-        svg2.load("svg/s05_winningArea.svg");
+        svg2.load("svg/05_win_rect.svg");
         winningArea = getPolyline(svg2)[0].getBoundingBox();
         
-        svg.load("svg/s05.svg");
+        svg.load("svg/05_fences.svg");
         polys = getPolyline(svg);
         theWinner=-1;
-        
-        head = transformToCollumn(getLine("text/05.txt",0),800, co->font_medium);
-        bread = transformToCollumn(getLine("text/05.txt",1),800, co->font_small);
-        
         
     };
     
@@ -57,8 +53,12 @@ public:
 
         if(!isDone()){ // freeze when has reached...
             for(int i=0; i<buttons->size(); i++) {
+//                if(!unlock[i])
+//                    if(buttons->at(i).box2Dcircle->getVelocity().y + buttons->at(i).box2Dcircle->getVelocity().x == 0)
+//                    unlock[i]=true;
                 
-                buttons->at(i).updateWithGravity(co->jump, co->x_jump);
+//                if(unlock[i])
+                    buttons->at(i).updateWithGravity(co->jump, co->x_jump);
             }
         }
     }
@@ -93,11 +93,13 @@ public:
     
     void begin(){
         theWinner=-1;
+//        unlock.clear();
         for(int i = 0; i<buttons->size();i++){
-            if(!buttons->at(i).isPlaying)continue;
-            buttons->at(i).box2Dcircle->setPosition(ofRandom(60,400), 1040);
-         //   buttons->at(i).lowestY = 1080;
+            buttons->at(i).setPosition(ofRandom(60,400), 1040);
+            buttons->at(i).box2Dcircle->setRadius(0);
+//            unlock.push_back(false);
         }
+        
     };
     void reset(){
         isDoneCounter=0.;
@@ -107,7 +109,6 @@ public:
     ofxSVG svg;
     vector<ofPolyline> polys;
     
-    vector<string> head;
-    vector<string> bread;
+//    vector<bool>unlock;
     
 };

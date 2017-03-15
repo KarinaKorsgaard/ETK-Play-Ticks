@@ -12,6 +12,7 @@
 #include "ofxSyphonServer.h"
 #include "ButtonData.h"
 #include "pingPong.h"
+#include "push_game.h"
 
 class ofApp : public ofBaseApp{
 
@@ -33,7 +34,7 @@ class ofApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
     //void exit();
     void exit();
-    
+    int p_sceneNumber;
     ofxOscReceiver receiver;
     
     string getAdress(int firstOrSecond, int _table, int _button);
@@ -65,8 +66,9 @@ class ofApp : public ofBaseApp{
     ofParameter<float>time_energy;
     ofParameter<float>finalePushDrain;
     ofParameterGroup finale;
+    ofParameterGroup idle;
 
-    
+    vector<string>alive;
     void handleSceneChange();
     void drawScores();
     
@@ -96,6 +98,7 @@ class ofApp : public ofBaseApp{
     
     ofxBox2d world;
     PingPong pingPong;
+    PushGame pushGame;
    // vector<Button>giantButtonMap;
 
 };

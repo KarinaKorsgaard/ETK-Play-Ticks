@@ -78,7 +78,7 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        svg.load("svg/s01.svg");
+        svg.load("svg/01_win_area.svg");
         vector<ofPolyline> p = getPolyline(svg);
         //poly = getPolyline(svg);
         
@@ -93,10 +93,6 @@ public:
             big = p[1];
             small = p[0];
         }
-
-        head = transformToCollumn(getLine("text/01.txt",0),800, co->font_medium);
-        bread = transformToCollumn(getLine("text/01.txt",1),800, co->font_small);
-    
     };
     
     bool isDone(){
@@ -125,31 +121,22 @@ public:
     };
     
     void update(){
-        //blob.updatePoly();
-      //  if(!isDone()){
-           // blob.move();
+        if(!isDone()){
             for(int i=0; i<buttons->size(); i++) {
                 buttons->at(i).update(co->attraction);
             }
-       // }
+        }
     }
 
     void draw(){
         ofSetColor(255);
         svg.draw();
-     //   blob.draw();
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             if(co->debug){
                 buttons->at(i).drawDebug();
             }
         }
-//        ofSetColor(ofColor::royalBlue);
-//        for(int i = 0; i< head.size();i++)
-//            co->font_medium->drawString(head[i], 50, 100+i*co->font_medium->getLineHeight());
-//        
-//        for(int i = 0; i< bread.size();i++)
-//            co->font_small->drawString(bread[i], 50, 180+i*co->font_small->getLineHeight());
     };
     
     void begin(){};
@@ -159,7 +146,5 @@ public:
     ofxSVG svg;
     ofPolyline poly;
     
-    vector<string> head;
-    vector<string> bread;
     
 };

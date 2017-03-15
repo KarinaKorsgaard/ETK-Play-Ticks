@@ -11,10 +11,6 @@ public:
         buttons = b;
         co = _co;
         
-        head = transformToCollumn(getLine("text/drainTest.txt",0),800, co->font_medium);
-        bread = transformToCollumn(getLine("text/drainTest.txt",1),800, co->font_small);
-        
-        
     };
     bool isDone(){
         return true;
