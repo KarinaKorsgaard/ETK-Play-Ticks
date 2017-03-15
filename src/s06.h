@@ -63,7 +63,7 @@ public:
     void calculateOutput(){
         output = 0;
         float c = coef();
-        for(int i =0; i<buttons.size();i++)output+=buttons[i].value*c;
+        for(int i =0; i<buttons.size();i++)output+=buttons[i].getValue()*c;
     }
     
     // output is lala. Not necessary I guess... ? - It is a vector of values added to the buttons in the basket?
@@ -73,7 +73,7 @@ public:
 
         int indx=0;
         for(int i = 0; i<spacesToDraw.size();i++){
-                int red = spacesToDraw[i].x==-1 ?  255:0;
+                int red = spacesToDraw[i].x==-1 ?  230:25;
                 ofSetColor(red,255-red,150);
                 ofDrawCircle(i*30,0,10);
             
@@ -106,14 +106,12 @@ public:
     
     ofRectangle win;
     
-    void setup(commonObjects*_co, vector<Button>*b, float counter = 5.){
+    void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
         svg.load("svg/06_solid_objects.svg");
         polys = getPolyline(svg);
-        
-        countDown=counter;
-        static_countDown = countDown;
+
         
         ofxSVG svg2;
         svg2.load("svg/06_factory_areas.svg");
@@ -137,7 +135,7 @@ public:
     
     bool isDone(bool forceTrue = false){
         if(forceTrue) return true;
-        else return countDown = 0.0;
+        else return countDown > 3.;
     };
     
     void update(){
@@ -148,14 +146,12 @@ public:
         for(int i = 0 ; i<buttons->size();i++){
             if(win.inside(buttons->at(i).getBiquadPos())){
                 recDone = true;
-                break;
             }
         }
         
         if(recDone){
-            countDown-=ofGetLastFrameTime();
-            if(countDown<0)countDown=0.0;
-        }else countDown=static_countDown;
+            countDown+=ofGetLastFrameTime();
+        }else countDown = 0.;
         
         
         if(isDone()){
@@ -194,7 +190,7 @@ public:
             for(int i = 0; i<baskets.size();i++){
                 for(int j=0; j<buttons->size(); j++){ // ??
                     if(baskets[i].isIn(buttons->at(j).getBiquadPos())){
-                        buttons->at(j).value*=baskets[i].efficiency;
+                        buttons->at(j).multValue(baskets[i].efficiency);
                     }
                 }
             }
@@ -205,11 +201,11 @@ public:
     void draw(){
         
 
-        ofSetColor(255,200);
-        basketTop.draw(0,0);
+        //ofSetColor(255,200);
+        //basketTop.draw(0,0);
         
-        int red = isDone()? 0 : 255;
-        ofSetColor(red,255-red,0);
+        int red = CLAMP(int(ofMap(countDown,3,0,0,255)),50,200);
+        ofSetColor(red,255-red,50);
         
         winImg.draw(win);
         
@@ -238,13 +234,11 @@ public:
 
         
         ofSetColor(255,200);
-        basket.draw(0,0);
+        basketTop.draw(0,0);
         
         for(int i = 0; i<baskets.size();i++){
             baskets[i].drawDots();
-            ofSetColor(ofColor::whiteSmoke);
-            co->font_medium->drawString(ofToString(baskets[i].output,0),0,150);
-            co->font_medium->drawString(ofToString(baskets[i].efficiency,0),0,250);
+
             ofPopMatrix();
             if(co->debug){
                 ofPushMatrix();
@@ -260,7 +254,7 @@ public:
     
     void begin(){
         stopGivingPoints = false;
-        countDown = static_countDown;
+        countDown = 0.;
     };
     
     void reset(){

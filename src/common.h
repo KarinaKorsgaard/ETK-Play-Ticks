@@ -41,6 +41,7 @@ public:
     ofParameter<float>drainCoefficient1;
     ofParameter<float>drainCoefficient2;
     ofParameter<float>refillCoef;
+    ofParameter<float>blockForce;
     ofParameter<int>gravity;
     ofParameter<bool>lessIsMore;
     
@@ -51,6 +52,7 @@ public:
     ofParameter<bool>idleB;
     
     ofParameter<float>spyDrainer;
+    ofParameter<float>thresY_gravity;
     
     ofParameter<bool>refill1;
     ofParameter<bool>refill2;
@@ -67,6 +69,8 @@ public:
     ofxTrueTypeFontUC * font_small;
     ofxTrueTypeFontUC * font_medium;
     ofxTrueTypeFontUC * font_large;
+    
+    map<string, int>sMap;
     
     int NUM_TABLES;
     int BUTTONS_PR_TABLE;

@@ -1,14 +1,15 @@
 <scenes>
 	<0-Area>0</0-Area>
-	<1-Get_Through>0</1-Get_Through>
-	<2-Maze>0</2-Maze>
-	<3-Gravity>0</3-Gravity>
-	<4-Spy_game>0</4-Spy_game>
-	<5-Market>0</5-Market>
-	<6-Push_Game>0</6-Push_Game>
-	<7-Charades>0</7-Charades>
-	<8-Drain_Test>0</8-Drain_Test>
-	<9-ping_pong>0</9-ping_pong>
-	<10-Design>0</10-Design>
-	<11-idle>0</11-idle>
+	<1-GetThrough>0</1-GetThrough>
+	<2-EasyMaze>0</2-EasyMaze>
+	<3-Maze>0</3-Maze>
+	<4-Gravity>0</4-Gravity>
+	<5-SpyGame>0</5-SpyGame>
+	<6-Market>0</6-Market>
+	<7-PushGame>0</7-PushGame>
+	<8-Charades>0</8-Charades>
+	<9-DrainTest>0</9-DrainTest>
+	<10-PingPong>0</10-PingPong>
+	<11-Design>0</11-Design>
+	<12-Idle>0</12-Idle>
 </scenes>

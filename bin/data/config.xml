@@ -1,6 +1,6 @@
 <config>
     <startValue>50.0</startValue>
-    <size>50.</size>
+    <size>40.</size>
     
 	<PORT>5000</PORT>
 	<NUM_TABLES>12</NUM_TABLES>

@@ -11,6 +11,7 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
+        borders.load("img/02_borders.png");
     };
     bool isDone(){
         bool isInside=true;
@@ -56,7 +57,7 @@ public:
     void draw(){
         
         ofSetColor(255);
-        svg.draw();
+        borders.draw(0,0);
         
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
@@ -112,7 +113,7 @@ public:
     void reset(){
         polys.clear();
     };
-    
+    ofImage borders;
     commonObjects * co;
     ofxSVG svg;
     vector<ofPolyline> polys;

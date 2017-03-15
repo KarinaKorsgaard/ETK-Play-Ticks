@@ -161,6 +161,7 @@
 		21A9BC861E72C76B005F90E3 /* pingPong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pingPong.h; sourceTree = "<group>"; };
 		21A9BC8E1E7694CE005F90E3 /* Idle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Idle.h; sourceTree = "<group>"; };
 		21A9BC921E7828F8005F90E3 /* push_game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = push_game.h; sourceTree = "<group>"; };
+		21A9BC951E796C70005F90E3 /* easyMaze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = easyMaze.h; sourceTree = "<group>"; };
 		21AE24D61E6DF68700150433 /* s03.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s03.h; sourceTree = "<group>"; };
 		21AE24DA1E6EBE1900150433 /* ofxBiquadFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBiquadFilter.cpp; sourceTree = "<group>"; };
 		21AE24DB1E6EBE1900150433 /* ofxBiquadFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBiquadFilter.h; sourceTree = "<group>"; };
@@ -497,6 +498,7 @@
 		21E6CA741E6DB38300E0C55D /* scenes */ = {
 			isa = PBXGroup;
 			children = (
+				21A9BC951E796C70005F90E3 /* easyMaze.h */,
 				21A9BC921E7828F8005F90E3 /* push_game.h */,
 				21A9BC8E1E7694CE005F90E3 /* Idle.h */,
 				21AE24E31E6EDDE000150433 /* drainTest.h */,

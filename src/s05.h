@@ -58,7 +58,7 @@ public:
 //                    unlock[i]=true;
                 
 //                if(unlock[i])
-                    buttons->at(i).updateWithGravity(co->jump, co->x_jump);
+                    buttons->at(i).updateWithGravity(co->jump, co->x_jump, co->thresY_gravity);
             }
         }
     }

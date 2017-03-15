@@ -21,7 +21,7 @@ public:
             buttons->at(i).update(co->attraction);
             
             if(buttons->at(i).isColliding() && !buttons->at(i).isDead()){
-                buttons->at(i).value -= co->spyDrainer;
+                buttons->at(i).addValue(-co->spyDrainer);
             }
         }
         
@@ -50,13 +50,13 @@ public:
     void begin(){
         orginalValue.clear();
         for(int i = 0;i<buttons->size();i++){
-            orginalValue.push_back(buttons->at(i).value);
+            orginalValue.push_back(buttons->at(i).getValue());
         }
     }
     
     void reset(){
         for(int i = 0;i<buttons->size();i++){
-            buttons->at(i).value = orginalValue[i];
+            buttons->at(i).setValue( orginalValue[i] );
         }
     };
     

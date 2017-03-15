@@ -4,7 +4,7 @@
 void ofApp::setup(){
 
     //set common objects to point at fonts and button map
-    
+    syphon.setName("tick games");
     //load fonts
     font_x_small.load("fonts/GT.ttf", 20);
     
@@ -48,7 +48,7 @@ void ofApp::setup(){
     int tableIndx = 0;
     
     for(int i =0; i < NUM_TABLES; i++){
-        int teamNum = (i+1)>NUM_TABLES/2 ? 1:0;
+        int teamNum = i%2;
         
         tableIndx = i;
         if(i+1>NUM_TABLES/2) tableIndx-= NUM_TABLES/2;
@@ -91,16 +91,19 @@ void ofApp::setup(){
     ofEnableAntiAliasing();
     
     scenes.setName("scenes");
-        
-    for(int i = 0; i<12;i++){
+
+    for(int i = 0; i<13;i++){
         string name = cc.getLine("sceneNames.txt", i);
         if(name.length()>0){
             ofParameter<bool>p;
             p.set(name,false);
             scenes.add(p);
             b_scenes.push_back(p);
+            co.sMap[ofSplitString(name, "-")[1]]=i;
+            cout <<" map  "+ ofSplitString(name, "-")[1] << endl;
         }
     }
+    
     p_b_scenes.resize(b_scenes.size());
     
     physics.setName("physics");
@@ -121,6 +124,9 @@ void ofApp::setup(){
     gravity.setName("gravity game");
     gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
     gravity.add(co.x_jump.set("attraction to x",0.001,0,0.002));
+    gravity.add(co.thresY_gravity.set("dy jump threshold",0.001,0,0.1));
+    
+    
     
     spyGame.setName("spy game");
     spyGame.add(co.spyDrainer.set("drain on collide",0.2,0.,2));
@@ -129,7 +135,9 @@ void ofApp::setup(){
     market.add(co.marketDone1.set("calculate market 1",false));
     market.add(co.marketDone2.set("calculate market 2",false));
     
-//    finale.setName("Final Battle");
+    push.setName("PushGame");
+    push.add(co.blockForce.set("repel force",0.2,0.,20));
+    
 //    finale.add(co.startFinale.set("begin",false));
 //    finale.add(co.deadTimeFinale.set("push time",0.1,0.,2));
 //    finale.add(finalePushDrain.set("push drain",0.01,0.,0.1));
@@ -151,6 +159,7 @@ void ofApp::setup(){
     gui.add(physics);
     gui.add(gravity);
     gui.add(spyGame);
+    gui.add(push);
     gui.add(idle);
     gui.add(gameMechs);
     
@@ -203,14 +212,16 @@ void ofApp::update(){
     while (receiver.hasWaitingMessages()) {
         ofxOscMessage m;
         receiver.getNextMessage(m);
-
+        if(co.debug)cout << m.getAddress() << endl;
         for (int i = 0 ; i<alive.size(); i++) {
             if(!receivingTables[i])if(m.getAddress() == alive[i])receivingTables[i]=true;
         }
         
         if(!co.lock){
             int uT=2;
-            if(co.sceneNumber == 6)uT = 1;
+            
+            if(co.sceneNumber == co.sMap["PushGame"])uT = 1;
+            
             for(int t = 0; t < uT ; t++){
                 for(int i = 0; i < teams[t].buttons.size(); i++){
                     
@@ -246,10 +257,10 @@ void ofApp::update(){
         }
     }
     //if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
-    if(co.sceneNumber != 6){
+    if(co.sceneNumber != co.sMap["PushGame"]){
         if(!co.refill1){
             teams[0].update();
-            if(co.sceneNumber == 4){
+            if(co.sceneNumber == co.sMap["SpyGame"]){
                 if(teams[0].spy04.areWeDone() && co.logReport){
                     co.log("the spy outsmarted team 0");
                 }
@@ -257,17 +268,17 @@ void ofApp::update(){
         }
         if(!co.refill2){
             teams[1].update();
-            if(co.sceneNumber == 4){
+            if(co.sceneNumber == co.sMap["SpyGame"]){
                 if(teams[1].spy04.areWeDone() && co.logReport){
                     co.log("the spy outsmarted team 1");
                 }
             }
         }
     }
-    if(co.sceneNumber == 9 && !co.refill2 && !co.refill1){
+    if(co.sceneNumber == co.sMap["PingPong"] && !co.refill2 && !co.refill1){
         pingPong.update();
     }
-    if(co.sceneNumber == 6 && !co.refill2 && !co.refill1){
+    if(co.sceneNumber == co.sMap["PushGame"] && !co.refill2 && !co.refill1){
         pushGame.update();
     }
     
@@ -287,6 +298,8 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    
+
     fbo.begin();
     
     ofClear(0);
@@ -295,7 +308,7 @@ void ofApp::draw(){
     ofSetColor(255, 220, 220);
     ofDrawRectangle(1920,0,1920,1080);
 
-    if(co.sceneNumber!=9 || co.sceneNumber!=6 ){
+    if(co.sceneNumber!= co.sMap["PingPong"] || co.sceneNumber!=co.sMap["PushGame"] ){
         if(co.refill1){
             refill(0,easeRefill1);
             
@@ -320,10 +333,10 @@ void ofApp::draw(){
         }
         
     }
-    if(co.sceneNumber==9)
+    if(co.sceneNumber==co.sMap["PingPong"])
         pingPong.draw();
     
-    if (co.sceneNumber==6)
+    if (co.sceneNumber==co.sMap["PushGame"])
         pushGame.draw();
     
     
@@ -347,8 +360,8 @@ void ofApp::handleSceneChange(){
         receivingTables[i]=false;
     }
     
-    if(co.sceneNumber == 9)pingPong.begin();
-    if(p_sceneNumber  == 9) pingPong.reset();
+    if(co.sceneNumber == co.sMap["PingPong"])pingPong.begin();
+    if(p_sceneNumber  == co.sMap["PingPong"]) pingPong.reset();
 
     
     //if(key-'0'<10){
@@ -361,7 +374,7 @@ void ofApp::handleSceneChange(){
     // spy fuckups....
     
     if(teams[0].spy04.spyId!=-1 && teams[1].spy04.spyId!=-1){
-        if(co.sceneNumber == 4){
+        if(co.sceneNumber == co.sMap["SpyGame"]){
             if(teams[0].gravity03.theWinner!=-1)teams[0].spy04.spyId = teams[0].gravity03.theWinner;
             if(teams[1].gravity03.theWinner!=-1)teams[1].spy04.spyId = teams[1].gravity03.theWinner;
             
@@ -369,8 +382,8 @@ void ofApp::handleSceneChange(){
             Button b = teams[1].buttons[teams[1].spy04.spyId]; // 8
             
             if(a.teamNumber == 0 && b.teamNumber == 1){
-                if(a.isDead())a.value+=10;
-                if(b.isDead())b.value+=10;
+                if(a.isDead())a.addValue(20);
+                if(b.isDead())b.addValue(20);
                 
                 teams[0].buttons[teams[0].spy04.spyId] = b;
                 teams[1].buttons[teams[1].spy04.spyId] = a;
@@ -383,7 +396,7 @@ void ofApp::handleSceneChange(){
                 
             }
         }
-        if(p_sceneNumber == 4){
+        if(p_sceneNumber == co.sMap["SpyGame"]){
             
             Button a = teams[0].buttons[teams[0].spy04.spyId];
             Button b = teams[1].buttons[teams[1].spy04.spyId];
@@ -401,7 +414,7 @@ void ofApp::handleSceneChange(){
         }
     }
     
-    if(co.sceneNumber == 6 ){
+    if(co.sceneNumber == co.sMap["PushGame"] ){
         
         teamSize=teams[1].buttons.size();
         
@@ -420,7 +433,7 @@ void ofApp::handleSceneChange(){
                 b.colors = old->colors;
                 
                 b.radius = old->radius;
-                b.value = old->value;
+                b.setValue(old->getValue());
                 b.isPlaying = old->isPlaying;
                 b.on = old->on;
                 b.size_lim = old->size_lim;
@@ -444,7 +457,7 @@ void ofApp::handleSceneChange(){
         }
     }
     
-    if( (p_sceneNumber== 6 && teamSize!=-1) ){
+    if( (p_sceneNumber== co.sMap["PushGame"] && teamSize!=-1) ){
         cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
         pushGame.reset();
         
@@ -459,7 +472,7 @@ void ofApp::handleSceneChange(){
                 teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
                 
                 
-                teams[1].buttons[i].value = teams[0].buttons[i+teamSize].value; // update value
+                teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value
                 teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
                 teams[0].buttons.pop_back();
                 
@@ -488,12 +501,12 @@ void ofApp::refill(int team, float timef){
             float oldValue = b->beforeRefillValue;
             
             float newValue = oldValue + co.refillCoef;
-            b->value=CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue);
+            b->setValue(CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue));
            // b->updateRadius();
             
             
             ofPushMatrix();
-            ofTranslate(b->getGridPos( b->table - (NUM_TABLES/2)*team , b->ID));
+            ofTranslate(b->getGridPos( b->table - b->table%2*team , b->ID));
             ofTranslate(1920 * team,0);
             ofTranslate(800,0);
             b->draw(false, true, true);
@@ -529,28 +542,28 @@ void ofApp::keyPressed(int key){
     
 }
 void ofApp::drawScores(){
-    float a = teams[0].getDistVal() * time_energy; // this goes down.
-    float b = teams[1].getDistVal() * time_energy;
-    
-    float a_time =- teams[0].time * (1.f-time_energy); // this goes up.
-    float b_time =- teams[1].time * (1.f-time_energy);
-    
-    float a_tot = a+a_time;
-    float b_tot = b+b_time;
-    
-    float grandTot = a_tot+b_tot;
-    
-    ofSetColor(100, 100, 255);
-    float a_w = ofMap(a_tot, 0, grandTot, 0, 1920*2);
-    ofDrawRectangle(0, 10, a_w, 20);
-    ofSetColor(255, 100, 100);
-    float b_w = ofMap(b_tot, 0, grandTot, 0, 1920*2);
-    ofDrawRectangle(a_w, 10, b_w, 20);
-    
-    
-    float max = MAX(a+a_time,b+b_time);
-    
-    
+//    float a = teams[0].getDistVal() * time_energy; // this goes down.
+//    float b = teams[1].getDistVal() * time_energy;
+//    
+//    float a_time =- teams[0].time * (1.f-time_energy); // this goes up.
+//    float b_time =- teams[1].time * (1.f-time_energy);
+//    
+//    float a_tot = a+a_time;
+//    float b_tot = b+b_time;
+//    
+//    float grandTot = a_tot+b_tot;
+//    
+//    ofSetColor(100, 100, 255);
+//    float a_w = ofMap(a_tot, 0, grandTot, 0, 1920*2);
+//    ofDrawRectangle(0, 10, a_w, 20);
+//    ofSetColor(255, 100, 100);
+//    float b_w = ofMap(b_tot, 0, grandTot, 0, 1920*2);
+//    ofDrawRectangle(a_w, 10, b_w, 20);
+//    
+//    
+//    float max = MAX(a+a_time,b+b_time);
+//    
+//    
 
 }
 //--------------------------------------------------------------

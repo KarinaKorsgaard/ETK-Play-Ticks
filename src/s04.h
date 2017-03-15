@@ -18,7 +18,7 @@ public:
     };
     bool isDone(){
         
-        if(buttons->at(spyId).value==0.0 || areWeDone())return true;
+        if(buttons->at(spyId).getValue()==0.0 || areWeDone())return true;
         else return false;
     };
     
@@ -26,13 +26,13 @@ public:
         float val = 0.;
         int team ;
         for(int i = 0; i<buttons->size();i++){
-            if(i!=spyId)val += buttons->at(i).value;
+            if(i!=spyId)val += buttons->at(i).getValue();
         }
         if(val == 0.0 && !haveLogged){
             haveLogged = true;
             string s = "spy from team "+ ofToString( buttons->at(spyId).teamNumber )+" beat the other team at"+ofGetTimestampString(co->timeStamp);
             co->log(s);
-            buttons->at(spyId).value*=2;
+            buttons->at(spyId).multValue(2);
         }
         return val==0.0;
     }
@@ -42,7 +42,7 @@ public:
             for(int i=0; i<buttons->size(); i++) {
             
                 if(buttons->at(i).isColliding() && !buttons->at(i).isDead()){
-                    if(!isDone())buttons->at(i).value-=co->spyDrainer;
+                    if(!isDone())buttons->at(i).addValue(-co->spyDrainer);
                 }
                 
                 buttons->at(i).update(co->attraction);

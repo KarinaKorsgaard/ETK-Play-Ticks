@@ -9,8 +9,9 @@
 		<gravity>28</gravity>
 	</physics>
 	<gravity_game>
-		<jumpiness_for_gravity>10</jumpiness_for_gravity>
-	<attraction_to_x>0</attraction_to_x>
+		<jumpiness_for_gravity>5.66327</jumpiness_for_gravity>
+	<attraction_to_x>0.000255102</attraction_to_x>
+	<dy_jump_threshold>0.001</dy_jump_threshold>
 	</gravity_game>
 	<spy_game>
 		<drain_on_collide>0.2</drain_on_collide>
@@ -36,4 +37,8 @@
 	</market_control>
 <group/>
 <play_sound>0</play_sound>
+<charades>
+		<a_is_done>0</a_is_done>
+		<b_is_done>0</b_is_done>
+	</charades>
 </group>

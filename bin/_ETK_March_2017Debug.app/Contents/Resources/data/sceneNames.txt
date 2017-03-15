@@ -1,12 +1,13 @@
 0-Area
-1-Get Through
-2-Maze
-3-Drain Test
-4-Spy game
-5-Gravity
+1-GetThrough
+2-EasyMaze
+3-Maze
+4-Gravity
+5-SpyGame
 6-Market
-7-Battle
-8-ping pong
-9-Design
-10-idle
-11-Push Game
+7-PushGame
+8-Charades
+9-DrainTest
+10-PingPong
+11-Design
+12-Idle

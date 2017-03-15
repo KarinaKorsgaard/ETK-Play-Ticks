@@ -63,9 +63,9 @@ class ofApp : public ofBaseApp{
     ofParameterGroup scenes;
     vector< ofParameter<bool> >b_scenes;
     vector<bool>p_b_scenes;
-    ofParameter<float>time_energy;
-    ofParameter<float>finalePushDrain;
-    ofParameterGroup finale;
+//    ofParameter<float>time_energy;
+//    ofParameter<float>finalePushDrain;
+    ofParameterGroup push;
     ofParameterGroup idle;
 
     vector<string>alive;

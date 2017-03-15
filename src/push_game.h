@@ -20,6 +20,7 @@ public:
     commonObjects * co;
     vector<ofPolyline>polys;
     ofxSVG svg;
+    float deadZone;
     
     void setup(commonObjects*_co ){
         co = _co;
@@ -28,7 +29,7 @@ public:
         world.setGravity(0, 1);
         world.createBounds(ofRectangle(0,0,1920*2, 1080));
         svg.load("svg/push_wall.svg");
-
+        deadZone = 150;
     };
     
     bool isDone(){
@@ -43,34 +44,38 @@ public:
     
     void update(){
     
-        beginTime += ofGetLastFrameTime();
+        if(beginTime<.2)beginTime += ofGetLastFrameTime();
         
         for(int i = 0 ; i< buttons->size();i++){
 
-            if(beginTime>10) buttons->at(i).update(co->attraction, true);
+            if(beginTime>.1) buttons->at(i).update(co->attraction, deadZone+60);
             
-            if(i<buttons->size()/2)
-                buttons->at(i).lastPos = ofVec2f(150,ofRandom(80,1000));
-            else
-                buttons->at(i).lastPos = ofVec2f(1920*2 - 150 ,ofRandom(80,1000));
+            if(i<buttons->size()/2 && buttons->at(i).getPos().x<deadZone-20)buttons->at(i).setValue(0);
+            else if(buttons->at(i).getPos().x+20 > 1920*2-deadZone)buttons->at(i).setValue(0);
             
-
-            if(i<buttons->size()/2 && buttons->at(i).getPos().x<150)buttons->at(i).value = 0;
-            else if(buttons->at(i).getPos().x > 1920*2-150)buttons->at(i).value = 0;
+            buttons->at(i).drain(co->drainCoefficient1);
+        }
+       // cout << rects[0]->getPosition() << endl;
+        for(int i = 0; i<rects.size();i++){
+            
+            if(rects[i]->getPosition().x > 1920 + (960 - deadZone) )
+                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
+            if(rects[i]->getPosition().x < 960+deadZone )
+                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
         }
 
         world.update();
     }
     
     void draw(){
-        ofSetColor(100);
-        ofDrawRectangle(0,0,150,1080);
-        ofDrawRectangle(1920*2 - 150,0,150,1080);
+        ofSetColor(10,10,80);
+        ofDrawRectangle(0,0,deadZone,1080);
+        ofDrawRectangle(1920*2 - deadZone,0,deadZone,1080);
         
-        ofSetColor(255);
+        ofSetColor(80,80,120);
         for(int i = 0 ; i< rects.size();i++)rects[i]->draw();
         
-        svg.draw();
+        //svg.draw();
         
         for(int i = 0 ; i< buttons->size();i++){
             if(co->debug)buttons->at(i).drawDebug();
@@ -89,15 +94,10 @@ public:
             buttons->at(i).box2Dcircle->destroy();
             
             buttons->at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-            //virtual void setPhysics(float density, float bounce, float friction);
-            buttons->at(i).box2Dcircle.get()->setPhysics(buttons->at(i).value * 0.01, 0.0, 0.1);
+            buttons->at(i).box2Dcircle.get()->setPhysics(buttons->at(i).getValue() * 0.01, 0.0, 0.1);
             buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), 0, 0, 0);
             
-            
-//            buttons->at(i).box2Dcircle.get()->setData(new ButtonData());
-//            ButtonData * sd = (ButtonData*)buttons->at(i).box2Dcircle.get()->getData();
-//            sd->buttonID = i;
-//            sd->bHit   = false;
+
         }
         
 
