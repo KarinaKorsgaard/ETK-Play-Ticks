@@ -51,7 +51,7 @@ public:
             //if(beginTime>.1)
             b->update(b->getValue() * b->getValue(), ofRectangle(deadZone,deadZone,1920-deadZone*2,1080-deadZone*2), false);
             
-            if(b->getPos().x<deadZone            )b->setValue(0);
+            if(b->getPos().x < deadZone           )b->setValue(0);
             else if(b->getPos().x > 1920-deadZone)b->setValue(0);
             
             if(b->getPos().y<deadZone            )b->setValue(0);
@@ -119,7 +119,7 @@ public:
             buttons->at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
             buttons->at(i).box2Dcircle.get()->setPhysics(3., 0.0, 400.);
             buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), ofRandom(300,1920-300), ofRandom(300,1920-300), buttons->at(i).getValue());
-            
+            buttons->at(i).setPosition(1920/2,1080/2);
         }
         
         
@@ -159,26 +159,26 @@ public:
         
     };
     
-    void createScene(vector<ofPolyline>polys){
-        
-//        if(polyShapes.size()==0){
-//            
-//            for(int i = 0 ;i <polys.size();i++){
-//                ofRectangle r = polys[i].getBoundingBox();
-//                if(polys[i].getVertices().size()>3 && (r.width<1900*2 && r.height < 1070)){
-//                    shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
-//                    
-//                    poly->addVertices(polys[i].getVertices());
-//                    poly->setPhysics(0.0, 0.0, 0.0);
-//                    poly->triangulatePoly();
-//                    
-//                    poly->create(world.getWorld());
-//                    polyShapes.push_back(poly);
-//                }
-//            }
-//            
-//        }
-    }
+//    void createScene(vector<ofPolyline>polys){
+//        
+////        if(polyShapes.size()==0){
+////            
+////            for(int i = 0 ;i <polys.size();i++){
+////                ofRectangle r = polys[i].getBoundingBox();
+////                if(polys[i].getVertices().size()>3 && (r.width<1900*2 && r.height < 1070)){
+////                    shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
+////                    
+////                    poly->addVertices(polys[i].getVertices());
+////                    poly->setPhysics(0.0, 0.0, 0.0);
+////                    poly->triangulatePoly();
+////                    
+////                    poly->create(world.getWorld());
+////                    polyShapes.push_back(poly);
+////                }
+////            }
+////            
+////        }
+//    }
     
     
     float beginTime;

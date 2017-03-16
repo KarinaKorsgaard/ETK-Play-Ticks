@@ -1,0 +1,16 @@
+
+scene 0 began at: 12:16
+team 1 collected value: 109.142
+team 2 collected value: 0
+team 1 finished at 12:16:04
+team 0 finished at 12:19:12
+
+scene 6 began at: 12:19
+team 1 collected value: 198.467
+team 2 collected value: 0
+team 0 finished at 12:19:47
+
+scene 0 began at: 12:21
+team 1 collected value: 468.186
+team 2 collected value: 0
+team 1 finished at 12:21:54

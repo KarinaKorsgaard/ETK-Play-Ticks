@@ -21,7 +21,7 @@ public:
         maze = polys[0];
         
         start = 300;
-        end = 1920-300;
+        end = 1920-50;
         
         filter.setFc(0.05f);
         
@@ -111,7 +111,7 @@ public:
         c.setSaturation(122);
         ofSetColor(c);
         ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
-        ofPopMatrix();
+        
         
         //eyes
         //if(ofRandom(1000)>0.1){
@@ -120,7 +120,7 @@ public:
         ofDrawCircle(-rad*0.3,eye ,10);
         //}
         
-        
+        ofPopMatrix();
         
         
     };

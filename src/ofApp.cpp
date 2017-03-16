@@ -110,7 +110,7 @@ void ofApp::setup(){
     physics.setName("physics");
     physics.add(co.attraction.set("attraction",1,0,200));
     physics.add(co.fc.set("low pass position",0.05,0.01,0.4));
-    physics.add(co.gravity.set("gravity",1,0,50));
+    
     
     gameMechs.setName("game controls");
     //gameMechs.add(co.lessIsMore.set("less is more", false));
@@ -119,10 +119,11 @@ void ofApp::setup(){
     gameMechs.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
     gameMechs.add(co.refillTime.set("refill animation time",5,1,30));
     
-    gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,10));
-    gameMechs.add(co.drainCoefficient2.set("drain team 2",1,0,10));
+    gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,5));
+    gameMechs.add(co.drainCoefficient2.set("drain team 2",1,0,5));
 
     gravity.setName("gravity game");
+    gravity.add(co.gravity.set("gravity",1,0,50));
     gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
     gravity.add(co.x_jump.set("attraction to x",0.001,0,.01));
     gravity.add(co.thresY_gravity.set("dy jump threshold",0.001,0,0.1));
@@ -133,8 +134,8 @@ void ofApp::setup(){
     spyGame.add(co.spyDrainer.set("drain on collide",0.2,0.,2));
     
     market.setName("market control");
-    market.add(co.marketDone1.set("calculate market 1",false));
-    market.add(co.marketDone2.set("calculate market 2",false));
+    market.add(co.marketDone1.set("finish market 1",false));
+    market.add(co.marketDone2.set("finish market 2",false));
     
     push.setName("PushGame");
     push.add(co.blockForce.set("repel force",0.2,0.,20));
@@ -158,11 +159,12 @@ void ofApp::setup(){
     
   //  gui.add(time_energy.set("time energy balance",0.5,0,1));
     gui.add(physics);
+    gui.add(gameMechs);
     gui.add(gravity);
     gui.add(spyGame);
     gui.add(push);
     gui.add(idle);
-    gui.add(gameMechs);
+    
     
     gui.add(market);
     
@@ -204,6 +206,7 @@ void ofApp::update(){
                 p_b_scenes[i]=false;
             }
         }
+        //if(co.sceneNumber == co.sMap["GoOffEdge"]) Catastrophy? 
         handleSceneChange();
     }
     
