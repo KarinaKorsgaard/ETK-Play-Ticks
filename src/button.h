@@ -225,10 +225,9 @@ public:
 
                 if(!isJumping && dif_y>0)box2Dcircle->addForce(ofVec2f(0,-1), jump);
                 
-                    
-                if(abs(dif_x)>0.1){
-                    box2Dcircle->addForce(ofVec2f( dif_x*x_jump , 0) , abs(dif_x)*x_jump);
-                }
+                box2Dcircle->setVelocity(0,box2Dcircle->getVelocity().y);
+                box2Dcircle->addForce(ofVec2f( dif_x*x_jump , 0) , abs(dif_x)*x_jump);
+                
                 
             }
             if(!on) {
