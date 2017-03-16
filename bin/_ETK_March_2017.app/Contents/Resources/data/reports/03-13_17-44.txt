@@ -1,0 +1,4 @@
+
+scene 7 began at: 17:44
+team 1 collected value: 1763.85
+team 2 collected value: 1764.9

@@ -28,13 +28,15 @@ public:
     void draw(){
         
         for(int i = 0 ; i<buttons->size();i++) {
+            
             Button b = buttons->at(i);
-            ofPushMatrix();
-            ofTranslate(b.getGridPos(   b.table - (b.table%2) * b.teamNumber , b.ID )   );
-            ofTranslate(800,0);
-            b.draw(false, false, true);
-            ofPopMatrix();
-
+            if(b.isPlaying){
+                ofPushMatrix();
+                ofTranslate(b.getGridPos(   b.table - (b.table%2) * b.teamNumber , b.ID )   );
+                ofTranslate(800,0);
+                b.draw(false, false, true);
+                ofPopMatrix();
+            }
         }
 
     };

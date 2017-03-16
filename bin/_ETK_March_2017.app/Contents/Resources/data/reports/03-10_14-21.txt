@@ -1,0 +1,15 @@
+
+scene 4 began at: 14:21
+team 1 collected value: 0
+team 2 collected value: 0
+
+scene 3 began at: 14:21
+team 1 collected value: 0
+team 2 collected value: 0
+team 0 finished at 14:21:19
+team 1 finished at 14:21:19
+
+scene 4 began at: 14:21
+team 1 collected value: 0
+team 2 collected value: 0
+team 1 finished at 14:21:26

@@ -1,0 +1,24 @@
+
+scene 7 began at: 15:37
+team 1 collected value: 1748.91
+team 2 collected value: 1746.55
+
+scene 6 began at: 15:38
+team 1 collected value: 328.313
+team 2 collected value: 1746.55
+
+scene 7 began at: 15:38
+team 1 collected value: 1912.62
+team 2 collected value: 2015.69
+
+scene 0 began at: 15:39
+team 1 collected value: 3714.27
+team 2 collected value: 1909.01
+
+scene 5 began at: 15:39
+team 1 collected value: 1805.25
+team 2 collected value: 1909.01
+
+scene 7 began at: 15:40
+team 1 collected value: 1805.25
+team 2 collected value: 1909.01

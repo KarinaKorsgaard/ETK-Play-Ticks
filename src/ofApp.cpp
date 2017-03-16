@@ -124,8 +124,8 @@ void ofApp::setup(){
 
     gravity.setName("gravity game");
     gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
-    gravity.add(co.x_jump.set("attraction to x",0.001,0,0.003));
-    gravity.add(co.thresY_gravity.set("dy jump threshold",0.001,0,0.01));
+    gravity.add(co.x_jump.set("attraction to x",0.001,0,1.));
+    gravity.add(co.thresY_gravity.set("dy jump threshold",0.001,0,0.1));
     
     
     
