@@ -218,7 +218,7 @@ public:
                 float dif_y = dy_jump - getPosRaw().y;
                 dy_jump = getPosRaw().y;
                 
-                float dif_x = getPosRaw().x - getBiquadPos().x ;
+                float dif_x = getPosRaw().x - getPos().x ;
                 
                 if( abs(box2Dcircle->getVelocity().y) < thresY)isJumping = false;
                 else isJumping = true;
@@ -227,7 +227,7 @@ public:
                 
                     
                 if(abs(dif_x)>0.1){
-                    box2Dcircle->addForce(ofVec2f(dif_x*x_jump,0),abs(dif_x));
+                    box2Dcircle->addForce(ofVec2f( dif_x*x_jump , 0) , abs(dif_x)*x_jump);
                 }
                 
             }

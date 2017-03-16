@@ -1,2 +1,0 @@
-Design your character
-x for body, y for head and rotate to change your stomach color.

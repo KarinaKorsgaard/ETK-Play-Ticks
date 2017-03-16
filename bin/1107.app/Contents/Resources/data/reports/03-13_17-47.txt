@@ -1,6 +1,0 @@
-
-scene 8 began at: 17:47
-team 1 collected value: 1766.64
-team 2 collected value: 1764.9
-team 0 finished at 17:47:56
-team 1 finished at 17:47:56
