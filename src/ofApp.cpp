@@ -109,7 +109,7 @@ void ofApp::setup(){
     
     physics.setName("physics");
     physics.add(co.attraction.set("attraction",1,0,200));
-    physics.add(co.fc.set("low pass position",0.05,0.01,0.4));
+    physics.add(co.fc.set("fc position",0.05,0.01,0.4));
     
     
     gameMechs.setName("game controls");
@@ -117,23 +117,25 @@ void ofApp::setup(){
     gameMechs.add(co.refill1.set("refill 1", false));
     gameMechs.add(co.refill2.set("refill 2", false));
     gameMechs.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
-    gameMechs.add(co.refillTime.set("refill animation time",5,1,30));
+    gameMechs.add(co.refillTime.set("refill animation time",5,1,10));
     
     gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,5));
     gameMechs.add(co.drainCoefficient2.set("drain team 2",1,0,5));
 
     gravity.setName("gravity game");
     gravity.add(co.gravity.set("gravity",1,0,50));
-    gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
+    gravity.add(co.jump.set("jumpiness",1,0,10));
     gravity.add(co.x_jump.set("attraction to x",0.001,0,.01));
-    gravity.add(co.thresY_gravity.set("dy jump threshold",0.001,0,0.1));
-    
+    gravity.add(co.thresY_gravity.set("dy threshold",0.001,0,0.1));
+    gravity.add(co.gravityReward.set("gravityReward",50,0,100));
     
     
     spyGame.setName("spy game");
-    spyGame.add(co.spyDrainer.set("drain on collide",0.2,0.,2));
+    spyGame.add(co.spyDrainer.set("drain",0.2,0.,2));
     
     market.setName("market control");
+    
+    market.add(co.marketReward.set("reward",0.5,0.,2));
     market.add(co.marketDone1.set("finish market 1",false));
     market.add(co.marketDone2.set("finish market 2",false));
     

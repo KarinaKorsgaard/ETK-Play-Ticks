@@ -43,11 +43,12 @@ public:
     ofParameter<float>refillCoef;
     ofParameter<float>blockForce;
     ofParameter<int>gravity;
+    ofParameter<int>gravityReward;
     ofParameter<bool>lessIsMore;
     
     ofParameter<bool>marketDone1;
     ofParameter<bool>marketDone2;
-    
+    ofParameter<float>marketReward;
     ofParameter<bool>idleA;
     ofParameter<bool>idleB;
     

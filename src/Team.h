@@ -112,7 +112,7 @@ public:
             }
             if(p_sceneNum == co->sMap["Gravity"]){
                 if(gravity03.theWinner!=-1)
-                    buttons[gravity03.theWinner].addValue(50);
+                    buttons[gravity03.theWinner].addValue(co->gravityReward);
                 gravity03.reset();
                 box2d.setGravity(0,0);
             }

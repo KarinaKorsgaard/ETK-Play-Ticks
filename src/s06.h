@@ -190,7 +190,7 @@ public:
             for(int i = 0; i<baskets.size();i++){
                 for(int j=0; j<buttons->size(); j++){ // ??
                     if(baskets[i].isIn(buttons->at(j).getBiquadPos())){
-                        buttons->at(j).multValue(baskets[i].efficiency);
+                        buttons->at(j).multValue(baskets[i].efficiency*co->marketReward);
                     }
                 }
             }

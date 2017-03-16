@@ -12,7 +12,7 @@ class Pushing : public commonFunctions{
     
 public:
     
-//    vector<shared_ptr<ofxBox2dRect>> rects;
+    vector<shared_ptr<ofxBox2dRect>> rects;
 //    vector <shared_ptr<ofxBox2dPolygon> > polyShapes;
 //    
     ofxBox2d world;
@@ -26,9 +26,8 @@ public:
         co = _co;
         
         world.init();
-        world.setGravity(0, 1);
-        world.createBounds(ofRectangle(0,0,1920*2, 1080));
-//        svg.load("svg/push_wall.svg");
+        world.setGravity(0, 0);
+        world.createBounds(ofRectangle(0,0,1920, 1080));
         deadZone = 150;
     };
     
@@ -76,13 +75,18 @@ public:
         
         
 //        // cout << rects[0]->getPosition() << endl;
-//        for(int i = 0; i<rects.size();i++){
-//            
-//            if(rects[i]->getPosition().x > 1920 + (960 - deadZone) )
-//                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
-//            if(rects[i]->getPosition().x < 960+deadZone )
-//                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
-//        }
+        for(int i = 0; i<rects.size();i++){
+            
+            if(rects[i]->getPosition().x < deadZone+100 )
+                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
+            if(rects[i]->getPosition().x > 1920-(deadZone+100) )
+                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
+            
+            if(rects[i]->getPosition().y < deadZone+100 )
+                rects[i]->addForce(ofVec2f(0,10),co->blockForce);
+            if(rects[i]->getPosition().y > 1080-(deadZone+100) )
+                rects[i]->addForce(ofVec2f(0,-10),co->blockForce);
+        }
         
         world.update();
     }
@@ -95,9 +99,9 @@ public:
         ofDrawRectangle(0,0,1920,deadZone);
         ofDrawRectangle(0,1080 - deadZone,1920,deadZone);
 //        
-//        ofSetColor(80,80,120);
-//        for(int i = 0 ; i< rects.size();i++)rects[i]->draw();
-//        
+        ofSetColor(80,80,120);
+        for(int i = 0 ; i< rects.size();i++)rects[i]->draw();
+//
         //svg.draw();
         
         for(int i = 0 ; i< buttons->size();i++){
@@ -126,18 +130,18 @@ public:
 //        
 //        createScene(getPolyline(svg, true));
 //        
-//        
-//        for(int i = 0; i<6 ; i++){
-//            
-//            shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-//            r.get()->setPhysics(6., 0.1 , .1);
-//            r.get()->setup(world.getWorld(), 1920 , 94 + 168*i + 10*i  , 1920 , 165);
-//            r.get()->alive = true;
-//            //r->setMassFromShape=false;
-//            //r->setVelocity(ofVec2f(0,0));
-//            rects.push_back(r);
-//        }
-//        
+        
+        for(int i = 0; i<7 ; i++){
+            
+            shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+            r.get()->setPhysics(600., 0.1 , 100.);
+            r.get()->setup(world.getWorld(), ofRandom(1920) , ofRandom(1080) , 40 , 200);
+            r.get()->alive = true;
+            //r->setMassFromShape=false;
+            //r->setVelocity(ofVec2f(0,0));
+            rects.push_back(r);
+        }
+//
 //        for(int i = 0 ; i< buttons->size();i++){
 //            if(i<buttons->size()/2)
 //                buttons->at(i).setPosition(200,ofRandom(80,1000));
@@ -152,34 +156,34 @@ public:
 //        if(polyShapes.size()>0){
 //            polyShapes.clear();
 //        }
-//        for(int i = 0; i<6 ; i++){
-//            rects[i]->destroy();
-//        }
-//        rects.clear();
+        for(int i = 0; i<6 ; i++){
+            rects[i]->destroy();
+        }
+        rects.clear();
         
     };
-    
+//    
 //    void createScene(vector<ofPolyline>polys){
 //        
-////        if(polyShapes.size()==0){
-////            
-////            for(int i = 0 ;i <polys.size();i++){
-////                ofRectangle r = polys[i].getBoundingBox();
-////                if(polys[i].getVertices().size()>3 && (r.width<1900*2 && r.height < 1070)){
-////                    shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
-////                    
-////                    poly->addVertices(polys[i].getVertices());
-////                    poly->setPhysics(0.0, 0.0, 0.0);
-////                    poly->triangulatePoly();
-////                    
-////                    poly->create(world.getWorld());
-////                    polyShapes.push_back(poly);
-////                }
-////            }
-////            
-////        }
+//        if(polyShapes.size()==0){
+//            
+//            for(int i = 0 ;i <polys.size();i++){
+//                ofRectangle r = polys[i].getBoundingBox();
+//                if(polys[i].getVertices().size()>3 && (r.width<1900*2 && r.height < 1070)){
+//                    shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
+//                    
+//                    poly->addVertices(polys[i].getVertices());
+//                    poly->setPhysics(0.0, 0.0, 0.0);
+//                    poly->triangulatePoly();
+//                    
+//                    poly->create(world.getWorld());
+//                    polyShapes.push_back(poly);
+//                }
+//            }
+//            
+//        }
 //    }
-    
+//    
     
     float beginTime;
 };

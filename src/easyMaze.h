@@ -92,32 +92,31 @@ public:
         ofTranslate(filter.value());
         
         ofColor c;
-        if(go)c.set(20,200,20);
-        else c.set(200,20,20);
+        if(go)c.set(120,240,180);
+        else c.set(255,120,120);
         
         float rad = 45.f;
         ofSetColor(c);
         // body
-        c.setSaturation(180);
+        c.setBrightness(100);
         ofDrawCircle(0,0,rad);
         
         //head
-        c.setSaturation(230);
+        c.setBrightness(180);
         ofSetColor(c);
         float eye = -rad + rad*0.45/2.;
         ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
     
         //stomach
-        c.setSaturation(122);
-        ofSetColor(c);
+        ofSetColor(255,200);
         ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
         
         
         //eyes
         //if(ofRandom(1000)>0.1){
         ofSetColor(0);
-        ofDrawCircle(rad*0.3 ,eye ,10);
-        ofDrawCircle(-rad*0.3,eye ,10);
+        ofDrawCircle(rad*0.3 ,eye ,5);
+        ofDrawCircle(-rad*0.3,eye ,5);
         //}
         
         ofPopMatrix();

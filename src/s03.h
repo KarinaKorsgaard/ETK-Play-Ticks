@@ -85,6 +85,8 @@ public:
         //ofRotateZ(average->getRotation());
         //average->draw();
         int rad = average->getRadius();
+        
+        //body
         ofSetColor(100);
         ofDrawCircle(0,0,rad);
         
@@ -96,8 +98,8 @@ public:
         //eyes
         if(ofRandom(1000)>0.1){
             ofSetColor(0);
-            ofDrawCircle(rad*0.3 ,eye, 10);
-            ofDrawCircle(-rad*0.3,eye ,10);
+            ofDrawCircle(rad*0.3 ,eye, 7);
+            ofDrawCircle(-rad*0.3,eye ,7);
         }
         //stomach
         ofSetColor(255);
@@ -113,10 +115,11 @@ public:
         average = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
         average.get()->setPhysics(3.0, 0.0, 400.0);
-        average.get()->setup(world->getWorld(), 1920-120, 1080-120, 60);
-        
+        average.get()->setup(world->getWorld(), 1920-120, 1080-120, 10);
+        average->setRadius(45.f);
         for(int i = 0; i<buttons->size();i++){
-            buttons->at(i).setPosition(1900, 1040);
+            if(buttons->at(i).getPosRaw().y>0)buttons->at(i).setPosition(buttons->at(i).getPosRaw().y, 1040);
+            else buttons->at(i).setPosition(1920-100,ofRandom(100,1920-100));
         }
     };
     void reset(){
