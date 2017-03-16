@@ -7,9 +7,10 @@
 	<5-SpyGame>0</5-SpyGame>
 	<6-Market>0</6-Market>
 	<7-PushGame>0</7-PushGame>
-	<8-Charades>0</8-Charades>
-	<9-DrainTest>0</9-DrainTest>
-	<10-PingPong>0</10-PingPong>
-	<11-Design>0</11-Design>
-	<12-Idle>0</12-Idle>
+	<8-GoOffEdge>0</8-GoOffEdge>
+	<9-Charades>0</9-Charades>
+	<10-DrainTest>0</10-DrainTest>
+	<11-PingPong>0</11-PingPong>
+	<12-Design>0</12-Design>
+	<13-Idle>0</13-Idle>
 </scenes>

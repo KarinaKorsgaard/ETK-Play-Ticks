@@ -13,6 +13,7 @@
 #include "ButtonData.h"
 #include "pingPong.h"
 #include "push_game.h"
+#include "pushing.h"
 
 class ofApp : public ofBaseApp{
 
@@ -99,6 +100,7 @@ class ofApp : public ofBaseApp{
     ofxBox2d world;
     PingPong pingPong;
     PushGame pushGame;
+    Pushing push2;
    // vector<Button>giantButtonMap;
 
 };

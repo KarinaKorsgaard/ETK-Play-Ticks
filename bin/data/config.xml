@@ -8,7 +8,7 @@
     <num_teams>2</num_teams>
     
     
-    <size_break_point>50.</size_break_point>
-    <size_limit>100.</size_limit>
+    <size_break_point>20.</size_break_point>
+    <size_limit>60.</size_limit>
 <config/>
 </config>

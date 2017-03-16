@@ -47,13 +47,28 @@ public:
         if(beginTime<.2)beginTime += ofGetLastFrameTime();
         
         for(int i = 0 ; i< buttons->size();i++){
-
-            if(beginTime>.1) buttons->at(i).update(co->attraction, deadZone+60);
+            Button * b = &buttons->at(i);
+            if(beginTime>.1){
+                
+                if(i<buttons->size()/2 )b->update(co->attraction, ofRectangle(deadZone+60,0,1980-deadZone,1080), false);
+                else b->update(co->attraction, ofRectangle(1980,0,1980-deadZone,1080), false);
+            }
+            if(i<buttons->size()/2 && b->getPos().x<deadZone-20)b->setValue(0);
+            else if(b->getPos().x+20 > 1920*2-deadZone)b->setValue(0);
             
-            if(i<buttons->size()/2 && buttons->at(i).getPos().x<deadZone-20)buttons->at(i).setValue(0);
-            else if(buttons->at(i).getPos().x+20 > 1920*2-deadZone)buttons->at(i).setValue(0);
+            b->drain(co->drainCoefficient1);
             
-            buttons->at(i).drain(co->drainCoefficient1);
+            if(b->on && b->radius > 0){
+                b->radius = (b->size_lim - (b->size_break/b->getValue())) / (1 + (b->size_break/b->getValue()));
+                if(b->box2Dcircle->getRadius() < b->radius)b->box2Dcircle->setRadius(b->box2Dcircle->getRadius()+1);
+                else b->box2Dcircle->setRadius(b->radius);
+                b->box2Dcircle->alive = true;
+            }
+            if (b->getValue() <= 0 || !b->on || b->isDead()) {
+                b->box2Dcircle->setRadius(0);
+                b->box2Dcircle->alive = false;
+            }
+            
         }
        // cout << rects[0]->getPosition() << endl;
         for(int i = 0; i<rects.size();i++){
@@ -78,7 +93,11 @@ public:
         //svg.draw();
         
         for(int i = 0 ; i< buttons->size();i++){
-            if(co->debug)buttons->at(i).drawDebug();
+            if(co->debug){
+            
+                if(i<buttons->size()/2 )buttons->at(i).drawDebug( ofRectangle(deadZone+60,0,1980-deadZone,1080));
+                else buttons->at(i).drawDebug( ofRectangle(1980,0,1980-deadZone,1080));
+            }
             else buttons->at(i).draw();
         }
         
@@ -96,7 +115,6 @@ public:
             buttons->at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
             buttons->at(i).box2Dcircle.get()->setPhysics(buttons->at(i).getValue() * 0.01, 0.0, 0.1);
             buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), 0, 0, 0);
-            
 
         }
         

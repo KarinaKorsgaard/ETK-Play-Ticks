@@ -158,6 +158,7 @@
 		205C01CCE4351EE1038CED3A /* b2Rope.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = b2Rope.cpp; path = ../../../addons/ofxBox2d/libs/Box2D/Rope/b2Rope.cpp; sourceTree = SOURCE_ROOT; };
 		209BCEF79F286C9203801938 /* b2GearJoint.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = b2GearJoint.h; path = ../../../addons/ofxBox2d/libs/Box2D/Dynamics/Joints/b2GearJoint.h; sourceTree = SOURCE_ROOT; };
 		20F35AFADAF0068B067E713F /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
+		219B5F601E7A70520002FD2A /* pushing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pushing.h; sourceTree = "<group>"; };
 		21A9BC861E72C76B005F90E3 /* pingPong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pingPong.h; sourceTree = "<group>"; };
 		21A9BC8E1E7694CE005F90E3 /* Idle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Idle.h; sourceTree = "<group>"; };
 		21A9BC921E7828F8005F90E3 /* push_game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = push_game.h; sourceTree = "<group>"; };
@@ -502,6 +503,7 @@
 				21A9BC921E7828F8005F90E3 /* push_game.h */,
 				21A9BC8E1E7694CE005F90E3 /* Idle.h */,
 				21AE24E31E6EDDE000150433 /* drainTest.h */,
+				219B5F601E7A70520002FD2A /* pushing.h */,
 				21E6CA5F1E6D80CF00E0C55D /* s01.h */,
 				21E6CA761E6DB3BE00E0C55D /* s02.h */,
 				21AE24D61E6DF68700150433 /* s03.h */,

@@ -85,6 +85,7 @@ void ofApp::setup(){
 
     pingPong.setup(&co,&teams[0].buttons,&teams[1].buttons);
     pushGame.setup(&co);
+    push2.setup(&co);
     
     //allocate framebuffer
     fbo.allocate(1920*2, 1080, GL_RGBA);
@@ -92,7 +93,7 @@ void ofApp::setup(){
     
     scenes.setName("scenes");
 
-    for(int i = 0; i<13;i++){
+    for(int i = 0; i<14;i++){
         string name = cc.getLine("sceneNames.txt", i);
         if(name.length()>0){
             ofParameter<bool>p;
@@ -123,8 +124,8 @@ void ofApp::setup(){
 
     gravity.setName("gravity game");
     gravity.add(co.jump.set("jumpiness for gravity",1,0,10));
-    gravity.add(co.x_jump.set("attraction to x",0.001,0,0.002));
-    gravity.add(co.thresY_gravity.set("dy jump threshold",0.001,0,0.1));
+    gravity.add(co.x_jump.set("attraction to x",0.001,0,0.003));
+    gravity.add(co.thresY_gravity.set("dy jump threshold",0.001,0,0.01));
     
     
     
@@ -220,7 +221,9 @@ void ofApp::update(){
         if(!co.lock){
             int uT=2;
             
-            if(co.sceneNumber == co.sMap["PushGame"])uT = 1;
+            if(co.sceneNumber == co.sMap["PushGame"] ||
+               co.sceneNumber == co.sMap["GoOffEdge"]
+               )uT = 1;
             
             for(int t = 0; t < uT ; t++){
                 for(int i = 0; i < teams[t].buttons.size(); i++){
@@ -257,7 +260,7 @@ void ofApp::update(){
         }
     }
     //if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
-    if(co.sceneNumber != co.sMap["PushGame"]){
+    if(co.sceneNumber != co.sMap["PushGame"] && co.sceneNumber != co.sMap["GoOffEdge"]){
         if(!co.refill1){
             teams[0].update();
             if(co.sceneNumber == co.sMap["SpyGame"]){
@@ -280,6 +283,9 @@ void ofApp::update(){
     }
     if(co.sceneNumber == co.sMap["PushGame"] && !co.refill2 && !co.refill1){
         pushGame.update();
+    }
+    if(co.sceneNumber == co.sMap["GoOffEdge"] && !co.refill2 && !co.refill1){
+        push2.update();
     }
     
     if(co.playSound){
@@ -308,7 +314,7 @@ void ofApp::draw(){
     ofSetColor(255, 220, 220);
     ofDrawRectangle(1920,0,1920,1080);
 
-    if(co.sceneNumber!= co.sMap["PingPong"] || co.sceneNumber!=co.sMap["PushGame"] ){
+    if(co.sceneNumber!= co.sMap["PingPong"] && co.sceneNumber!=co.sMap["PushGame"] && co.sceneNumber!=co.sMap["GoOffEdge"] ){
         if(co.refill1){
             refill(0,easeRefill1);
             
@@ -335,10 +341,10 @@ void ofApp::draw(){
     }
     if(co.sceneNumber==co.sMap["PingPong"])
         pingPong.draw();
-    
     if (co.sceneNumber==co.sMap["PushGame"])
         pushGame.draw();
-    
+    if (co.sceneNumber==co.sMap["GoOffEdge"])
+        push2.draw();
     
     fbo.end();
 
@@ -363,6 +369,58 @@ void ofApp::handleSceneChange(){
     if(co.sceneNumber == co.sMap["PingPong"])pingPong.begin();
     if(p_sceneNumber  == co.sMap["PingPong"]) pingPong.reset();
 
+    
+    
+    if( (p_sceneNumber == co.sMap["PushGame"] && teamSize!=-1) ){
+        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+        pushGame.reset();
+        
+        if(teams[0].buttons.size() != teamSize ){
+            for(int i = 0;i<teamSize;i++){
+                
+                
+                teams[0].buttons.at(i).box2Dcircle->destroy();
+                teams[0].buttons.at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
+                //virtual void setPhysics(float density, float bounce, float friction);
+                teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
+                teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
+                
+                
+                teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value
+                teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
+                teams[0].buttons.pop_back();
+                
+            }
+            
+        }
+        cout << "PUSH GAME 1 team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+    }
+    if( (p_sceneNumber== co.sMap["GoOffEdge"] && teamSize!=-1) ){
+        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+        push2.reset();
+        
+        if(teams[0].buttons.size() != teamSize ){
+            for(int i = 0;i<teamSize;i++){
+                
+                
+                teams[0].buttons.at(i).box2Dcircle->destroy();
+                teams[0].buttons.at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
+                //virtual void setPhysics(float density, float bounce, float friction);
+                teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
+                teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
+                
+                
+                teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value
+                teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
+                teams[0].buttons.pop_back();
+                
+            }
+            
+        }
+        cout << "PUSH GAME 2 team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+    }
+
+    
     
     //if(key-'0'<10){
      //   co.sceneNumber = key-'0';
@@ -456,36 +514,52 @@ void ofApp::handleSceneChange(){
             
         }
     }
+
     
-    if( (p_sceneNumber== co.sMap["PushGame"] && teamSize!=-1) ){
-        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-        pushGame.reset();
+    //
+    
+    if(co.sceneNumber == co.sMap["GoOffEdge"] ){
         
-        if(teams[0].buttons.size() != teamSize ){
-            for(int i = 0;i<teamSize;i++){
+        teamSize=teams[1].buttons.size();
+        
+        teams[0].box2d.getWorld()->ClearForces();
+        
+        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
+        
+        if(teams[0].buttons.size() == teamSize ){
+            
+            for(int i = 0;i<teams[1].buttons.size();i++){
+                Button * old = &teams[1].buttons[i];
                 
+                Button b = * new Button;
                 
-                teams[0].buttons.at(i).box2Dcircle->destroy();
-                teams[0].buttons.at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-                //virtual void setPhysics(float density, float bounce, float friction);
-                teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
-                teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
+                b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
+                b.colors = old->colors;
                 
-                
-                teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value
-                teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
-                teams[0].buttons.pop_back();
-                
-                //destroy and create!
-    
-                
+                b.radius = old->radius;
+                b.setValue(old->getValue());
+                b.isPlaying = old->isPlaying;
+                b.on = old->on;
+                b.size_lim = old->size_lim;
+                b.size_break = old->size_break;
+                //
+                teams[0].buttons.push_back(b);
                 
                 
             }
+            cout << "team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
             
+            push2.begin(&teams[0].buttons);
+            
+            for(int b = 0; b<teams[1].buttons.size();b++){
+                teams[1].buttons[b].box2Dcircle->alive = false;
+                teams[1].buttons[b].box2Dcircle->setRadius(0);
+            }
+  
         }
-        cout << "team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
     }
+    
+    
     
     
     p_sceneNumber = co.sceneNumber;
@@ -502,7 +576,7 @@ void ofApp::refill(int team, float timef){
             
             float newValue = oldValue + co.refillCoef;
             b->setValue(CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue));
-           // b->updateRadius();
+            b->updateRadius();
             
             
             ofPushMatrix();
@@ -511,6 +585,7 @@ void ofApp::refill(int team, float timef){
             ofTranslate(800,0);
             b->draw(false, true, true);
             ofPopMatrix();
+           
         }
     }
     if(t>co.refillTime && team == 0)co.refill1=false;

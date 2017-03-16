@@ -60,17 +60,23 @@ public:
     }
     
     
-    void drawDebug(){
+    void drawDebug(ofRectangle rect = ofRectangle(0,0,1920,1080)){
+        if(on && !isDead() && isPlaying){
+        ofVec2f p;
+        
+        p.x = rect.width*x + rect.x;
+        p.y = rect.height*y + rect.y;
+        
         
         ofPushMatrix();
-        ofTranslate(getPosRaw());
+        ofTranslate(p);
         if(on)ofSetColor(ofColor::royalBlue , 100);
         else ofSetColor(ofColor::orangeRed , 20);
         ofDrawCircle(0, 0, 25);
         ofPopMatrix();
 
-        if(on)ofDrawLine(getPos(),getPosRaw());
-        
+        if(on)ofDrawLine(getPos(),p);
+        }
     }
     
     void draw(bool transform = true, bool sizeMatters = true, bool allon = false){
@@ -142,19 +148,16 @@ public:
         r_raw=_r;
     }
     
-    void update(float attraction , float doble = 0.0){
+    void update(float attraction , ofRectangle rect = ofRectangle(0,0,1920,1080), bool updateRad = true){
         if(isPlaying && !isDead()){
             if(on){
                 
                 ofVec2f p;
+
+                p.x = rect.width*x + rect.x;
+                p.y = rect.height*y + rect.y;
                 
-                if(doble>0){
-                    float theX;
-                    if(teamNumber == 0)theX=(1920.f-doble)*x + doble;
-                    if(teamNumber == 1)theX=(1920.f-doble)*x + 1920;
-                    p = ofVec2f(theX,1080*y);
-                }
-                else p = getPosRaw();
+               // else p = getPosRaw();
                 //ofVec2f p = doble ? ofVec2f(x*1920 + 1920*teamNumber , y*1080) : getPosRaw();
                 
                 if(!prev_on){
@@ -169,7 +172,7 @@ public:
                 
                 lastPos = getPos();
                 
-                setDirection(doble>0.0);
+                setDirection(rect);
 
                 //if(!freezeUpdate){
                     box2Dcircle->setVelocity(0,0);
@@ -182,7 +185,7 @@ public:
             }
             filterLowPass.update(getPos());
         }
-        updateRadius();
+        if(updateRad)updateRadius();
         
     }
 //    
@@ -247,8 +250,13 @@ public:
         }
     }
     
-    void setDirection(bool doble = false){
-        ofVec2f p = doble ? ofVec2f(x*1920 + 1920*teamNumber , y*1080) : getPosRaw();
+    void setDirection(ofRectangle rect = ofRectangle(0,0,1920,1080)){
+        
+        ofVec2f p;
+        
+        p.x = rect.width*x + rect.x;
+        p.y = rect.height*y + rect.y;
+        
         ofVec2f up;
         vel.x = -(p.x - filterLowPass.value().x);
         vel.y = p.y - filterLowPass.value().y;
