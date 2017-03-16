@@ -46,17 +46,17 @@ public:
             if(x>1920){
                 score1++;
                 ball->setPosition( ofVec2f( 1920 , 200 ));
-                ball->setVelocity( ofVec2f( ofRandom(-45,45) , -10 ));
+                ball->setVelocity( ofVec2f( ofRandom(-25,25) , -10 ));
             }
             else if(x<1920){
                 score2++;
                 ball->setPosition( ofVec2f( 1920 , 200 ));
-                ball->setVelocity( ofVec2f( ofRandom(-45,45) , -10 ));
+                ball->setVelocity( ofVec2f( ofRandom(-25,25) , -10 ));
             }
         }
         
         
-        if(abs(ball->getVelocity().x) < 15 )ball->setVelocity( ofVec2f( ball->getVelocity().x*1.6 , ball->getVelocity().y  ));
+        if(abs(ball->getVelocity().x) < 10 )ball->setVelocity( ofVec2f( ball->getVelocity().x*1.6 , ball->getVelocity().y  ));
         
 
         float pos1 = 0;
@@ -144,7 +144,7 @@ public:
         
         
         ball.get()->alive = true;
-        ball->setVelocity( ofVec2f( ofRandom(-45,45) , 0 ));
+        ball->setVelocity( ofVec2f( ofRandom(-25,25) , 0 ));
         pad1.get()->alive = true;
         pad2.get()->alive = true;
         wall.get()->alive = true;
