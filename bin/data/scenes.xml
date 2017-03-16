@@ -1,8 +1,10 @@
 <scenes>
 	<0-Area>0</0-Area>
 	<1-GetThrough>0</1-GetThrough>
+	<1-GetThrough_alt>0</1-GetThrough_alt>
 	<2-EasyMaze>0</2-EasyMaze>
 	<3-Maze>0</3-Maze>
+	<3-Maze_alt>0</3-Maze_alt>
 	<4-Gravity>0</4-Gravity>
 	<5-SpyGame>0</5-SpyGame>
 	<6-Market>0</6-Market>

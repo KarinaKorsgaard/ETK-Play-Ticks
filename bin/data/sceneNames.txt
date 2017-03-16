@@ -1,7 +1,9 @@
 0-Area
 1-GetThrough
+1-GetThrough_alt
 2-EasyMaze
 3-Maze
+3-Maze_alt
 4-Gravity
 5-SpyGame
 6-Market

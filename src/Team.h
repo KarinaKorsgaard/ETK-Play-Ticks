@@ -14,7 +14,9 @@
 #include "button.h"
 #include "s01.h"
 #include "s02.h"
+#include "s02alt.h"
 #include "s03.h"
+#include "s03_alt.h"
 #include "s04.h"
 #include "s05.h"
 #include "s06.h"
@@ -44,7 +46,9 @@ public:
     
     Scene01 area00; // area
     Scene02 getUp01; // getup
+    Scene02alt getUp_alt; // getup
     Scene03 maze02; // maze . not done
+    Scene03alt maze02_alt;
     Scene04 spy04; // spy
     Scene05 gravity03; // gravity
     Scene06 market05; // market
@@ -68,7 +72,9 @@ public:
         drainTest.setup(co,&buttons);
         area00.setup(co,&buttons);
         getUp01.setup(co,&buttons);
+        getUp_alt.setup(co,&buttons);
         maze02.setup(co,&buttons);
+        maze02_alt.setup(co,&buttons);
         spy04.setup(co,&buttons);
         gravity03.setup(co,&buttons);
         market05.setup(co,&buttons);
@@ -97,6 +103,12 @@ public:
             }else if(p_sceneNum == co->sMap["GetThrough"])getUp01.reset();
             
             
+            if(s == co->sMap["GetThrough_alt"]){ // get up
+                createScene(getUp_alt.polys);
+                getUp_alt.begin();
+            }else if(p_sceneNum == co->sMap["GetThrough_alt"])getUp_alt.reset();
+            
+            
             if(s == co->sMap["EasyMaze"])easyMaze.begin();
             else if(p_sceneNum == co->sMap["EasyMaze"])easyMaze.reset();
             
@@ -104,6 +116,12 @@ public:
                 createScene(maze02.polys);
                 maze02.begin(&box2d);
             }else if(p_sceneNum == co->sMap["Maze"])maze02.reset();
+            
+            if(s == co->sMap["Maze_alt"]){ // maze
+                createScene(maze02_alt.polys);
+                maze02_alt.begin(&box2d);
+            }else if(p_sceneNum == co->sMap["Maze_alt"])maze02_alt.reset();
+            
             
             if(s == co->sMap["Gravity"]){
                 createScene(gravity03.polys);
@@ -136,10 +154,12 @@ public:
         }
         if(s==co->sMap["Area"])area00.update();
         if(s==co->sMap["GetThrough"])getUp01.update();
+        if(s==co->sMap["GetThrough_alt"])getUp_alt.update();
         
         if(s==co->sMap["EasyMaze"])easyMaze.update();
         
         if(s==co->sMap["Maze"])maze02.update();
+        if(s==co->sMap["Maze_alt"])maze02_alt.update();
         if(s==co->sMap["Gravity"])gravity03.update();
         if(s==co->sMap["SpyGame"] && spy04.spyId !=-1)spy04.update();
         if(s==co->sMap["Market"])market05.update();
@@ -164,8 +184,10 @@ public:
         
         if(s==co->sMap["Area"])isDone= area00.isDone();
         if(s==co->sMap["GetThrough"])isDone= getUp01.isDone();
+        if(s==co->sMap["GetThrough_alt"])isDone= getUp_alt.isDone();
         if(s==co->sMap["EasyMaze"])isDone= easyMaze.isDone();
         if(s==co->sMap["Maze"])isDone= maze02.isDone();
+        if(s==co->sMap["Maze_alt"])isDone= maze02_alt.isDone();
         if(s==co->sMap["Gravity"])isDone= gravity03.isDone();
         if(s==co->sMap["SpyGame"]&& spy04.spyId !=-1)isDone= spy04.isDone();
         if(s==co->sMap["Market"]){
@@ -205,7 +227,9 @@ public:
                 vector<int>win={
                     co->sMap["Area"],
                     co->sMap["GetThrough"],
+                    co->sMap["GetThrough_alt"],
                     co->sMap["Maze"],
+                    co->sMap["Maze_alt"],
                     co->sMap["EasyMaze"],
                     co->sMap["Gravity"],
                     co->sMap["SpyGame"],
@@ -262,8 +286,10 @@ public:
         
         if(co->sceneNumber==co->sMap["Area"])area00.draw();
         else if(s==co->sMap["GetThrough"])getUp01.draw();
+        else if(s==co->sMap["GetThrough_alt"])getUp_alt.draw();
         else if(s==co->sMap["EasyMaze"])easyMaze.draw();
         else if(s==co->sMap["Maze"])maze02.draw();
+        else if(s==co->sMap["Maze_alt"])maze02_alt.draw();
         else if(s==co->sMap["Gravity"])gravity03.draw();
         else if(s==co->sMap["SpyGame"]&& spy04.spyId !=-1)spy04.draw();
         else if(s==co->sMap["Market"])market05.draw();

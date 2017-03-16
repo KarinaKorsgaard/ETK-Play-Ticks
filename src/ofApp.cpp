@@ -93,7 +93,7 @@ void ofApp::setup(){
     
     scenes.setName("scenes");
 
-    for(int i = 0; i<14;i++){
+    for(int i = 0; i<16;i++){
         string name = cc.getLine("sceneNames.txt", i);
         if(name.length()>0){
             ofParameter<bool>p;

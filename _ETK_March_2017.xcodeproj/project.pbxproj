@@ -174,6 +174,8 @@
 		21AE24E81E6EEFC500150433 /* s04.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s04.h; sourceTree = "<group>"; };
 		21AE24EA1E6F120A00150433 /* s05.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s05.h; sourceTree = "<group>"; };
 		21AE24EC1E6F5B5700150433 /* s06.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s06.h; sourceTree = "<group>"; };
+		21DEC74F1E7AF01F004A5BBA /* s02alt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s02alt.h; sourceTree = "<group>"; };
+		21DEC7501E7AF257004A5BBA /* s03_alt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s03_alt.h; sourceTree = "<group>"; };
 		21E6CA4E1E6D5E0300E0C55D /* Team.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
 		21E6CA4F1E6D5EE100E0C55D /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		21E6CA501E6D636F00E0C55D /* button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = button.h; sourceTree = "<group>"; };
@@ -506,7 +508,9 @@
 				219B5F601E7A70520002FD2A /* pushing.h */,
 				21E6CA5F1E6D80CF00E0C55D /* s01.h */,
 				21E6CA761E6DB3BE00E0C55D /* s02.h */,
+				21DEC74F1E7AF01F004A5BBA /* s02alt.h */,
 				21AE24D61E6DF68700150433 /* s03.h */,
+				21DEC7501E7AF257004A5BBA /* s03_alt.h */,
 				21AE24E81E6EEFC500150433 /* s04.h */,
 				21AE24EA1E6F120A00150433 /* s05.h */,
 				21AE24EC1E6F5B5700150433 /* s06.h */,
