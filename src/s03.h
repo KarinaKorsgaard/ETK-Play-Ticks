@@ -118,7 +118,7 @@ public:
         average.get()->setup(world->getWorld(), 1920-120, 1080-120, 10);
         average->setRadius(45.f);
         for(int i = 0; i<buttons->size();i++){
-            if(buttons->at(i).getPosRaw().y>0)buttons->at(i).setPosition(buttons->at(i).getPosRaw().y, 1040);
+            if(buttons->at(i).getPosRaw().y>0)buttons->at(i).setPosition( 1040 , buttons->at(i).getPosRaw().y);
             else buttons->at(i).setPosition(1920-100,ofRandom(100,1920-100));
         }
     };
