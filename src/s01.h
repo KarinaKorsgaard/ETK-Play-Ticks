@@ -131,7 +131,7 @@ public:
 
     void draw(){
         ofSetColor(255);
-        dounut.draw();
+        donut.draw(0,0);
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             if(co->debug){

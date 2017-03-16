@@ -1,4 +1,0 @@
-
-scene 5 began at: 14:56
-team 1 collected value: 0
-team 2 collected value: 0
