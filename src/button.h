@@ -119,9 +119,9 @@ public:
                 
                 
                 armSwapper+=(dx+dy)*10.;
-                if(armSwapper>0.4)armSwapper=0.;
+                if(armSwapper>0.8)armSwapper=0.;
                 
-                int aInd = armSwapper>.2 ? 0:1;
+                int aInd = armSwapper>.4 ? 0:1;
                 legs[aInd].draw(-(rad+10),-(rad+10),rad*2+20,rad*2+20);
                 
             }
