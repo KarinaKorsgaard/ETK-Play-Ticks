@@ -16,6 +16,7 @@ public:
         buttons = b;
         co = _co;
         svg.load("svg/03_EasyMaze.svg");
+        path.load("img/03_EasyMaze.png");
         polys = getPolyline(svg);
         maze = polys[0];
         
@@ -76,7 +77,7 @@ public:
     void draw(){
         
         ofSetColor(255);
-        svg.draw();
+        path.draw(0,0);
         
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
@@ -91,10 +92,10 @@ public:
         ofTranslate(filter.value());
         
         ofColor c;
-        if(go)c.set(0,255,0);
-        else c.set(255,0,0);
+        if(go)c.set(20,200,20);
+        else c.set(200,20,20);
         
-        float rad = 60.f;
+        float rad = 45.f;
         ofSetColor(c);
         // body
         c.setSaturation(180);
@@ -103,7 +104,7 @@ public:
         //head
         c.setSaturation(230);
         ofSetColor(c);
-        float eye = -rad + rad*0.45/2;
+        float eye = -rad + rad*0.45/2.;
         ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
     
         //stomach
@@ -115,9 +116,12 @@ public:
         //eyes
         //if(ofRandom(1000)>0.1){
         ofSetColor(0);
-        ofDrawCircle(rad*0.3 ,eye, 10);
+        ofDrawCircle(rad*0.3 ,eye ,10);
         ofDrawCircle(-rad*0.3,eye ,10);
         //}
+        
+        
+        
         
     };
     
@@ -135,6 +139,7 @@ public:
     
     commonObjects * co;
     ofxSVG svg;
+    ofImage path;
     vector<ofPolyline> polys;
     
     vector<Button>*buttons;

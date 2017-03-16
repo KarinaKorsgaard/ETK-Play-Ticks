@@ -1,0 +1,42 @@
+
+scene 4 began at: 09:31
+team 1 collected value: 1800
+team 2 collected value: 1800
+
+scene 0 began at: 09:31
+team 1 collected value: 1800
+team 2 collected value: 1800
+team 0 finished at 09:31:42
+team 1 finished at 09:31:42
+
+scene 4 began at: 09:32
+team 1 collected value: 1722.55
+team 2 collected value: 1435.32
+
+scene 0 began at: 09:32
+team 1 collected value: 1351.97
+team 2 collected value: 1050.77
+
+scene 1 began at: 09:32
+team 1 collected value: 1354.4
+team 2 collected value: 1008.3
+team 0 finished at 09:32:33
+
+scene 2 began at: 09:32
+team 1 collected value: 1354.4
+team 2 collected value: 990.036
+
+scene 3 began at: 09:32
+team 1 collected value: 1354.4
+team 2 collected value: 975.6
+team 0 finished at 09:32:36
+team 1 finished at 09:32:36
+
+scene 4 began at: 09:32
+team 1 collected value: 1106.95
+team 2 collected value: 815.364
+
+scene 5 began at: 09:32
+team 1 collected value: 1073.39
+team 2 collected value: 846.282
+team 1 finished at 09:32:47

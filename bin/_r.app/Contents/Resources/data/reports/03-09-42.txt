@@ -1,0 +1,14 @@
+
+scene 0 began at: 19:35
+team 1 collected value: 1777.84
+team 2 collected value: 1758.14
+
+scene 4 began at: 19:35
+team 1 collected value: 1717.57
+team 2 collected value: 1684.05
+
+scene 0 began at: 19:35
+team 1 collected value: 503.658
+team 2 collected value: 1101.08
+team 0 finished at 19:36:07
+team 1 finished at 19:38:01

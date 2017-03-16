@@ -1,0 +1,4 @@
+
+scene 5 began at: 18:51
+team 1 collected value: 1727.04
+team 2 collected value: 1732.4
