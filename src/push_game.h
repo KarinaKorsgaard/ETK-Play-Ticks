@@ -90,7 +90,7 @@ public:
         ofSetColor(80,80,120);
         for(int i = 0 ; i< rects.size();i++)rects[i]->draw();
         
-        //svg.draw();
+        svg.draw();
         
         for(int i = 0 ; i< buttons->size();i++){
             if(co->debug){

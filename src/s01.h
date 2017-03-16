@@ -73,12 +73,13 @@ class Scene01 : public commonFunctions{
 public:
     vector<Button>*buttons;
     //Blob blob;
-
+    ofImage donut;
     ofPolyline big,small;
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
         svg.load("svg/01_win_area.svg");
+        donut.load("img/01_dounut.png");
         vector<ofPolyline> p = getPolyline(svg);
         //poly = getPolyline(svg);
         
@@ -130,7 +131,7 @@ public:
 
     void draw(){
         ofSetColor(255);
-        svg.draw();
+        dounut.draw();
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             if(co->debug){
