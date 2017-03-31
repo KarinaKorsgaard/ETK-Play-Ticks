@@ -18,6 +18,11 @@ void ofApp::setup(){
     co.font_medium = &font_medium;
     co.font_large = &font_large;
     
+    co.characterImgs.resize(3);
+    co.characterImgs[0].load("characters/head.png");
+    co.characterImgs[1].load("characters/body.png");
+    co.characterImgs[2].load("characters/belly.png");
+    
     co.sceneNumber = 2;
     
     ofxXmlSettings xml;
@@ -61,7 +66,7 @@ void ofApp::setup(){
             b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startVal, startRad, &teams[teamNum].box2d);
             b.size_lim = co.size_lim;
             b.size_break= co.size_break;
-            
+            b.img = &co.characterImgs;
             b.box2Dcircle.get()->setData(new ButtonData());
             ButtonData * sd = (ButtonData*)b.box2Dcircle.get()->getData();
             sd->buttonID = indx - (teamNum * ((BUTTONS_PR_TABLE*NUM_TABLES)/2));
@@ -156,6 +161,7 @@ void ofApp::setup(){
     gui.setup();
     gui.add(reverseX.set("reverse X",false));
     gui.add(reverseY.set("reverse Y",false));
+    gui.add(alertDialog.set("Alert Dialogs",false));
     gui.add(co.logReport.set("log report",false));
     gui.add(co.playSound.set("play sound",false));
     
@@ -175,13 +181,21 @@ void ofApp::setup(){
     guiScenes.setPosition(gui.getWidth()+20,gui.getPosition().x);
     
     // load the 8 sfx soundfile
-    for(int i=0; i<N_SOUNDS; i++) {
-        sound[i].load("sfx/"+ofToString(i)+".mp3");
+    for(int i=0; i<2; i++) {
+        sound[i].load("sounds/team_"+ofToString(i)+"_collision.mp3");
         sound[i].setMultiPlay(true);
         sound[i].setLoop(false);
         sound[i].setVolume(0.1f);
     }
+    
+    co.deathSound.load("sounds/deathSound.mov");
+    co.deathSound.setMultiPlay(true);
+    co.deathSound.setLoop(false);
+    co.deathSound.setVolume(0.1f);
+    
     receivingTables.resize(NUM_TABLES);
+    alive_counter.resize(NUM_TABLES);
+    
     for(int i = 0;i<receivingTables.size();i++){
         receivingTables[i]=false;
     }
@@ -192,6 +206,15 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    alertCounter ++;
+    if(alertCounter > 120){
+        alertCounter=0;
+        for(int i = 0;i<receivingTables.size();i++){
+            receivingTables[i]=false;
+        }
+    }
+    
     
     int resent = -1;
     for(int i = 0; i<b_scenes.size();i++){
@@ -293,17 +316,32 @@ void ofApp::update(){
         push2.update();
     }
     
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    
+//    if(alertDialog){
+//        for(int i = 0;i<receivingTables.size();i++){
+//            if(!receivingTables[i])alive_counter[i]+=ofGetLastFrameTime();
+//            else alive_counter[i]=0;
+//            
+//            if(alive_counter[i]>15)ofSystemAlertDialog("table "+ofToString(i+1));
+//        }
+//    }
+    
     if(co.playSound){
-        for(int i = 0; i<2;i++){
-            for(int b = 0; b<teams[i].buttons.size();b++){
-                if(teams[i].buttons[b].isColliding()){
-                    sound[i].play();
+        for(int i = 0; i<2; i++){
+            for(int j = 0 ; j<teams[i].buttons.size();j++){
+                if(teams[i].buttons[j].isDead()){
+                    if(teams[i].buttons[j].deadSoundCheck){
+                        teams[i].buttons[j].deadSoundCheck=false;
+                        co.deathSound.play();
+                    }else{
+                        teams[i].buttons[j].deadSoundCheck=true;
+                    }
+                    
                 }
             }
         }
     }
-    
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
 
 }
 
@@ -665,6 +703,11 @@ void ofApp::contactStart(ofxBox2dContactArgs &e) {
                 {
                     aData->bHit = true;
                     bData->bHit = true;
+                    
+                    if(co.playSound){
+                        sound[bData->teamID].play();
+                    }
+                    
                 }
                 
 //                if(co.sceneNumber==7 && aData->bHit && bData->bHit){

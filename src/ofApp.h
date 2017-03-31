@@ -60,7 +60,7 @@ class ofApp : public ofBaseApp{
     
     ofParameterGroup gameMechs;
     ofParameterGroup gravity;
-    ofParameter<bool>reverseX,reverseY;
+    ofParameter<bool>reverseX,reverseY,alertDialog;
     ofParameterGroup scenes;
     vector< ofParameter<bool> >b_scenes;
     vector<bool>p_b_scenes;
@@ -70,6 +70,7 @@ class ofApp : public ofBaseApp{
     ofParameterGroup idle;
 
     vector<string>alive;
+    vector<float>alive_counter;
     void handleSceneChange();
     void drawScores();
     
@@ -78,6 +79,7 @@ class ofApp : public ofBaseApp{
     int BUTTONS_PR_TABLE;
     
     int teamSize=-1;
+    int alertCounter;
     
     ofxTrueTypeFontUC font_x_small;
     ofxTrueTypeFontUC font_small;

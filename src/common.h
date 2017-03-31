@@ -71,6 +71,9 @@ public:
     ofxTrueTypeFontUC * font_medium;
     ofxTrueTypeFontUC * font_large;
     
+    ofSoundPlayer deathSound;
+    vector<ofImage> characterImgs;
+    
     map<string, int>sMap;
     
     int NUM_TABLES;

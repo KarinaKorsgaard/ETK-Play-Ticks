@@ -12,7 +12,8 @@ class PushGame : public commonFunctions{
     
 public:
     
-    vector<shared_ptr<ofxBox2dRect>> rects;
+    vector<shared_ptr<ofxBox2dPolygon>> rects;
+   // vector<shared_ptr<ofxBox2dRect>> solid_rects;
     vector <shared_ptr<ofxBox2dPolygon> > polyShapes;
     
     ofxBox2d world;
@@ -71,13 +72,13 @@ public:
             
         }
        // cout << rects[0]->getPosition() << endl;
-        for(int i = 0; i<rects.size();i++){
-            
-            if(rects[i]->getPosition().x > 1920 + (960 - deadZone) )
-                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
-            if(rects[i]->getPosition().x < 960+deadZone )
-                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
-        }
+//        for(int i = 0; i<rects.size();i++){
+//            
+//            if(rects[i]->getPosition().x > 1920 + (960 - deadZone) )
+//                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
+//            if(rects[i]->getPosition().x < 960+deadZone )
+//                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
+//        }
 
         world.update();
     }
@@ -88,7 +89,8 @@ public:
         ofDrawRectangle(1920*2 - deadZone,0,deadZone,1080);
         
         ofSetColor(80,80,120);
-        for(int i = 0 ; i< rects.size();i++)rects[i]->draw();
+        for(int i = 0 ; i< rects.size();i++)
+            rects[i]->draw();
         
         svg.draw();
         
@@ -106,6 +108,8 @@ public:
     
     void begin(vector<Button>*b1){
         
+
+        
         buttons = b1;
         
         
@@ -114,34 +118,63 @@ public:
             
             buttons->at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
             buttons->at(i).box2Dcircle.get()->setPhysics(buttons->at(i).getValue() * 0.01, 0.0, 0.1);
-            buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), 0, 0, 0);
+            buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), 0, 0, 50);
 
         }
-        
 
-        
+
         createScene(getPolyline(svg, true));
         
         
         for(int i = 0; i<6 ; i++){
             
-            shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-            r.get()->setPhysics(6., 0.1 , .1);
-            r.get()->setup(world.getWorld(), 1920 , 94 + 168*i + 10*i  , 1920 , 165);
-            r.get()->alive = true;
-            //r->setMassFromShape=false;
-            //r->setVelocity(ofVec2f(0,0));
-            rects.push_back(r);
+//            shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+//            r.get()->setPhysics(6., 0.1 , 5.);
+//            r.get()->setup(world.getWorld(), 1920 , 94 + 168*i + 10*i  , 1920 , 166);
+//            r.get()->alive = true;
+//            //r->setMassFromShape=false;
+//            //r->setVelocity(ofVec2f(0,0));
+//            rects.push_back(r);
+            
+            ofPolyline newPoly;
+            newPoly.addVertex(ofVec2f(960      ,i*     1000./6. + i*10 ));
+            newPoly.addVertex(ofVec2f(960      ,(i+1)* 1000./6. + i*10 ));
+            newPoly.addVertex(ofVec2f(1920+960 ,i*     1000./6. + i*10 ));
+            newPoly.addVertex(ofVec2f(1920+960 ,(i+1)* 1000./6. + i*10 ));
+            
+//            p.addVertex(ofVec2f(100* i,200));
+//            p.addVertex(ofVec2f(100* i + 50,200));
+//            
+//            p.addVertex(ofVec2f(100* i,400));
+//            p.addVertex(ofVec2f(100* i + 50,400));
+//            
+//            p.addVertex(ofVec2f(100* i,200));
+            
+            newPoly = newPoly.getResampledBySpacing(10);
+            newPoly.close();
+            
+            shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
+            
+            poly->addVertices(newPoly.getVertices());
+            poly->setPhysics(6.0, 0.0, 5.0);
+          //  poly->triangulatePoly();
+            poly.get()->alive = true;
+            poly->create(world.getWorld());
+            rects.push_back(poly);
+
+            
+
         }
-        
+
         for(int i = 0 ; i< buttons->size();i++){
             if(i<buttons->size()/2)
                 buttons->at(i).setPosition(200,ofRandom(80,1000));
             else
                 buttons->at(i).setPosition( 1920*2 - 200 ,ofRandom(80,1000));
             
-            buttons->at(i).box2Dcircle->setRadius(0);
+           // buttons->at(i).box2Dcircle->setRadius(0);
         }
+
         beginTime= 0;
     };
     void reset(){

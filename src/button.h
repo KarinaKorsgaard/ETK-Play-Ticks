@@ -96,27 +96,38 @@ public:
 //                    colors[0].setSaturation(alpha);
 //                    colors[2].setSaturation(alpha);
                 }
-                ofSetColor(colors[0],alpha);
-                ofDrawCircle(0,0,rad);
-                
-                
-                //head                
-                ofSetColor(colors[1]);
-                float eye = -rad + rad*0.45/2;
-                ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
                 
                 //eyes
                 if(!isColliding()){
+                    float eye = -rad + rad*0.45/2.;
                     ofSetColor(0);
-                    ofDrawCircle(rad*0.3 ,eye, 6);
-                    ofDrawCircle(-rad*0.3,eye ,6);
+                    ofDrawCircle(rad*0.5 ,eye ,5);
+                    ofDrawCircle(-rad*0.5,eye ,5);
                 }
-                //stomach
                 
+                for(int i = 0; i<3; i++){
+                    ofSetColor(colors[i]);
+                    img->at(i).draw(-rad,-rad,rad*2,rad*2);
+                }
                 
-                ofSetColor(colors[2]);
-                ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
-                
+//                ofSetColor(colors[1]);
+//                img[1]->draw(-img[1]->getWidth()/2,-img[1]->getHeight()/2);
+//                ofSetColor(colors[2]);
+//                img[2]->draw(-img[2]->getWidth()/2,-img[2]->getHeight()/2);
+//                
+//                
+//                //head                
+//                ofSetColor(colors[1]);
+//                float eye = -rad + rad*0.45/2;
+//                ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
+//                
+//                
+//                //stomach
+//                
+//                
+//                ofSetColor(colors[2]);
+//                ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
+//                
                 
                 armSwapper+=(dx+dy)*10.;
                 if(armSwapper>0.8)armSwapper=0.;
@@ -410,10 +421,11 @@ public:
 
     ofVec2f vel;
     float p_drain;
-    
+    bool deadSoundCheck = false;
     
     ofVec2f lastPos;
     float beginningRad;
+    vector<ofImage> *img;
     
 private:
     ofImage legs[2];
@@ -424,7 +436,7 @@ private:
     double y;
     ofImage deadImg;
     double value;
-
+    
     
 };
 

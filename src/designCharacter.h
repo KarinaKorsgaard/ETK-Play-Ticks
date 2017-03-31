@@ -5,10 +5,28 @@ class DesignACharacter : public commonFunctions{
     
 public:
     vector<Button>*buttons;
-    void setup(commonObjects*_co, vector<Button>*b){
+    void setup(commonObjects*_co, vector<Button>*b, string colorFile, int numColors){
         buttons = b;
         co = _co;
-  
+        
+        
+        ofTexture tex;
+        ofPixels pix;
+        
+        colors.resize(numColors);
+        
+        if(ofLoadImage(tex, colorFile))cout << "succes"<<endl;
+        
+        tex.readToPixels(pix);
+        
+        int indx = tex.getWidth() / numColors;
+        int c = 0;
+        for(int i = 0; i<numColors;i++){
+            colors[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
+      
+            cout << colors[c].r <<endl;
+        }
+        cout << indx<<endl;
     };
     bool isDone(){
         // do not drain here...
@@ -18,9 +36,12 @@ public:
     void update(){
         for(int i=0; i<buttons->size(); i++) {
             ofVec3f data = buttons->at(i).getRawData();
-            buttons->at(i).colors[0].setHsb(ofMap(data.x,0,1,0,255),200,255);
-            buttons->at(i).colors[1].setHsb(ofMap(data.y,0,1,0,255),200,255);
-            buttons->at(i).colors[2].setHsb(ofMap(data.z,0,2*PI,0,255),200,255);
+            int x =CLAMP( ofMap(data.x,0,1,0,colors.size()) , 0 , colors.size()-1);
+            int y =CLAMP( ofMap(data.y,0,1,0,colors.size()), 0 , colors.size()-1);
+            int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
+            buttons->at(i).colors[0]=colors[x];
+            buttons->at(i).colors[1]=colors[y];
+            buttons->at(i).colors[2]=colors[z];
             
         }
     }
@@ -49,6 +70,6 @@ public:
     };
     
     commonObjects * co;
-
+    vector<ofColor>colors;
     
 };
