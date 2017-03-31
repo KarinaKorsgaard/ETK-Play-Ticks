@@ -47,6 +47,12 @@ void ofApp::setup(){
     //co.refillCoef = xml.getValue("refillCoef", 0.0);
     
     receiver.setup(PORT);
+    int portout = xml.getValue("PORT_OUT", 0);
+    string ip = xml.getValue("PORT_OUT_IP", "");
+    cout << ip + ofToString(portout)<<endl;
+    co.oscOut.setup(ip, portout);
+    int portIn = xml.getValue("PORT_IN", 0);
+    co.oscIn.setup(portIn);
     
     // set up buttons
     int indx = 0;
@@ -106,7 +112,7 @@ void ofApp::setup(){
             scenes.add(p);
             b_scenes.push_back(p);
             co.sMap[ofSplitString(name, "-")[1]]=i;
-            cout <<" map  "+ ofSplitString(name, "-")[1] << endl;
+           //cout <<" map  "+ ofSplitString(name, "-")[1] << endl;
         }
     }
     
@@ -119,10 +125,12 @@ void ofApp::setup(){
     
     gameMechs.setName("game controls");
     //gameMechs.add(co.lessIsMore.set("less is more", false));
+    gameMechs.add(co.deadTimer.set("dead time",5,1,10));
     gameMechs.add(co.refill1.set("refill 1", false));
     gameMechs.add(co.refill2.set("refill 2", false));
     gameMechs.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
     gameMechs.add(co.refillTime.set("refill animation time",5,1,10));
+    
     
     gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,5));
     gameMechs.add(co.drainCoefficient2.set("drain team 2",1,0,5));
@@ -165,6 +173,8 @@ void ofApp::setup(){
     gui.add(co.logReport.set("log report",false));
     gui.add(co.playSound.set("play sound",false));
     
+    gui.add(co.sendAverageData.set("sendAverageData",false));
+    
   //  gui.add(time_energy.set("time energy balance",0.5,0,1));
     gui.add(physics);
     gui.add(gameMechs);
@@ -188,7 +198,7 @@ void ofApp::setup(){
         sound[i].setVolume(0.1f);
     }
     
-    co.deathSound.load("sounds/deathSound.mov");
+    co.deathSound.load("sounds/deathSound.mp3");
     co.deathSound.setMultiPlay(true);
     co.deathSound.setLoop(false);
     co.deathSound.setVolume(0.1f);
@@ -215,6 +225,11 @@ void ofApp::update(){
         }
     }
     
+    while(co.oscIn.hasWaitingMessages()){
+        ofxOscMessage m;
+        co.oscIn.getNextMessage(m);
+        if(m.getAddress() == "/next")b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size())]=true;
+    }
     
     int resent = -1;
     for(int i = 0; i<b_scenes.size();i++){
@@ -304,6 +319,19 @@ void ofApp::update(){
                     co.log("the spy outsmarted team 1");
                 }
             }
+        }
+        
+        if(teams[0].allAreDead() && teams[0].deadTime>co.deadTimer && !co.refill1){
+            co.refill1 = true;
+            ofxOscMessage m;
+            m.setAddress("/dead1");
+            co.oscOut.sendMessage(m);
+        }
+        if(teams[1].allAreDead() && teams[1].deadTime>co.deadTimer && !co.refill2){
+            co.refill2 = true;
+            ofxOscMessage m;
+            m.setAddress("/dead2");
+            co.oscOut.sendMessage(m);
         }
     }
     if(co.sceneNumber == co.sMap["PingPong"] && !co.refill2 && !co.refill1){
@@ -532,7 +560,7 @@ void ofApp::handleSceneChange(){
             
                 b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
                 b.colors = old->colors;
-                
+                b.img = old->img;
                 b.radius = old->radius;
                 b.setValue(old->getValue());
                 b.isPlaying = old->isPlaying;

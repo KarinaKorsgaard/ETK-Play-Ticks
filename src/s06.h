@@ -9,6 +9,7 @@ public:
     ofPolyline poly;
     float output=0;
     int efficiency;
+    int p_efficiency;
     ofPoint center;
     
     vector<ofPoint>spaces;
@@ -180,6 +181,14 @@ public:
                 }
             }
             baskets[i].calculateOutput();
+            
+            if(baskets[i].p_efficiency != baskets[i].efficiency){
+                ofxOscMessage m;
+                m.setAddress("/factory"+ofToString(i));
+                m.addIntArg(baskets[i].efficiency);
+                co->oscOut.sendMessage(m);
+                baskets[i].p_efficiency = baskets[i].efficiency;
+            }
         }
     }
 

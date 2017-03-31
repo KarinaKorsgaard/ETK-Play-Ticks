@@ -62,20 +62,20 @@ public:
     
     void drawDebug(ofRectangle rect = ofRectangle(0,0,1920,1080)){
         if(on && !isDead() && isPlaying){
-        ofVec2f p;
-        
-        p.x = rect.width*x + rect.x;
-        p.y = rect.height*y + rect.y;
-        
-        
-        ofPushMatrix();
-        ofTranslate(p);
-        if(on)ofSetColor(ofColor::royalBlue , 100);
-        else ofSetColor(ofColor::orangeRed , 20);
-        ofDrawCircle(0, 0, 25);
-        ofPopMatrix();
-
-        if(on)ofDrawLine(getPos(),p);
+            ofVec2f p;
+            
+            p.x = rect.width*x + rect.x;
+            p.y = rect.height*y + rect.y;
+            
+            
+            ofPushMatrix();
+            ofTranslate(p);
+            if(on)ofSetColor(ofColor::royalBlue , 100);
+            else ofSetColor(ofColor::orangeRed , 20);
+            ofDrawCircle(0, 0, 25);
+            ofPopMatrix();
+            
+            if(on)ofDrawLine(getPos(),p);
         }
     }
     
@@ -151,6 +151,9 @@ public:
         box2Dcircle->setPosition(v);
         filterLowPass.clear(v);
         lastPos = v;
+    }
+    float getSpeed(){
+        return dx+dy;
     }
     
     void set(float _x, float _y, float _r){

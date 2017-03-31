@@ -34,7 +34,11 @@ public:
     float size_break;
     float size_lim;
     
+    ofxOscSender oscOut;
+    ofxOscReceiver oscIn;
+    
     ofParameter<bool>logReport;
+    ofParameter<bool>sendAverageData;
     ofParameter<int> attraction;
     ofParameter<float>fc;
     ofParameter<float>refillTime;
@@ -57,6 +61,7 @@ public:
     
     ofParameter<bool>refill1;
     ofParameter<bool>refill2;
+    ofParameter<float>deadTimer;
 
     ofParameter<float>jump;
     ofParameter<float>x_jump;

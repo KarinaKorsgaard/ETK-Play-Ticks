@@ -33,7 +33,7 @@ public:
     ofxBox2d box2d;
     double time;
     float distance;
-    
+    float deadTime = 0;
     bool isDone;
     bool logDone = false;
     bool playAnimation = false;
@@ -256,7 +256,12 @@ public:
                     }
                 }
             }
-            if(playAnimation)celebration.update();
+            if(playAnimation){
+                celebration.update();
+                ofxOscMessage m;
+                m.setAddress("/won"+ofToString(teamId+1));
+                co->oscOut.sendMessage(m);
+            }
         }
         
         
@@ -264,7 +269,28 @@ public:
             setFcFilter();
         }
         
-        
+        if(co->sendAverageData){
+            ofVec3f d = getAverageData();
+            if(p_averageData!=d){
+                p_averageData=d;
+                
+                ofxOscMessage m;
+                m.setAddress("/averageX"+ofToString(teamId+1));
+                m.addFloatArg(d.x);
+                co->oscOut.sendMessage(m);
+                
+                m.clear();
+                m.setAddress("/averageY"+ofToString(teamId+1));
+                m.addFloatArg(d.y);
+                co->oscOut.sendMessage(m);
+                
+                m.clear();
+                m.setAddress("/collectedVel"+ofToString(teamId+1));
+                m.addFloatArg(d.z);
+                co->oscOut.sendMessage(m);
+                
+            }
+        }
     }
     
     void draw(){
@@ -315,9 +341,31 @@ public:
                 
             }
         }
-        
+        if(allAreDead())deadTime+=ofGetLastFrameTime();
+        else deadTime = 0.;
     }
+
     
+    ofVec3f getAverageData(){
+        ofVec3f res;
+        res.set(0,0,0);
+        
+        int indx;
+        for(int i = 0; i<buttons.size();i++){
+            if(buttons[i].on && !buttons[i].isDead()){
+                res.x += buttons[i].getPosRaw().x;
+                res.y += buttons[i].getPosRaw().y;
+                
+                res.z += buttons[i].getSpeed();
+                indx++;
+            }
+        }
+        if(indx>0){
+            res.x/=indx;
+            res.y/=indx;
+        }
+        return res;
+    }
     
     
     void drawResult(){
@@ -331,7 +379,9 @@ public:
         // cout << time << endl;
     }
     
-    
+    bool allAreDead(){
+        return getDistVal()==0.0;
+    }
     
     void drainTime(){
         time += ofGetLastFrameTime();
@@ -424,7 +474,7 @@ private:
         t /= d;
         return c*t*t + b;
     }
-    
+    ofVec3f p_averageData;
     
 };
 

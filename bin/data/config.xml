@@ -3,6 +3,10 @@
     <size>25.</size>
     
 	<PORT>5000</PORT>
+    <PORT_OUT>5005</PORT_OUT>
+    <PORT_OUT_IP>localhost</PORT_OUT_IP>
+    
+    <PORT_IN>6000</PORT_IN>
 	<NUM_TABLES>12</NUM_TABLES>
     <BUTTONS_PR_TABLE>6</BUTTONS_PR_TABLE>
     <num_teams>2</num_teams>
