@@ -2,3 +2,4 @@ bin/data/reports*
 .DS_Store
 bin/data/settings.xml
 bin/.DS_Store
+bin/data/.DS_Store
