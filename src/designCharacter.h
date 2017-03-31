@@ -41,7 +41,7 @@ public:
             int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
             buttons->at(i).colors[0]=colors[x];
             buttons->at(i).colors[1]=colors[y];
-            buttons->at(i).colors[2]=colors[z];
+            buttons->at(i).colors[2]=colors[CLAMP(z,0,colors.size()-1)];
             
         }
     }

@@ -380,7 +380,8 @@ public:
     }
     
     bool allAreDead(){
-        return getDistVal()==0.0;
+        if(anyButtons)return getDistVal()==0.0;
+        else return false;
     }
     
     void drainTime(){
@@ -405,6 +406,7 @@ public:
         float r=0.f;
         for(int i = 0 ; i<buttons.size();i++)
             if(buttons[i].isPlaying){
+                anyButtons=true;
                 if(!(co->sceneNumber == 4 && i == spy04.spyId ))
                     r+=buttons[i].getValue();
             }
@@ -442,7 +444,7 @@ private:
         
         return timeString;
     }
-    
+    bool anyButtons = false;
     void createScene(vector<ofPolyline>polys){
         
         if(polyShapes.size()==0){
