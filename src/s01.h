@@ -112,11 +112,11 @@ public:
         bool allAreDead = true;
         for(int i = 0; i<buttons->size();i++){
 
-            if(!buttons->at(i).on && buttons->at(i).isPlaying){
-                isInside=false;
-                break;
-            }
-            if(buttons->at(i).on){
+//            if(!buttons->at(i).on && buttons->at(i).isPlaying){
+//                isInside=false;
+//                break;
+//            }
+            if(buttons->at(i).isPlaying){
                 ofPoint p = buttons->at(i).getBiquadPos();
                 
                 if(!big.inside(p) || small.inside(p)){

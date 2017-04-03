@@ -25,10 +25,10 @@ public:
             if(b->isPlaying /*&& !b->isDead()*/){ // if b is not playing or is dead dont account.
                 
                 ofPoint p =b->getBiquadPos();
-                if(!b->on){
-                    isInside=false;
-                    //break;
-                }
+//                if(!b->on){
+//                    isInside=false;
+//                    //break;
+//                }
                 if( small.inside(p) ){
                     isInside=false;
                     //break;
@@ -40,7 +40,7 @@ public:
             }
 
         }
-        if(allAreDead)isInside=false;
+       // if(allAreDead)isInside=false;
         return isInside;
     };
     

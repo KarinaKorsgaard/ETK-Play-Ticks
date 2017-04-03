@@ -20,7 +20,7 @@ public:
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).update(co->attraction);
             
-            if(buttons->at(i).isColliding() && !buttons->at(i).isDead()){
+            if(buttons->at(i).isColliding() && buttons->at(i).isPlaying){
                 buttons->at(i).addValue(-co->spyDrainer);
             }
         }

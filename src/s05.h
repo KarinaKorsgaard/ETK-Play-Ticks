@@ -36,9 +36,9 @@ public:
                 theWinner = i;
                 break;
             }
-            if(b->isDead())allAreDead=false;
+         //   if(b->isDead())allAreDead=false;
         }
-        if(allAreDead)isInside = false;
+     //   if(allAreDead)isInside = false;
         return isInside;
     };
     

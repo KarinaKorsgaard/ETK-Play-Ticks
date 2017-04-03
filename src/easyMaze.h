@@ -59,7 +59,7 @@ public:
             for(int i=0; i<buttons->size(); i++) {
                 buttons->at(i).update(co->attraction ); // the is on is checked in button!
                 
-                if(!buttons->at(i).isDead() && buttons->at(i).on){ // its on, not dead. (if it is not playing, it can not be on)
+                if(buttons->at(i).isPlaying){ // its on, not dead. (if it is not playing, it can not be on)
                     x+=buttons->at(i).getBiquadPos().x;
                     y+=buttons->at(i).getBiquadPos().y;
                     indx++;

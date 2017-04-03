@@ -26,21 +26,21 @@ public:
         bool allAreDead=true;
         isInside = winningArea.inside(average->getPosition());
        
-        if(isInside){
-            for(int i = 0; i<buttons->size();i++){
-                
-                if(!buttons->at(i).on && buttons->at(i).isPlaying){
-                    isInside=false;
-                    break;
-                }
-                
-                if(!buttons->at(i).isDead()){
-                    allAreDead =false;
-                }
-            }
-        }
+//        if(isInside){
+//            for(int i = 0; i<buttons->size();i++){
+//                
+//                if(buttons->at(i).isPlaying){
+//                    isInside=false;
+//                    break;
+//                }
+//                
+//                if(!buttons->at(i).isDead()){
+//                    allAreDead =false;
+//                }
+//            }
+//        }
         
-        if(allAreDead)isInside=false;
+       // if(allAreDead)isInside=false;
         return isInside;
     };
     
@@ -53,7 +53,7 @@ public:
             for(int i=0; i<buttons->size(); i++) {
                 buttons->at(i).update(co->attraction ); // the is on is checked in button!
                 
-                if(!buttons->at(i).isDead() && buttons->at(i).on){ // its on, not dead. (if it is not playing, it can not be on)
+                if(buttons->at(i).isPlaying){ // its on, not dead. (if it is not playing, it can not be on)
                     x+=buttons->at(i).getBiquadPos().x;
                     y+=buttons->at(i).getBiquadPos().y;
                     indx++;

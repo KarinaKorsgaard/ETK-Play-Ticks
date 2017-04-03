@@ -65,14 +65,14 @@ public:
         float indx2 = 0;
         
         for(int i=0; i<team1->size(); i++) {
-            if(team1->at(i).on && team1->at(i).isPlaying){
+            if( team1->at(i).isPlaying){
                 team1->at(i).update(co->attraction);
                 pos1+=team1->at(i).getBiquadPos().x;
                 indx1++;
             }
         }
         for(int i=0; i<team2->size(); i++) {
-            if(team2->at(i).on && team2->at(i).isPlaying){
+            if( team2->at(i).isPlaying){
                 team2->at(i).update(co->attraction);
                 pos2+=team2->at(i).getBiquadPos().x;
                 indx2++;
