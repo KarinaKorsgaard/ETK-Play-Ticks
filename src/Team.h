@@ -341,8 +341,8 @@ public:
                 
             }
         }
-        if(allAreDead())deadTime+=ofGetLastFrameTime();
-        else deadTime = 0.;
+//        if(allAreDead())deadTime+=ofGetLastFrameTime();
+//        else deadTime = 0.;
     }
 
     
@@ -402,6 +402,13 @@ public:
         }
     }
     
+    void reviveTicks(float thres, float amount){
+        for(int i=0; i<buttons.size(); i++) {
+            if(buttons[i].isPlaying)
+                buttons[i].reviveDeadTicks(thres, amount);
+        }
+    }
+    
     float getDistVal(){
         float r=0.f;
         for(int i = 0 ; i<buttons.size();i++)
@@ -413,16 +420,16 @@ public:
         return r;
     }
     
-    void recordValues(){
-        for(int i = 0 ; i<buttons.size();i++)
-            buttons[i].beforeRefillValue = buttons[i].getValue();
-    }
+//    void recordValues(){
+//        for(int i = 0 ; i<buttons.size();i++)
+//            buttons[i].beforeRefillValue = buttons[i].getValue();
+//    }
     
     void divideTimeToButtons(){
         if(time>0){
             for(int i = 0; i<buttons.size();i++){
                 if(buttons[i].isDead())continue;
-                buttons[i].addValue(-ofGetLastFrameTime()*2.);
+                buttons[i].addValue(-ofGetLastFrameTime()*co->divideTimeTime);
                 time-=ofGetLastFrameTime();
             }
         }

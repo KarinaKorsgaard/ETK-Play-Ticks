@@ -7,7 +7,7 @@ public:
     
     vector<Button>*buttons;
     //ofRectangle small, big;
-    
+    float upThres;
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
@@ -15,6 +15,13 @@ public:
         
         svg.load("svg/02_borders_alt.svg");
         polys = getPolyline(svg);
+        
+        float max = 0;
+        for(int i = 0; i<polys.size();i++){
+            float x = polys[i].getBoundingBox().x;
+            if(x<1000 && x>max )max = x;
+        }
+        upThres = max;
     };
     bool isDone(){
         bool isInside=true;
@@ -25,7 +32,7 @@ public:
             if(!buttons->at(i).isDead()){
                 allAreDead =false;
             }
-            if(b->isPlaying && !b->isDead()){ // if b is not playing or is dead dont account.
+            if(b->isPlaying /*&& !b->isDead()*/){ // if b is not playing or is dead dont account.
                 
                 ofPoint p =b->getBiquadPos();
                 if(!b->on){
@@ -40,7 +47,7 @@ public:
 //                    isInside=false;
 //                    //break;
 //                }
-                if(p.y<960){
+                if(p.y<upThres){
                     isInside=false;
                 }
             }

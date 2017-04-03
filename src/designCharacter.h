@@ -24,9 +24,9 @@ public:
         for(int i = 0; i<numColors;i++){
             colors[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
       
-            cout << colors[c].r <<endl;
+          //  cout << colors[c].r <<endl;
         }
-        cout << indx<<endl;
+        //cout << indx<<endl;
     };
     bool isDone(){
         // do not drain here...
@@ -39,8 +39,8 @@ public:
             int x =CLAMP( ofMap(data.x,0,1,0,colors.size()) , 0 , colors.size()-1);
             int y =CLAMP( ofMap(data.y,0,1,0,colors.size()), 0 , colors.size()-1);
             int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
-            buttons->at(i).colors[0]=colors[x];
-            buttons->at(i).colors[1]=colors[y];
+            buttons->at(i).colors[0]=colors[CLAMP(x,0,colors.size()-1)];
+            buttons->at(i).colors[1]=colors[CLAMP(y,0,colors.size()-1)];
             buttons->at(i).colors[2]=colors[CLAMP(z,0,colors.size()-1)];
             
         }

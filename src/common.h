@@ -49,6 +49,7 @@ public:
     ofParameter<int>gravity;
     ofParameter<int>gravityReward;
     ofParameter<bool>lessIsMore;
+    ofParameter<float>divideTimeTime;
     
     ofParameter<bool>marketDone1;
     ofParameter<bool>marketDone2;
@@ -57,6 +58,7 @@ public:
     ofParameter<bool>idleB;
     
     ofParameter<float>spyDrainer;
+    ofParameter<float>spySpeed;
     ofParameter<float>thresY_gravity;
     
     ofParameter<bool>refill1;

@@ -23,7 +23,7 @@ void ofApp::setup(){
     co.characterImgs[1].load("characters/body.png");
     co.characterImgs[2].load("characters/belly.png");
     
-    co.sceneNumber = 2;
+    co.sceneNumber = 0;
     
     ofxXmlSettings xml;
     xml.load("config.xml");
@@ -125,11 +125,11 @@ void ofApp::setup(){
     
     gameMechs.setName("game controls");
     //gameMechs.add(co.lessIsMore.set("less is more", false));
-    gameMechs.add(co.deadTimer.set("dead time",5,1,10));
-    gameMechs.add(co.refill1.set("refill 1", false));
-    gameMechs.add(co.refill2.set("refill 2", false));
+    gameMechs.add(co.deadTimer.set("dead time",5,1,30));
+//    gameMechs.add(co.refill1.set("refill 1", false));
+//    gameMechs.add(co.refill2.set("refill 2", false));
     gameMechs.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
-    gameMechs.add(co.refillTime.set("refill animation time",5,1,10));
+//    gameMechs.add(co.refillTime.set("refill animation time",5,1,10));
     
     
     gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,5));
@@ -145,15 +145,17 @@ void ofApp::setup(){
     
     spyGame.setName("spy game");
     spyGame.add(co.spyDrainer.set("drain",0.2,0.,2));
+    spyGame.add(co.spySpeed.set("Spy Speed",30.,0.,200));
     
     market.setName("market control");
     
     market.add(co.marketReward.set("reward",0.5,0.,2));
+    market.add(co.divideTimeTime.set("divideTimeToButtons",50.,1.,100.));
     market.add(co.marketDone1.set("finish market 1",false));
     market.add(co.marketDone2.set("finish market 2",false));
     
     push.setName("PushGame");
-    push.add(co.blockForce.set("repel force",0.2,0.,20));
+    push.add(co.blockForce.set("repel force",0.2,0.,200));
     
 //    finale.add(co.startFinale.set("begin",false));
 //    finale.add(co.deadTimeFinale.set("push time",0.1,0.,2));
@@ -256,7 +258,7 @@ void ofApp::update(){
     while (receiver.hasWaitingMessages()) {
         ofxOscMessage m;
         receiver.getNextMessage(m);
-        if(co.debug)cout << m.getAddress() << endl;
+        //if(co.debug)cout << m.getAddress() << endl;
         for (int i = 0 ; i<alive.size(); i++) {
             if(!receivingTables[i])if(m.getAddress() == alive[i])receivingTables[i]=true;
         }
@@ -321,18 +323,18 @@ void ofApp::update(){
             }
         }
         
-        if(teams[0].allAreDead() && teams[0].deadTime>co.deadTimer && !co.refill1){
-            co.refill1 = true;
-            ofxOscMessage m;
-            m.setAddress("/dead1");
-            co.oscOut.sendMessage(m);
-        }
-        if(teams[1].allAreDead() && teams[1].deadTime>co.deadTimer && !co.refill2){
-            co.refill2 = true;
-            ofxOscMessage m;
-            m.setAddress("/dead2");
-            co.oscOut.sendMessage(m);
-        }
+//        if(teams[0].allAreDead() && teams[0].deadTime>co.deadTimer && !co.refill1){
+//            co.refill1 = true;
+//            ofxOscMessage m;
+//            m.setAddress("/dead1");
+//            co.oscOut.sendMessage(m);
+//        }
+//        if(teams[1].allAreDead() && teams[1].deadTime>co.deadTimer && !co.refill2){
+//            co.refill2 = true;
+//            ofxOscMessage m;
+//            m.setAddress("/dead2");
+//            co.oscOut.sendMessage(m);
+//        }
     }
     if(co.sceneNumber == co.sMap["PingPong"] && !co.refill2 && !co.refill1){
         pingPong.update();
@@ -342,6 +344,10 @@ void ofApp::update(){
     }
     if(co.sceneNumber == co.sMap["GoOffEdge"] && !co.refill2 && !co.refill1){
         push2.update();
+    }
+    if(co.sceneNumber != co.sMap["PushGame"] && co.sceneNumber != co.sMap["SpyGame"]){
+        teams[0].reviveTicks(co.deadTimer,co.refillCoef);
+        teams[1].reviveTicks(co.deadTimer,co.refillCoef);
     }
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
@@ -386,28 +392,28 @@ void ofApp::draw(){
     ofDrawRectangle(1920,0,1920,1080);
 
     if(co.sceneNumber!= co.sMap["PingPong"] && co.sceneNumber!=co.sMap["PushGame"] && co.sceneNumber!=co.sMap["GoOffEdge"] ){
-        if(co.refill1){
-            refill(0,easeRefill1);
-            
-        }else{
+//        if(co.refill1){
+//            refill(0,easeRefill1);
+//            
+//        }else{
             teams[0].draw();
-            easeRefill1 = ofGetElapsedTimef();
-            teams[0].recordValues();
-        }
+        //    easeRefill1 = ofGetElapsedTimef();
+           // teams[0].recordValues();
+  //      }
         
         
-        if(co.refill2){
-            refill(1,easeRefill2);
-        }
-        else {
+//        if(co.refill2){
+//            refill(1,easeRefill2);
+//        }
+//        else {
             ofPushMatrix();
             ofTranslate(1920, 0);
             teams[1].draw();
             ofPopMatrix();
             
-            easeRefill2 = ofGetElapsedTimef();
-            teams[1].recordValues();
-        }
+       //     easeRefill2 = ofGetElapsedTimef();
+         //   teams[1].recordValues();
+     //   }
         
     }
     if(co.sceneNumber==co.sMap["PingPong"])
@@ -455,6 +461,7 @@ void ofApp::handleSceneChange(){
                 //virtual void setPhysics(float density, float bounce, float friction);
                 teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
                 teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
+                teams[0].buttons.at(i).box2Dcircle.get()->setRadius(teams[0].buttons.at(i).beginningRad);
                 
                 
                 teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value

@@ -22,7 +22,7 @@ public:
             if(!buttons->at(i).isDead()){
                 allAreDead =false;
             }
-            if(b->isPlaying && !b->isDead()){ // if b is not playing or is dead dont account.
+            if(b->isPlaying /*&& !b->isDead()*/){ // if b is not playing or is dead dont account.
                 
                 ofPoint p =b->getBiquadPos();
                 if(!b->on){

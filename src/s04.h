@@ -45,7 +45,8 @@ public:
                     if(!isDone())buttons->at(i).addValue(-co->spyDrainer);
                 }
                 
-                buttons->at(i).update(co->attraction);
+                if(i!=spyId)buttons->at(i).update(co->attraction);
+                else buttons->at(i).update(co->spySpeed);
             }
         }
         if(spyId!=-1){

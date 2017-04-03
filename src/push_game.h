@@ -38,47 +38,57 @@ public:
         int count = 0;
         for(int i = 0 ; i< buttons->size();i++){
             if(buttons->at(i).isPlaying && !buttons->at(i).isDead())count++;
-            if(count > 1)break;
+            if(count > 1){
+                oneSurvivor = false;
+                break;
+            }
         }
-        return count = 1;
+        return oneSurvivor;
     };
     
     void update(){
     
-        if(beginTime<.2)beginTime += ofGetLastFrameTime();
+        //if(beginTime<.2)beginTime += ofGetLastFrameTime();
         
         for(int i = 0 ; i< buttons->size();i++){
             Button * b = &buttons->at(i);
-            if(beginTime>.1){
+            if(!isDone() && !b->isDead()){
                 
-                if(i<buttons->size()/2 )b->update(co->attraction, ofRectangle(deadZone+60,0,1980-deadZone,1080), false);
-                else b->update(co->attraction, ofRectangle(1980,0,1980-deadZone,1080), false);
+                if(i<buttons->size()/2 )b->update(co->attraction*b->getValue(), ofRectangle(deadZone+60,0,1980-deadZone,1080));
+                else b->update(co->attraction*b->getValue(), ofRectangle(1980,0,1980-deadZone,1080));
             }
-            if(i<buttons->size()/2 && b->getPos().x<deadZone-20)b->setValue(0);
-            else if(b->getPos().x+20 > 1920*2-deadZone)b->setValue(0);
-            
-            b->drain(co->drainCoefficient1);
-            
-            if(b->on && b->radius > 0){
-                b->radius = (b->size_lim - (b->size_break/b->getValue())) / (1 + (b->size_break/b->getValue()));
-                if(b->box2Dcircle->getRadius() < b->radius)b->box2Dcircle->setRadius(b->box2Dcircle->getRadius()+1);
-                else b->box2Dcircle->setRadius(b->radius);
-                b->box2Dcircle->alive = true;
+            if(i<buttons->size()/2 && b->getBiquadPos().x+b->radius < deadZone){
+                b->setValue(0);
+                
             }
-            if (b->getValue() <= 0 || !b->on || b->isDead()) {
-                b->box2Dcircle->setRadius(0);
-                b->box2Dcircle->alive = false;
+            else if(b->getBiquadPos().x-b->radius > 1920*2-deadZone){
+                b->setValue(0);
+                
             }
+            if(b->isDead())b->box2Dcircle->setRadius(0);
+           // b->drain(co->drainCoefficient1);
+            b->drain(0);
+        //    b->updateRadius(true);
+//            if(b->on && b->radius > 0){
+//                b->radius = (b->size_lim - (b->size_break/b->getValue())) / (1 + (b->size_break/b->getValue()));
+//                if(b->box2Dcircle->getRadius() < b->radius)b->box2Dcircle->setRadius(b->box2Dcircle->getRadius()+1);
+//                else b->box2Dcircle->setRadius(b->radius);
+//                b->box2Dcircle->alive = true;
+//            }
+//            if (b->getValue() <= 0 || !b->on || b->isDead()) {
+//                b->box2Dcircle->setRadius(0);
+//                b->box2Dcircle->alive = false;
+//            }
             
         }
        // cout << rects[0]->getPosition() << endl;
-//        for(int i = 0; i<rects.size();i++){
-//            
-//            if(rects[i]->getPosition().x > 1920 + (960 - deadZone) )
-//                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
-//            if(rects[i]->getPosition().x < 960+deadZone )
-//                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
-//        }
+        for(int i = 0; i<rects.size();i++){
+            
+            if(rects[i]->getPosition().x > 1920 + (960 - deadZone) )
+                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
+            if(rects[i]->getPosition().x < 960+deadZone )
+                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
+        }
 
         world.update();
     }
@@ -100,7 +110,7 @@ public:
                 if(i<buttons->size()/2 )buttons->at(i).drawDebug( ofRectangle(deadZone+60,0,1980-deadZone,1080));
                 else buttons->at(i).drawDebug( ofRectangle(1980,0,1980-deadZone,1080));
             }
-            else buttons->at(i).draw();
+            buttons->at(i).draw(true,true);
         }
         
         
@@ -167,11 +177,13 @@ public:
         }
 
         for(int i = 0 ; i< buttons->size();i++){
-            if(i<buttons->size()/2)
-                buttons->at(i).setPosition(200,ofRandom(80,1000));
-            else
-                buttons->at(i).setPosition( 1920*2 - 200 ,ofRandom(80,1000));
-            
+           // if(!buttons->at(i).isDead()){
+                if(i<buttons->size()/2)
+                    buttons->at(i).setPosition(200,ofRandom(80,1000));
+                else
+                    buttons->at(i).setPosition( 1920*2 - 200 ,ofRandom(80,1000));
+  //          }
+//
            // buttons->at(i).box2Dcircle->setRadius(0);
         }
 

@@ -48,7 +48,7 @@ public:
         for(int i = 0 ; i< buttons->size();i++){
             Button * b = &buttons->at(i);
             //if(beginTime>.1)
-            b->update(b->getValue() * b->getValue(), ofRectangle(deadZone,deadZone,1920-deadZone*2,1080-deadZone*2), false);
+            b->update(b->getValue() * b->getValue(), ofRectangle(deadZone,deadZone,1920-deadZone*2,1080-deadZone*2));
             
             if(b->getPos().x < deadZone           )b->setValue(0);
             else if(b->getPos().x > 1920-deadZone)b->setValue(0);
@@ -58,17 +58,17 @@ public:
             
             b->drain(co->drainCoefficient1);
             
-            
-            if(b->on && b->radius > 0){
-                b->radius = (b->size_lim - (b->size_break/b->getValue())) / (1 + (b->size_break/b->getValue()));
-                if(b->box2Dcircle->getRadius() < b->radius)b->box2Dcircle->setRadius(b->box2Dcircle->getRadius()+1);
-                else b->box2Dcircle->setRadius(b->radius);
-                b->box2Dcircle->alive = true;
-            }
-            if (b->getValue() <= 0 || !b->on || b->isDead()) {
-                b->box2Dcircle->setRadius(0);
-                b->box2Dcircle->alive = false;
-            }
+//            
+//            if(b->on && b->radius > 0){
+//                b->radius = (b->size_lim - (b->size_break/b->getValue())) / (1 + (b->size_break/b->getValue()));
+//                if(b->box2Dcircle->getRadius() < b->radius)b->box2Dcircle->setRadius(b->box2Dcircle->getRadius()+1);
+//                else b->box2Dcircle->setRadius(b->radius);
+//                b->box2Dcircle->alive = true;
+//            }
+//            if (b->getValue() <= 0 || !b->on || b->isDead()) {
+//                b->box2Dcircle->setRadius(0);
+//                b->box2Dcircle->alive = false;
+//            }
             
             
         }

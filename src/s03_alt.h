@@ -5,7 +5,7 @@
 class Scene03alt : public commonFunctions{
     
 public:
-    
+    float upThres;
     shared_ptr<ofxBox2dCircle> average;
     ofxBiquadFilter2f filter;
     void setup(commonObjects*_co, vector<Button>*b){
@@ -14,6 +14,12 @@ public:
         svg.load("svg/03_maze_alt.svg");
         polys = getPolyline(svg);
         
+        float min = 1080;
+        for(int i = 0; i<polys.size();i++){
+            float x = polys[i].getBoundingBox().x;
+            if(x>10 && x<min )min = x;
+        }
+        upThres = min;
 //        ofxSVG svg2;
 //        svg2.load("svg/03_win_area_alt.svg");
 //        winningArea = getPolyline(svg2)[0].getBoundingBox();
