@@ -85,8 +85,10 @@ public:
     
     void begin(){
         for(int i = 0; i<buttons->size();i++){
-            if(buttons->at(i).getPosRaw().x>0)buttons->at(i).setPosition(buttons->at(i).getPosRaw().x, 1040);
-            else buttons->at(i).setPosition(ofRandom(100,1920-100), 1040);
+            if(buttons->at(i).isPlaying){
+                if(buttons->at(i).getPosRaw().x>0)buttons->at(i).setPosition(buttons->at(i).getPosRaw().x, 1040);
+                else buttons->at(i).setPosition(ofRandom(100,1920-100), 1040);
+            }
         }
         done = false;
         

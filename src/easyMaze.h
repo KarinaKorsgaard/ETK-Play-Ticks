@@ -128,7 +128,8 @@ public:
     void begin(){
         go = false;
         for(int i = 0; i<buttons->size();i++){
-            buttons->at(i).setPosition(200, 1040);
+            if(buttons->at(i).isPlaying)
+                buttons->at(i).setPosition(200, 1040);
         }
     };
     

@@ -42,20 +42,20 @@ public:
         
         lastPos = ofVec2f(ofRandom(200,500),ofRandom(200,500));
         
-        ofColor c;
-        c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
-        colors.push_back(c);
-        
-        c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
-        colors.push_back(c);
-        
-        c.set(teamNumber*255,ofRandom(220,255),255-teamNumber*255);
-        colors.push_back(c);
+//        ofColor c;
+//        c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
+//        colors.push_back(c);
+//        
+//        c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
+//        colors.push_back(c);
+//        
+//        c.set(teamNumber*255,ofRandom(220,255),255-teamNumber*255);
+//        colors.push_back(c);
         
         fc = 0.05f;
         filterLowPass.setFc(fc);
         
-        deadImg.load("characters/dead.png");
+      //  deadImg.load("characters/dead.png");
         legs[0].load("characters/arms/arm1.png");
         legs[1].load("characters/arms/arm2.png");
         
@@ -88,37 +88,43 @@ public:
             if(transform){
                 ofPushMatrix();
                 ofTranslate(getBiquadPos());
-                if(!isDead())ofRotateZ(r);
+               // if(!isDead())
+                ofRotateZ(r);
             }
             
-            if( !isDead()){
-    
-                //float alpha=255;
-//                if(sizeMatters){
-//                    alpha =CLAMP( value*value*0.1 , 0, 255 );
-//                }
+            float scale = rad / 25.0f;
+            
+//            if(on && !isDead()){
+//                float eye = -rad + rad*0.45/2.;
+//                ofSetColor(0);
+//                ofDrawCircle(3 *scale,eye ,5);
+//                ofDrawCircle(-3*scale,eye ,5);
+//            }
+            
+// body
+            ofSetColor(255);
+            int charImg = isDead()?1:0;
+            
+            img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
+            ofSetColor(color);
+            symbol->draw(-6*scale,13*scale,12*scale,12*scale);
+            ofNoFill();
+            ofDrawRectangle(-4*scale, -15*scale, 8*scale, 25*scale);
+            ofFill();
+            
+            float rectSize=0;
+            if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,25*scale );
+            ofDrawRectangle(-4*scale,-15*scale+(25*scale-rectSize),8*scale,rectSize);
+            
+           // }
+            ofSetColor(255);
+            if(!isDead()){
                 
-
                 armSwapper+=(dx+dy)*10.;
                 if(armSwapper>0.8)armSwapper=0.;
+                int aInd = armSwapper>.4 ? 0:1;
+                legs[aInd].draw(-(rad+10),-(rad+10),rad*2+20,rad*2+20);
             }
-        //    ofDrawCircle(0,0,rad);
-            
-            if(on && !isDead()){
-                float eye = -rad + rad*0.45/2.;
-                ofSetColor(0);
-                ofDrawCircle(rad*0.5 ,eye ,5);
-                ofDrawCircle(-rad*0.5,eye ,5);
-            }
-            float alpha = isDead()? 200:255;
-            for(int i = 0; i<3; i++){
-                ofSetColor(colors[i],alpha);
-                img->at(i).draw(-rad,-rad,rad*2,rad*2);
-            }
-            
-            int aInd = armSwapper>.4 ? 0:1;
-            legs[aInd].draw(-(rad+10),-(rad+10),rad*2+20,rad*2+20);
-            
             
             if(transform)ofPopMatrix();
         }
@@ -146,7 +152,9 @@ public:
     }
     
     void update(float attraction , ofRectangle rect = ofRectangle(0,0,1920,1080)){
+        box2Dcircle->setVelocity(0,0);
         if(isPlaying && !isDead()){
+            
             if(on){
                 
                 ofVec2f p;
@@ -172,7 +180,7 @@ public:
                 setDirection(rect);
 
                 //if(!freezeUpdate){
-                    box2Dcircle->setVelocity(0,0);
+                
                     box2Dcircle->addAttractionPoint( p, attraction*distToOrg  );
             }
                 
@@ -423,6 +431,8 @@ public:
     ofVec2f lastPos;
     float beginningRad;
     vector<ofImage> *img;
+    ofImage *symbol;
+    ofColor color;
     
 private:
     ofImage legs[2];
@@ -431,7 +441,6 @@ private:
     float r, r_raw;
     double x;
     double y;
-    ofImage deadImg;
     double value;
     
     float deadTimer;

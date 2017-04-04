@@ -80,6 +80,7 @@ public:
     
     ofSoundPlayer deathSound;
     vector<ofImage> characterImgs;
+    vector<ofImage> characterSymbols;
     
     map<string, int>sMap;
     

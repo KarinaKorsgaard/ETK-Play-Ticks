@@ -145,8 +145,10 @@ public:
         recDone = false;
         
         for(int i = 0 ; i<buttons->size();i++){
-            if(win.inside(buttons->at(i).getBiquadPos())){
-                recDone = true;
+            if(buttons->at(i).on && !buttons->at(i).isDead()){
+                if(win.inside(buttons->at(i).getBiquadPos())){
+                    recDone = true;
+                }
             }
         }
         

@@ -68,7 +68,7 @@ public:
         celebration.load("celebration.mov");
     }
     void setupScenes(){
-        sDesign.setup(co,&buttons,"colors.png",6);
+        sDesign.setup(co,&buttons,"colors.png",8);
         drainTest.setup(co,&buttons);
         area00.setup(co,&buttons);
         getUp01.setup(co,&buttons);

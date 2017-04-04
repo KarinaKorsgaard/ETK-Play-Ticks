@@ -12,8 +12,8 @@ class PushGame : public commonFunctions{
     
 public:
     
-    vector<shared_ptr<ofxBox2dPolygon>> rects;
-   // vector<shared_ptr<ofxBox2dRect>> solid_rects;
+   // vector<shared_ptr<ofxBox2dPolygon>> rects;
+    vector<shared_ptr<ofxBox2dRect>> rects;
     vector <shared_ptr<ofxBox2dPolygon> > polyShapes;
     
     ofxBox2d world;
@@ -55,7 +55,7 @@ public:
             if(!isDone() && !b->isDead()){
                 
                 if(i<buttons->size()/2 )b->update(co->attraction*b->getValue(), ofRectangle(deadZone+60,0,1980-deadZone,1080));
-                else b->update(co->attraction*b->getValue(), ofRectangle(1980,0,1980-deadZone,1080));
+                else b->update(co->attraction*b->getValue()*2., ofRectangle(1980,0,1980-deadZone,1080));
             }
             if(i<buttons->size()/2 && b->getBiquadPos().x+b->radius < deadZone){
                 b->setValue(0);
@@ -83,11 +83,8 @@ public:
         }
        // cout << rects[0]->getPosition() << endl;
         for(int i = 0; i<rects.size();i++){
-            
-            if(rects[i]->getPosition().x > 1920 + (960 - deadZone) )
-                rects[i]->addForce(ofVec2f(-10,0),co->blockForce);
-            if(rects[i]->getPosition().x < 960+deadZone )
-                rects[i]->addForce(ofVec2f(10,0),co->blockForce);
+            rects[i]->setVelocity(rects[i]->getVelocity()*0.1);
+            rects[i]->addAttractionPoint(ofVec2f(1920,rects[i]->getPosition().y),co->blockForce);
         }
 
         world.update();
@@ -127,8 +124,8 @@ public:
             buttons->at(i).box2Dcircle->destroy();
             
             buttons->at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-            buttons->at(i).box2Dcircle.get()->setPhysics(buttons->at(i).getValue() * 0.01, 0.0, 0.1);
-            buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), 0, 0, 50);
+            buttons->at(i).box2Dcircle.get()->setPhysics(CLAMP(buttons->at(i).getValue(),1,50), 0.0, 10.);
+            buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), 0, 0, 40);
 
         }
 
@@ -138,51 +135,51 @@ public:
         
         for(int i = 0; i<6 ; i++){
             
-//            shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-//            r.get()->setPhysics(6., 0.1 , 5.);
-//            r.get()->setup(world.getWorld(), 1920 , 94 + 168*i + 10*i  , 1920 , 166);
-//            r.get()->alive = true;
-//            //r->setMassFromShape=false;
-//            //r->setVelocity(ofVec2f(0,0));
-//            rects.push_back(r);
+            shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+            r.get()->setPhysics(10., 0.1 , 50.);
+            r.get()->setup(world.getWorld(), 1920 , 94 + 168*i + 10*i  , 1920 , 166);
+            r.get()->alive = true;
+            //r->setMassFromShape=false;
+            //r->setVelocity(ofVec2f(0,0));
+            rects.push_back(r);
             
-            ofPolyline newPoly;
-            newPoly.addVertex(ofVec2f(960      ,i*     1000./6. + i*10 ));
-            newPoly.addVertex(ofVec2f(960      ,(i+1)* 1000./6. + i*10 ));
-            newPoly.addVertex(ofVec2f(1920+960 ,i*     1000./6. + i*10 ));
-            newPoly.addVertex(ofVec2f(1920+960 ,(i+1)* 1000./6. + i*10 ));
-            
-//            p.addVertex(ofVec2f(100* i,200));
-//            p.addVertex(ofVec2f(100* i + 50,200));
+//            ofPolyline newPoly;
+//            newPoly.addVertex(ofVec2f(960      ,i*     1000./6. + i*10 ));
+//            newPoly.addVertex(ofVec2f(960      ,(i+1)* 1000./6. + i*10 ));
+//            newPoly.addVertex(ofVec2f(1920+960 ,i*     1000./6. + i*10 ));
+//            newPoly.addVertex(ofVec2f(1920+960 ,(i+1)* 1000./6. + i*10 ));
 //            
-//            p.addVertex(ofVec2f(100* i,400));
-//            p.addVertex(ofVec2f(100* i + 50,400));
+////            p.addVertex(ofVec2f(100* i,200));
+////            p.addVertex(ofVec2f(100* i + 50,200));
+////            
+////            p.addVertex(ofVec2f(100* i,400));
+////            p.addVertex(ofVec2f(100* i + 50,400));
+////            
+////            p.addVertex(ofVec2f(100* i,200));
 //            
-//            p.addVertex(ofVec2f(100* i,200));
-            
-            newPoly = newPoly.getResampledBySpacing(10);
-            newPoly.close();
-            
-            shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
-            
-            poly->addVertices(newPoly.getVertices());
-            poly->setPhysics(6.0, 0.0, 5.0);
-          //  poly->triangulatePoly();
-            poly.get()->alive = true;
-            poly->create(world.getWorld());
-            rects.push_back(poly);
+//            newPoly = newPoly.getResampledBySpacing(10);
+//            newPoly.close();
+//            
+//            shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
+//            
+//            poly->addVertices(newPoly.getVertices());
+//            poly->setPhysics(6.0, 0.0, 5.0);
+//          //  poly->triangulatePoly();
+//            poly.get()->alive = true;
+//            poly->create(world.getWorld());
+//            rects.push_back(poly);
 
             
 
         }
 
         for(int i = 0 ; i< buttons->size();i++){
-           // if(!buttons->at(i).isDead()){
+            if(buttons->at(i).isPlaying){
                 if(i<buttons->size()/2)
                     buttons->at(i).setPosition(200,ofRandom(80,1000));
                 else
                     buttons->at(i).setPosition( 1920*2 - 200 ,ofRandom(80,1000));
-  //          }
+            }
 //
            // buttons->at(i).box2Dcircle->setRadius(0);
         }

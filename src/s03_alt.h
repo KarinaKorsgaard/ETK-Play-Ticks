@@ -120,12 +120,14 @@ public:
     void begin(ofxBox2d * world){
         average = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
-        average.get()->setPhysics(3.0, 0.0, 400.0);
+        average.get()->setPhysics(3.0, 0.0, 40.0);
         average.get()->setup(world->getWorld(), 1920-120, 1080-120, 25);
        // average->setRadius(45.f);
         for(int i = 0; i<buttons->size();i++){
-            if(buttons->at(i).getPosRaw().y>0)buttons->at(i).setPosition(  buttons->at(i).getPosRaw().x, 1080 - 100);
-            else buttons->at(i).setPosition(ofRandom(100,1920-100),1080 - 100);
+            if(buttons->at(i).isPlaying){
+                if(buttons->at(i).getPosRaw().y>0)buttons->at(i).setPosition(  buttons->at(i).getPosRaw().x, 1080 - 100);
+                else buttons->at(i).setPosition(ofRandom(100,1920-100),1080 - 100);
+            }
         }
     };
     void reset(){

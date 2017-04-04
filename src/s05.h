@@ -95,7 +95,9 @@ public:
         theWinner=-1;
 //        unlock.clear();
         for(int i = 0; i<buttons->size();i++){
-            buttons->at(i).setPosition(ofRandom(60,400), 1040);
+            if(buttons->at(i).isPlaying){
+                buttons->at(i).setPosition(ofRandom(60,400), 1040);
+            }
           //  buttons->at(i).box2Dcircle->setRadius(0);
 //            unlock.push_back(false);
         }

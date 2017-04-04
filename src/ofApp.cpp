@@ -18,11 +18,13 @@ void ofApp::setup(){
     co.font_medium = &font_medium;
     co.font_large = &font_large;
     
-    co.characterImgs.resize(3);
-    co.characterImgs[0].load("characters/head.png");
-    co.characterImgs[1].load("characters/body.png");
-    co.characterImgs[2].load("characters/belly.png");
+    co.characterImgs.resize(2);
+    co.characterImgs[0].load("characters/body.png");
+    co.characterImgs[1].load("characters/dead.png");
+ //   co.characterImgs[2].load("characters/belly.png");
     
+    co.characterSymbols.resize(5);
+    for(int i = 0 ; i< 5 ; i++)co.characterSymbols[i].load("characters/symbols/s-0"+ofToString(i+1)+".png");
     co.sceneNumber = 0;
     
     ofxXmlSettings xml;
@@ -78,6 +80,7 @@ void ofApp::setup(){
             sd->buttonID = indx - (teamNum * ((BUTTONS_PR_TABLE*NUM_TABLES)/2));
             sd->teamID = teamNum;
             sd->bHit	= false;
+            b.setPosition(ofRandom(1920), ofRandom(-100,-50));
             indx++;
             
             teams[teamNum].buttons.push_back(b);
@@ -119,7 +122,7 @@ void ofApp::setup(){
     p_b_scenes.resize(b_scenes.size());
     
     physics.setName("physics");
-    physics.add(co.attraction.set("attraction",1,0,200));
+    physics.add(co.attraction.set("attraction",1,0,500));
     physics.add(co.fc.set("fc position",0.05,0.01,0.4));
     
     
@@ -145,7 +148,7 @@ void ofApp::setup(){
     
     spyGame.setName("spy game");
     spyGame.add(co.spyDrainer.set("drain",0.2,0.,2));
-    spyGame.add(co.spySpeed.set("Spy Speed",30.,0.,200));
+    spyGame.add(co.spySpeed.set("Spy Speed",30.,0.,500));
     
     market.setName("market control");
     
@@ -220,7 +223,7 @@ void ofApp::setup(){
 void ofApp::update(){
     
     alertCounter ++;
-    if(alertCounter > 120){
+    if(alertCounter > ofGetFrameRate()*6){
         alertCounter=0;
         for(int i = 0;i<receivingTables.size();i++){
             receivingTables[i]=false;
@@ -283,14 +286,15 @@ void ofApp::update(){
                     }
                     else if( m.getAddress()==b->address ){
                         b->on = true;
-                        if(!b->isPlaying){
-                            b->isPlaying = true;
-                            b->box2Dcircle->setPosition(ofRandom(200,400), ofRandom(200,400));
-                        }
+                        
                         double x = reverseX ? 1.- (m.getArgAsFloat(0)/127.0f) : m.getArgAsFloat(0)/127.0f;
                         double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
                         b->set( x , y , m.getArgAsFloat(2) );
                         
+                        if(!b->isPlaying){
+                            b->isPlaying = true;
+                            b->box2Dcircle->setPosition(x, 10);
+                        }
                         //int table = b->table + teams[t].teamId*NUM_TABLES/2;
                         
                         
@@ -486,7 +490,7 @@ void ofApp::handleSceneChange(){
                 //virtual void setPhysics(float density, float bounce, float friction);
                 teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
                 teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
-                
+                teams[0].buttons.at(i).box2Dcircle.get()->setRadius(teams[0].buttons.at(i).beginningRad);
                 
                 teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value
                 teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
@@ -554,7 +558,7 @@ void ofApp::handleSceneChange(){
         
         teamSize=teams[1].buttons.size();
         
-        teams[0].box2d.getWorld()->ClearForces();
+       // teams[0].box2d.getWorld()->ClearForces();
         
         cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
         
@@ -566,8 +570,9 @@ void ofApp::handleSceneChange(){
                 Button b = * new Button;
             
                 b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
-                b.colors = old->colors;
+                b.color = old->color;
                 b.img = old->img;
+                b.symbol = old->symbol;
                 b.radius = old->radius;
                 b.setValue(old->getValue());
                 b.isPlaying = old->isPlaying;
@@ -585,7 +590,7 @@ void ofApp::handleSceneChange(){
             
             for(int b = 0; b<teams[1].buttons.size();b++){
                 teams[1].buttons[b].box2Dcircle->alive = false;
-                teams[1].buttons[b].box2Dcircle->setRadius(0);
+               // teams[1].buttons[b].box2Dcircle->setRadius(0);
             }
             
             
@@ -600,7 +605,7 @@ void ofApp::handleSceneChange(){
         
         teamSize=teams[1].buttons.size();
         
-        teams[0].box2d.getWorld()->ClearForces();
+      //  teams[0].box2d.getWorld()->ClearForces();
         
         cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
         
@@ -612,8 +617,9 @@ void ofApp::handleSceneChange(){
                 Button b = * new Button;
                 
                 b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
-                b.colors = old->colors;
-                
+                b.color = old->color;
+                b.img = old->img;
+                b.symbol = old->symbol;
                 b.radius = old->radius;
                 b.setValue(old->getValue());
                 b.isPlaying = old->isPlaying;
@@ -631,7 +637,7 @@ void ofApp::handleSceneChange(){
             
             for(int b = 0; b<teams[1].buttons.size();b++){
                 teams[1].buttons[b].box2Dcircle->alive = false;
-                teams[1].buttons[b].box2Dcircle->setRadius(0);
+              //  teams[1].buttons[b].box2Dcircle->setRadius(0);
             }
   
         }

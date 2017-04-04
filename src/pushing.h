@@ -123,7 +123,10 @@ public:
             buttons->at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
             buttons->at(i).box2Dcircle.get()->setPhysics(3., 0.0, 400.);
             buttons->at(i).box2Dcircle.get()->setup(world.getWorld(), ofRandom(300,1920-300), ofRandom(300,1920-300), buttons->at(i).getValue());
-            buttons->at(i).setPosition(1920/2,1080/2);
+            if(buttons->at(i).isPlaying){
+                buttons->at(i).setPosition(1920/2,1080/2);
+            }
+            
         }
         
         
@@ -134,7 +137,7 @@ public:
         for(int i = 0; i<7 ; i++){
             
             shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-            r.get()->setPhysics(600., 0.1 , 100.);
+            r.get()->setPhysics(120., 0.1 , 100.);
             r.get()->setup(world.getWorld(), ofRandom(1920) , ofRandom(1080) , 40 , 200);
             r.get()->alive = true;
             //r->setMassFromShape=false;
