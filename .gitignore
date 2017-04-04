@@ -3,4 +3,3 @@ bin/data/reports*
 bin/data/settings.xml
 bin/.DS_Store
 bin/data/.DS_Store
-bin/data/config.xml
