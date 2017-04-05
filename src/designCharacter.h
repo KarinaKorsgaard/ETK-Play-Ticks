@@ -63,6 +63,8 @@ public:
                 ofTranslate(b.getGridPos(   b.table - (b.table%2) * b.teamNumber , b.ID )   );
                 ofTranslate(800,0);
                 b.draw(false, false, true);
+                if(co->debug)
+                    co->font_medium->drawString(ofToString(b.table)+" id:"+ofToString(b.ID), 0, 50);
                 ofPopMatrix();
             }
         }
