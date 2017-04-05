@@ -291,9 +291,9 @@ void ofApp::update(){
                         double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
                         b->set( x , y , m.getArgAsFloat(2) );
                         
-                        if(!b->isPlaying){
+                        if(b->on && !b->isPlaying){
                             b->isPlaying = true;
-                            b->box2Dcircle->setPosition(x, 10);
+                            b->box2Dcircle->setPosition(x, 20);
                         }
                         //int table = b->table + teams[t].teamId*NUM_TABLES/2;
                         

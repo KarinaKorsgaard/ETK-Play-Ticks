@@ -26,7 +26,7 @@ public:
         secondAdress = _secondAdress;
         color.resize(2);
         teamNumber = _teamNum;
-        
+        isPlaying=false;
         value = val;
         beginningValue = val;
         beginningRad = size;
