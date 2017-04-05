@@ -64,7 +64,7 @@ public:
                 ofTranslate(800,0);
                 b.draw(false, false, true);
                 if(co->debug)
-                    co->font_medium->drawString(ofToString(b.table)+" id:"+ofToString(b.ID), 0, 50);
+                    co->font_small->drawString(ofToString(b.table+1)+" :"+ofToString(b.ID+1), -10, 20);
                 ofPopMatrix();
             }
         }
