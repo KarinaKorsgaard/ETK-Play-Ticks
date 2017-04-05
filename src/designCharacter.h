@@ -36,11 +36,18 @@ public:
     void update(){
         for(int i=0; i<buttons->size(); i++) {
             ofVec3f data = buttons->at(i).getRawData();
-            int x =CLAMP( ofMap(data.x,0,1,0,colors.size()) , 0 , colors.size()-1);
-            int y =CLAMP( ofMap(data.y,0,1,0,co->characterSymbols.size()), 0 , co->characterSymbols.size()-1); // symbol
+            int x = ofMap(data.x,0,1,0,colors.size()) ;
+            int y = ofMap(data.y,0,1,0,colors.size()) ; // symbol
+            x=CLAMP(x,0,colors.size()-1);
+            y=CLAMP(y,0,colors.size()-1);
+            if(y==x){
+                y++;
+                y=y%colors.size();
+            };
         //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
-            buttons->at(i).color=colors[CLAMP(x,0,colors.size()-1)];
-            buttons->at(i).symbol=&co->characterSymbols[CLAMP(y,0,co->characterSymbols.size()-1)];
+            buttons->at(i).color[0]=colors[CLAMP(x,0,colors.size()-1)];
+            buttons->at(i).color[1]=colors[CLAMP(y,0,colors.size()-1)];
+            //buttons->at(i).symbol=&co->characterSymbols[CLAMP(y,0,co->characterSymbols.size()-1)];
           //  buttons->at(i).colors[2]=colors[CLAMP(z,0,colors.size()-1)];
             
         }

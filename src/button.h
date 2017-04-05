@@ -24,7 +24,7 @@ public:
         table = _table;
         address = _address;
         secondAdress = _secondAdress;
-        
+        color.resize(2);
         teamNumber = _teamNum;
         
         value = val;
@@ -102,19 +102,19 @@ public:
 //            }
             
 // body
-            ofSetColor(255);
+            ofSetColor(color[0]);
             int charImg = isDead()?1:0;
             
             img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
-            ofSetColor(color);
-            symbol->draw(-6*scale,13*scale,12*scale,12*scale);
+            ofSetColor(color[1]);
+            //symbol->draw(-6*scale,13*scale,12*scale,12*scale);
             ofNoFill();
-            ofDrawRectangle(-4*scale, -15*scale, 8*scale, 25*scale);
+            ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
             
             float rectSize=0;
-            if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,25*scale );
-            ofDrawRectangle(-4*scale,-15*scale+(25*scale-rectSize),8*scale,rectSize);
+            if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,35*scale );
+            ofDrawRectangle(-4*scale,-15*scale+(35*scale-rectSize),8*scale,rectSize);
             
            // }
             ofSetColor(255);
@@ -432,7 +432,7 @@ public:
     float beginningRad;
     vector<ofImage> *img;
     ofImage *symbol;
-    ofColor color;
+    vector<ofColor> color;
     
 private:
     ofImage legs[2];
