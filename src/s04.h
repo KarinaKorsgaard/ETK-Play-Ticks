@@ -52,8 +52,11 @@ public:
 //                    if(!isDone())buttons->at(i).addValue(-co->spyDrainer);
 //                }
                 
-                if(i!=spyId)buttons->at(i).update(co->attraction);
-                else buttons->at(i).update(co->spySpeed);
+                ofRectangle r = ofRectangle(30,30,1920-60,1080-60);
+                if(!r.inside(buttons->at(i).getBiquadPos()))buttons->at(i).setValue(0);
+                
+                if(i!=spyId)buttons->at(i).update(co->attraction, r);
+                else buttons->at(i).update(co->spySpeed,r);
             }
         }
         if(spyId!=-1){
@@ -67,6 +70,12 @@ public:
     }
     
     void draw(){
+        
+        ofSetColor(0);
+        ofDrawRectangle(0, 0, 30+25, 1080);
+        ofDrawRectangle(0, 0, 1920, 30+25);
+        ofDrawRectangle(1920-(30+25), 0, 30+25, 1080);
+        ofDrawRectangle(0, 1080-(30+25), 1920, 30+25);
 
         if(co->debug){
             int blue = buttons->at(spyId).teamNumber==0 ? 255:0;
@@ -82,11 +91,18 @@ public:
             if(co->debug){
                 buttons->at(i).drawDebug();
             }
-        }
+        }    
     };
     
     void begin(){
         haveLogged = false;
+        
+        for(int i = 0; i<buttons->size();i++){
+            if(buttons->at(i).isPlaying){
+                buttons->at(i).setPosition(ofRandom(100,1920-100), ofRandom(100,1080-100));
+            }
+        }
+
     };
     void reset(){
 

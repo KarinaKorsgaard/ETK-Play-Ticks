@@ -111,7 +111,7 @@ public:
             
             ofTranslate(0,rad*0.3);
             
-            symbol->draw(-rad*0.8/2,-rad*0.8/2,rad*0.8,rad*0.8);
+            symbol->draw(-rad*0.7/2,-rad*0.7/2,rad*0.7,rad*0.7);
             
             // circle_
             //ofNoFill();
@@ -127,14 +127,14 @@ public:
             curve.setFilled(false);
             curve.setStrokeColor(color[0]);
             curve.setArcResolution(1000);
-            curve.moveTo(rad*0.55,0);
-            curve.arc(0, 0, rad*0.55, rad*0.55, 0, rectSize);
+            curve.moveTo(rad*0.5,0);
+            curve.arc(0, 0, rad*0.5, rad*0.5, 0, rectSize);
             curve.draw();
             
             ofNoFill();
             ofSetLineWidth(scale);
-            ofDrawCircle(0, 0, rad*0.55-(2.5*scale));
-            ofDrawCircle(0, 0, rad*0.55+(2.5*scale));
+            ofDrawCircle(0, 0, rad*0.5-(2.5*scale));
+            ofDrawCircle(0, 0, rad*0.5+(2.5*scale));
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
             
@@ -436,16 +436,8 @@ public:
     float size_break;
     float size_lim;
     
-    // gravity shit :(
     float dy_jump, dx_jump;
     bool isJumping;
-    
-//    // finale crap!! :(
-//    bool freezeUpdate = false;
-//    float freezeTimer = 0.;
-//    float finaleValue;
-//    bool updatefinaleValue = false;
-//    float finaleValueTimer = 0.;
     
     float distToOrg;
 
@@ -458,7 +450,7 @@ public:
     vector<ofImage> *img;
     ofImage *symbol;
     vector<ofColor> color;
-    
+    int symbolInt,colorInt;
 private:
     ofImage legs[2];
     float armSwapper;

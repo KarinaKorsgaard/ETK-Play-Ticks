@@ -29,6 +29,7 @@ public:
       
         for(int i = 0; i<6;i++)spaces[i]=(ofPoint(-1,-1));
         spacesToDraw = spaces;
+        
         for(int i = 0; i<buttons.size();i++){
             
             int b_id  = buttons[i].ID;
@@ -95,7 +96,7 @@ public:
     
     vector<Button>*buttons;
   //  ofImage basket;
-    ofImage basketTop;
+  //  ofImage basketTop;
 
     float timeGained;
     map <int,ofVec3f> buttonInfo;
@@ -124,7 +125,7 @@ public:
         }
         
        // basket.load("img/06_factories.png");
-        basketTop.load("img/06_factories_top_layer.png");
+       // basketTop.load("img/06_factories_top_layer.png");
         
         ofxSVG svg3;
         svg3.load("svg/06_win_rect.svg");
@@ -214,6 +215,7 @@ public:
 
         //ofSetColor(255,200);
         //basketTop.draw(0,0);
+        svg.draw();
         
         int red = CLAMP(int(ofMap(countDown,3,0,0,255)),50,200);
         ofSetColor(red,255-red,50);
@@ -244,8 +246,8 @@ public:
         
 
         
-        ofSetColor(255,200);
-        basketTop.draw(0,0);
+      //  ofSetColor(255,200);
+      //  basketTop.draw(0,0);
         
         for(int i = 0; i<baskets.size();i++){
             baskets[i].drawDots();

@@ -44,6 +44,8 @@ public:
         //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
             buttons->at(i).color[0]=colors[x];
             buttons->at(i).symbol=&co->characterSymbols[y];
+            buttons->at(i).colorInt = x;
+            buttons->at(i).symbolInt = y;
             //buttons->at(i).symbol=&co->characterSymbols[CLAMP(y,0,co->characterSymbols.size()-1)];
           //  buttons->at(i).colors[2]=colors[CLAMP(z,0,colors.size()-1)];
             
