@@ -18,10 +18,14 @@ public:
         
         float max = 0;
         for(int i = 0; i<polys.size();i++){
-            float x = polys[i].getBoundingBox().x;
-            if(x<1000 && x>max )max = x;
+            float x = polys[i].getBoundingBox().x+polys[i].getBoundingBox().height;
+            if(x<1060 && x>max )max = x;
         }
         upThres = max;
+        cout << upThres<< endl;
+        cout << "maze debugging " << endl;
+        
+    
     };
     bool isDone(){
         bool isInside=true;
