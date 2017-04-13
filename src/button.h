@@ -102,19 +102,44 @@ public:
 //            }
             
 // body
-            ofSetColor(color[0]);
+            ofSetColor(255);
             int charImg = isDead()?1:0;
             
             img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
-            ofSetColor(color[1]);
-            //symbol->draw(-6*scale,13*scale,12*scale,12*scale);
+            
+            ofSetColor(color[0]);
+            
+            ofTranslate(0,rad*0.3);
+            
+            symbol->draw(-rad*0.8/2,-rad*0.8/2,rad*0.8,rad*0.8);
+            
+            // circle_
+            //ofNoFill();
+            //ofSetLineWidth(1);
+            //ofDrawCircle(0,0,rad*0.8,rad*0.8);
+            //ofSetLineWidth(10);
+            float rectSize=0;
+            if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,360 );
+        
+            ofPath curve;
+            curve.setStrokeWidth(5*scale);
+            
+            curve.setFilled(false);
+            curve.setStrokeColor(color[0]);
+            curve.setArcResolution(1000);
+            curve.moveTo(rad*0.55,0);
+            curve.arc(0, 0, rad*0.55, rad*0.55, 0, rectSize);
+            curve.draw();
+            
             ofNoFill();
-            ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
+            ofSetLineWidth(scale);
+            ofDrawCircle(0, 0, rad*0.55-(2.5*scale));
+            ofDrawCircle(0, 0, rad*0.55+(2.5*scale));
+            //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
             
-            float rectSize=0;
-            if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,35*scale );
-            ofDrawRectangle(-4*scale,-15*scale+(35*scale-rectSize),8*scale,rectSize);
+            
+            //ofDrawRectangle(-4*scale,-15*scale+(35*scale-rectSize),8*scale,rectSize);
             
            // }
             ofSetColor(255);

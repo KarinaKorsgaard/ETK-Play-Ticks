@@ -23,8 +23,8 @@ void ofApp::setup(){
     co.characterImgs[1].load("characters/dead.png");
  //   co.characterImgs[2].load("characters/belly.png");
     
-    co.characterSymbols.resize(5);
-    for(int i = 0 ; i< 5 ; i++)co.characterSymbols[i].load("characters/symbols/s-0"+ofToString(i+1)+".png");
+    co.characterSymbols.resize(6);
+    for(int i = 0 ; i< 6 ; i++)co.characterSymbols[i].load("characters/symbols/marker_000"+ofToString(i)+".png");
     co.sceneNumber = 0;
     
     ofxXmlSettings xml;

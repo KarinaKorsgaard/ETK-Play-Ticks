@@ -135,7 +135,25 @@ public:
                 box2d.setGravity(0,0);
             }
             
-            if(s == co->sMap["SpyGame"])spy04.begin();
+            if(s == co->sMap["SpyGame"]){
+                createRectScene(spy04.polys,100,0.,100.);
+                spy04.begin();
+                
+                spyRects.clear();
+                for(int i = 0; i<rectShapes.size();i++){
+                    ofVec3f v;
+                    if(rectShapes[i]->getWidth()>rectShapes[i]->getHeight()){
+                        v.x = 0;
+                        v.y = rectShapes[i]->getPosition().y;
+                    }else{
+                        v.x = rectShapes[i]->getPosition().x;
+                        v.y = 0;
+                        
+                    }
+                    v.z = rectShapes[i]->getRotation();
+                    spyRects.push_back(v);
+                }
+            }
             else if(s == co->sMap["SpyGame"])spy04.reset();
             
             if(s == co->sMap["Market"]){ // !
@@ -161,7 +179,10 @@ public:
         if(s==co->sMap["Maze"])maze02.update();
         if(s==co->sMap["Maze_alt"])maze02_alt.update();
         if(s==co->sMap["Gravity"])gravity03.update();
-        if(s==co->sMap["SpyGame"] && spy04.spyId !=-1)spy04.update();
+        if(s==co->sMap["SpyGame"] && spy04.spyId !=-1){
+            spy04.update();
+            controlPolyShapes();
+        }
         if(s==co->sMap["Market"])market05.update();
         
         // push game!
@@ -252,7 +273,6 @@ public:
                                 
                             }
                         }
-                        
                     }
                 }
             }
@@ -317,7 +337,14 @@ public:
         else if(s==co->sMap["Maze"])maze02.draw();
         else if(s==co->sMap["Maze_alt"])maze02_alt.draw();
         else if(s==co->sMap["Gravity"])gravity03.draw();
-        else if(s==co->sMap["SpyGame"]&& spy04.spyId !=-1)spy04.draw();
+        else if(s==co->sMap["SpyGame"]&& spy04.spyId !=-1){
+            for(int i = 0; i<rectShapes.size();i++){
+                rectShapes[i]->draw();
+            }
+            //cout << polyShapes.size()<<endl;
+        
+            spy04.draw();
+        }
         else if(s==co->sMap["Market"])market05.draw();
         // 06 push game
         else if(s==co->sMap["Charades"])charades07.draw();
@@ -438,6 +465,7 @@ public:
     
 private:
     vector <shared_ptr<ofxBox2dPolygon> > polyShapes;
+    vector <shared_ptr<ofxBox2dRect> > rectShapes;
     string timeToString(double time){
         time = floorf(time);
         if(time<0)time = 0;
@@ -452,7 +480,7 @@ private:
         return timeString;
     }
     bool anyButtons = false;
-    void createScene(vector<ofPolyline>polys){
+    void createScene(vector<ofPolyline>polys, float d = 0.,float f = 0.,float b = 0.){
         
         if(polyShapes.size()==0){
             
@@ -462,20 +490,59 @@ private:
                     shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
                     
                     poly->addVertices(polys[i].getVertices());
-                    poly->setPhysics(0.0, 0.0, 0.0);
+                    poly->setPhysics(d,f,b);
                     poly->triangulatePoly();
                     
                     poly->create(box2d.getWorld());
                     polyShapes.push_back(poly);
                 }
             }
-            
         }
     }
+    void createRectScene(vector<ofPolyline>polys, float d = 0.,float f = 0.,float b = 0.){
+        
+        if(polyShapes.size()==0){
+            
+            for(int i = 0 ;i <polys.size();i++){
+                ofRectangle r = polys[i].getBoundingBox();
+                if((r.width<1900 && r.height < 1070)){
+                    shared_ptr<ofxBox2dRect> poly = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+                    
+                    
+                    poly->setPhysics(d,f,b);
+                   
+                    poly->setup(box2d.getWorld(), r);
+                    rectShapes.push_back(poly);
+                }
+            }
+        }
+    }
+    
+    void controlPolyShapes(){
+        for(int i = 0; i<rectShapes.size();i++){
+         //   rectShapes[i]->setVelocity(0,0);
+            if(spyRects[i].y==0){
+                rectShapes[i]->setVelocity(rectShapes[i]->getVelocity().x,0);
+            }
+            else if(spyRects[i].x==0){
+                rectShapes[i]->setVelocity(0,rectShapes[i]->getVelocity().y);
+            }
+            rectShapes[i]->setFixedRotation(true);
+            rectShapes[i]->setRotation(0);
+           // cout << rectShapes[0]->getPosition()<< endl;
+    //        polyShapes[i]->setAngularVelocity(0);
+           // float rot = rectShapes[i]->getRotation()>0?-.1:
+            
+        }
+        
+       
+    }
+    
     void destroyMaze(){
         if(polyShapes.size()>0){
             polyShapes.clear();
         }
+        if(rectShapes.size()>0)rectShapes.clear();
     }
     
     float ease(float t, float b, float c, float d) {
@@ -484,7 +551,7 @@ private:
         return c*t*t + b;
     }
     ofVec3f p_averageData;
-    
+    vector<ofVec3f>spyRects;
 };
 
 #endif /* Team_h */

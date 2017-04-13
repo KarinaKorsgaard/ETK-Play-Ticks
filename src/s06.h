@@ -94,7 +94,7 @@ class Scene06 : public commonFunctions{
 public:
     
     vector<Button>*buttons;
-    ofImage basket;
+  //  ofImage basket;
     ofImage basketTop;
 
     float timeGained;
@@ -123,7 +123,7 @@ public:
             baskets.back().setup(polysOutline[i]);
         }
         
-        basket.load("img/06_factories.png");
+       // basket.load("img/06_factories.png");
         basketTop.load("img/06_factories_top_layer.png");
         
         ofxSVG svg3;

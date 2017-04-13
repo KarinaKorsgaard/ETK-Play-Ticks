@@ -12,7 +12,13 @@ public:
     void setup(commonObjects*_co, vector<Button>*b ){
         buttons = b;
         co = _co;
-    
+        
+        svg.load("svg/04_spy.svg");
+        polys = getPolyline(svg);
+        cout << "spy debugger:"<<endl;
+        
+        cout << polys.size()<< endl;
+        cout << "---"<<endl;
         spyId = -1;
         
     };
@@ -40,10 +46,11 @@ public:
     void update(){
         if(!isDone()){
             for(int i=0; i<buttons->size(); i++) {
-            
-                if(buttons->at(i).isColliding() && !buttons->at(i).isDead()){
-                    if(!isDone())buttons->at(i).addValue(-co->spyDrainer);
-                }
+
+                // dont drain on collide
+//                if(buttons->at(i).isColliding() && !buttons->at(i).isDead()){
+//                    if(!isDone())buttons->at(i).addValue(-co->spyDrainer);
+//                }
                 
                 if(i!=spyId)buttons->at(i).update(co->attraction);
                 else buttons->at(i).update(co->spySpeed);
@@ -88,6 +95,7 @@ public:
     commonObjects * co;
     ofxSVG svg;
     ofPolyline poly;
+    vector<ofPolyline> polys;
 
     
 };

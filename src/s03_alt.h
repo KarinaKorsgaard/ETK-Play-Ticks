@@ -16,7 +16,7 @@ public:
         
         float min = 1080;
         for(int i = 0; i<polys.size();i++){
-            float x = polys[i].getBoundingBox().x;
+            float x = polys[i].getBoundingBox().y;
             if(x>10 && x<min )min = x;
         }
         upThres = min;
