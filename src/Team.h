@@ -90,6 +90,7 @@ public:
         if(p_sceneNum != s){
             logDone = false;
             playAnimation = false;
+            wonSent = false;
             destroyMaze();
             
             //for(int i = 0 ; i<buttons.size();i++)buttons[i].freezeUpdate=false;
@@ -289,9 +290,12 @@ public:
             }
             if(playAnimation){
                 celebration.update();
-                ofxOscMessage m;
-                m.setAddress("/won"+ofToString(teamId+1));
-                co->oscOut.sendMessage(m);
+                if(!wonSent){
+                    ofxOscMessage m;
+                    m.setAddress("/won"+ofToString(teamId+1));
+                    co->oscOut.sendMessage(m);
+                    wonSent=true;
+                }
             }
         }
         
@@ -563,6 +567,7 @@ private:
     }
     ofVec3f p_averageData;
     vector<ofVec3f>spyRects;
+    bool wonSent;
 };
 
 #endif /* Team_h */
