@@ -239,7 +239,7 @@ void ofApp::update(){
     while(co.oscIn.hasWaitingMessages()){
         ofxOscMessage m;
         co.oscIn.getNextMessage(m);
-        if(m.getAddress() == "/next")b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size())]=true;
+        if(m.getAddress() == "/next")b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size()-1)]=true;
     }
     
     int resent = -1;
