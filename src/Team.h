@@ -77,7 +77,7 @@ public:
         maze02_alt.setup(co,&buttons);
         spy04.setup(co,&buttons);
         gravity03.setup(co,&buttons);
-        market05.setup(co,&buttons);
+        market05.setup(co,&buttons,teamId);
         charades07.setup(co,&buttons);
         idle.setup(co,&buttons);
         easyMaze.setup(co,&buttons);

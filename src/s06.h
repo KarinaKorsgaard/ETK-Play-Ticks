@@ -108,12 +108,12 @@ public:
     
     ofRectangle win;
     
-    void setup(commonObjects*_co, vector<Button>*b){
+    void setup(commonObjects*_co, vector<Button>*b, int _team){
         buttons = b;
         co = _co;
         svg.load("svg/06_solid_objects.svg");
         polys = getPolyline(svg);
-
+        team = _team;
         
         ofxSVG svg2;
         svg2.load("svg/06_factory_areas.svg");
@@ -187,7 +187,7 @@ public:
             
             if(baskets[i].p_efficiency != baskets[i].efficiency){
                 ofxOscMessage m;
-                m.setAddress("/factory"+ofToString(i));
+                m.setAddress("/factory"+ofToString(i)+"team"+ofToString(team));
                 m.addIntArg(baskets[i].efficiency);
                 co->oscOut.sendMessage(m);
                 baskets[i].p_efficiency = baskets[i].efficiency;
@@ -283,6 +283,6 @@ public:
     vector<ofPolyline> polysOutline;
     
     bool done = false;
-
+    int team;
     
 };
