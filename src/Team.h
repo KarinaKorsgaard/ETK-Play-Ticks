@@ -68,7 +68,7 @@ public:
         celebration.load("celebration.mov");
     }
     void setupScenes(){
-        sDesign.setup(co,&buttons,"colors.png",8);
+        sDesign.setup(co,&buttons,"colors.png",6);
         drainTest.setup(co,&buttons);
         area00.setup(co,&buttons);
         getUp01.setup(co,&buttons);
@@ -320,7 +320,7 @@ public:
                 co->oscOut.sendMessage(m);
                 
                 m.clear();
-                m.setAddress("/collectedVel"+ofToString(teamId+1));
+                m.setAddress("/averageSpeed"+ofToString(teamId+1));
                 m.addFloatArg(d.z);
                 co->oscOut.sendMessage(m);
                 

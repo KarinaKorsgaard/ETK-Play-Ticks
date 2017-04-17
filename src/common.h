@@ -89,6 +89,8 @@ public:
     int NUM_TABLES;
     int BUTTONS_PR_TABLE;
     
+    ofImage avergaTick;
+    
     void log(string l){
         if(logReport){
             logs.push_back(l);

@@ -22,7 +22,7 @@ void ofApp::setup(){
     co.characterImgs[0].load("characters/body.png");
     co.characterImgs[1].load("characters/dead.png");
  //   co.characterImgs[2].load("characters/belly.png");
-    
+    co.avergaTick.load("characters/averageTick.png");
     co.characterSymbols.resize(6);
     for(int i = 0 ; i< 6 ; i++)co.characterSymbols[i].load("characters/symbols/marker_000"+ofToString(i)+".png");
     co.sceneNumber = 0;

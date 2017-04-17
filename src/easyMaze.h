@@ -95,29 +95,8 @@ public:
         if(go)c.set(120,240,180);
         else c.set(255,120,120);
         
-        float rad = 45.f;
-        ofSetColor(c);
-        // body
-        c.setBrightness(100);
-        ofDrawCircle(0,0,rad);
-        
-        //head
-        c.setBrightness(180);
-        ofSetColor(c);
-        float eye = -rad + rad*0.45/2.;
-        ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
-    
-        //stomach
-        ofSetColor(255,200);
-        ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
-        
-        
-        //eyes
-        //if(ofRandom(1000)>0.1){
-        ofSetColor(0);
-        ofDrawCircle(rad*0.3 ,eye ,5);
-        ofDrawCircle(-rad*0.3,eye ,5);
-        //}
+        int rad = average->getRadius();
+        co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
         
         ofPopMatrix();
         

@@ -11,13 +11,14 @@ public:
     int efficiency;
     int p_efficiency;
     ofPoint center;
-    
+    int top;
     vector<ofPoint>spaces;
     vector<ofPoint>spacesToDraw;
     
     void setup(ofPolyline p){
         poly=p;
         center=poly.getCentroid2D();
+        top = poly.getBoundingBox().y;
         for(int i = 0; i<6;i++)spaces.push_back(ofPoint(-1,-1));
     }
     bool isIn(ofPoint p){
@@ -32,8 +33,8 @@ public:
         
         for(int i = 0; i<buttons.size();i++){
             
-            int b_id  = buttons[i].ID;
-            int b_tab = buttons[i].table;
+            int b_id  = buttons[i].colorInt;
+            int b_tab = buttons[i].symbolInt;
             
             if(spaces[b_id].x == -1){
                 spaces[b_id].x = 1;
@@ -71,7 +72,7 @@ public:
     // output is lala. Not necessary I guess... ? - It is a vector of values added to the buttons in the basket?
     void drawDots(){
         ofPushMatrix();
-        ofTranslate(center.x-30*spacesToDraw.size()/2,center.y);
+        ofTranslate(center.x-(30.f*float(spacesToDraw.size()))/2.f,top - 70);
 
         int indx=0;
         for(int i = 0; i<spacesToDraw.size();i++){
@@ -84,7 +85,7 @@ public:
                 ofDrawCircle(i*30,30,10);
 
         }
-       // ofPopMatrix();
+        ofPopMatrix();
     }
     
 };
@@ -252,7 +253,6 @@ public:
         for(int i = 0; i<baskets.size();i++){
             baskets[i].drawDots();
 
-            ofPopMatrix();
             if(co->debug){
                 ofPushMatrix();
                 ofTranslate(baskets[i].center);

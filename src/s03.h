@@ -79,31 +79,34 @@ public:
         }
 
         
-        ofSetColor(255,0,0);
+     
         ofPushMatrix();
         ofTranslate(filter.value());
-        //ofRotateZ(average->getRotation());
-        //average->draw();
-        int rad = average->getRadius();
         
-        //body
-        ofSetColor(100);
-        ofDrawCircle(0,0,rad);
-        
-        //head
-        ofSetColor(180);
-        float eye = -rad + rad*0.45/2;
-        ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
-        
-        //eyes
-        if(ofRandom(1000)>0.1){
-            ofSetColor(0);
-            ofDrawCircle(rad*0.3 ,eye, 7);
-            ofDrawCircle(-rad*0.3,eye ,7);
-        }
-        //stomach
+//        //ofRotateZ(average->getRotation());
+//        //average->draw();
         ofSetColor(255);
-        ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
+        int rad = average->getRadius();
+        co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
+//        
+//        //body
+//        ofSetColor(100);
+//        ofDrawCircle(0,0,rad);
+//        
+//        //head
+//        ofSetColor(180);
+//        float eye = -rad + rad*0.45/2;
+//        ofDrawEllipse(0,eye, rad*0.85,rad*0.45);
+//        
+//        //eyes
+//        if(ofRandom(1000)>0.1){
+//            ofSetColor(0);
+//            ofDrawCircle(rad*0.3 ,eye, 7);
+//            ofDrawCircle(-rad*0.3,eye ,7);
+//        }
+//        //stomach
+//        ofSetColor(255);
+//        ofDrawEllipse(0,rad*0.35,rad*1.5,rad*1.4);
         ofPopMatrix();
         
         
