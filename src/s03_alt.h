@@ -89,7 +89,7 @@ public:
         ofPushMatrix();
         ofTranslate(filter.value());
         ofSetColor(255);
-        int rad = average->getRadius();
+        float rad = average->getRadius();
         co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
         
 //        //ofRotateZ(average->getRotation());
