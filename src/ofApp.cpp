@@ -147,7 +147,10 @@ void ofApp::setup(){
     
     
     spyGame.setName("spy game");
-    spyGame.add(co.spyDrainer.set("drain",0.2,0.,2));
+    //spyGame.add(co.spyDrainer.set("drain",0.2,0.,2));
+    spyGame.add(co.pauseTeam1.set("pause team toggle", false));
+    //spyGame.add(co.pauseTeam2.set("pause team 2", true));
+    
     spyGame.add(co.spySpeed.set("Spy Speed",30.,0.,500));
     
     market.setName("market control");
@@ -221,6 +224,9 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    //co.pauseTeam1=!co.pauseTeam2;
+    //co.pauseTeam2=!co.pauseTeam1;
     
     alertCounter ++;
     if(alertCounter > ofGetFrameRate()*6){

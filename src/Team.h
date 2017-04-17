@@ -180,7 +180,10 @@ public:
         if(s==co->sMap["Maze_alt"])maze02_alt.update();
         if(s==co->sMap["Gravity"])gravity03.update();
         if(s==co->sMap["SpyGame"] && spy04.spyId !=-1){
-            spy04.update();
+            
+            if((teamId == 0 && !co->pauseTeam1) || (teamId == 1 && co->pauseTeam1)){
+                spy04.update();
+            }
             controlPolyShapes();
         }
         if(s==co->sMap["Market"])market05.update();
@@ -238,9 +241,17 @@ public:
         }
         
         if(!isDone){
-            drainTime();
-            drainIndividuals();
-            playAnimation=false;
+            bool drain = true;
+            if(s==co->sMap["SpyGame"]){
+                if((teamId == 0 && co->pauseTeam1) || (teamId == 1 && !co->pauseTeam1)){
+                    drain = false;
+                }
+            }
+            if(drain){
+                drainTime();
+                drainIndividuals();
+                playAnimation=false;
+            }
         }
         
         if(isDone){

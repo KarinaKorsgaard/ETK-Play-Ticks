@@ -148,7 +148,7 @@ public:
                 armSwapper+=(dx+dy)*10.;
                 if(armSwapper>0.8)armSwapper=0.;
                 int aInd = armSwapper>.4 ? 0:1;
-                int w = rad*3.5;
+                int w = rad*3.;
                 legs[aInd].draw(-w/2,-w/2,w,w);
             }
             

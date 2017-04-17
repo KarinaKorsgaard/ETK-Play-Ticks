@@ -59,6 +59,8 @@ public:
     
     ofParameter<float>spyDrainer;
     ofParameter<float>spySpeed;
+    ofParameter<bool>pauseTeam1;
+    ofParameter<bool>pauseTeam2;
     ofParameter<float>thresY_gravity;
     
     ofParameter<bool>refill1;

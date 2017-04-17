@@ -1,4 +1,5 @@
 #N canvas 354 241 484 508 10;
+#X declare -lib mrpeach;
 #X obj 152 325 udpsend;
 #X floatatom 145 380 5 0 0 0 - - -;
 #X obj 136 297 packOSC;
@@ -9,6 +10,7 @@
 #X obj 41 247 print unpacked;
 #X obj 75 193 unpackOSC;
 #X obj 75 220 pipelist;
+#X obj 254 115 import mrpeach;
 #X connect 0 0 1 0;
 #X connect 2 0 0 0;
 #X connect 3 0 2 0;
