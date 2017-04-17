@@ -66,7 +66,7 @@ public:
     void draw(){
         
         ofSetColor(255);
-        svg.draw();
+      //  svg.draw();
         if(co->debug){
             int red = reached() ? 0:255;
             ofSetColor(red,0,255-red);

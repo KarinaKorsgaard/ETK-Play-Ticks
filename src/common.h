@@ -85,6 +85,7 @@ public:
     vector<ofImage> characterSymbols;
     
     map<string, int>sMap;
+    ofImage legs[2];
     
     int NUM_TABLES;
     int BUTTONS_PR_TABLE;

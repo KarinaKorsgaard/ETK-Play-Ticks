@@ -23,6 +23,10 @@ void ofApp::setup(){
     co.characterImgs[1].load("characters/dead.png");
  //   co.characterImgs[2].load("characters/belly.png");
     co.avergaTick.load("characters/averageTick.png");
+    
+    co.legs[0].load("characters/arms/arm1.png");
+    co.legs[1].load("characters/arms/arm2.png");
+    
     co.characterSymbols.resize(6);
     for(int i = 0 ; i< 6 ; i++)co.characterSymbols[i].load("characters/symbols/marker_000"+ofToString(i)+".png");
     co.sceneNumber = 0;
@@ -38,7 +42,9 @@ void ofApp::setup(){
         co.size_lim = xml.getValue("size_limit", 0.0);
     }
     float startRad = xml.getValue("size", 0.0);
-    float startVal = xml.getValue("startValue", 0.0);
+    float startVal=0.;
+    startVal+=xml.getValue("startValue", 0.0);
+    startVal=CLAMP(startVal, 1, 200);
     
     PORT = xml.getValue("PORT", 0);
     NUM_TABLES = xml.getValue("NUM_TABLES", 0);
@@ -70,11 +76,13 @@ void ofApp::setup(){
             
             Button b = * new Button;
             
-            
+           // void setup(int _row, int _table,int _teamNum, string _address, string _secondAdress, float val, float size, ofxBox2d *world){
             b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startVal, startRad, &teams[teamNum].box2d);
             b.size_lim = co.size_lim;
             b.size_break= co.size_break;
             b.img = &co.characterImgs;
+            b.legs[0] = &co.legs[0];
+            b.legs[1] = &co.legs[1];
             b.box2Dcircle.get()->setData(new ButtonData());
             ButtonData * sd = (ButtonData*)b.box2Dcircle.get()->getData();
             sd->buttonID = indx - (teamNum * ((BUTTONS_PR_TABLE*NUM_TABLES)/2));
@@ -91,11 +99,11 @@ void ofApp::setup(){
     teams[0].setupScenes();
     teams[1].setupScenes();
     
-    ofAddListener(teams[0].box2d.contactStartEvents, this, &ofApp::contactStart);
-    ofAddListener(teams[0].box2d.contactEndEvents, this, &ofApp::contactEnd);
-    
-    ofAddListener(teams[1].box2d.contactStartEvents, this, &ofApp::contactStart);
-    ofAddListener(teams[1].box2d.contactEndEvents, this, &ofApp::contactEnd);
+//    ofAddListener(teams[0].box2d.contactStartEvents, this, &ofApp::contactStart);
+//    ofAddListener(teams[0].box2d.contactEndEvents, this, &ofApp::contactEnd);
+//    
+//    ofAddListener(teams[1].box2d.contactStartEvents, this, &ofApp::contactStart);
+//    ofAddListener(teams[1].box2d.contactEndEvents, this, &ofApp::contactEnd);
 
     pingPong.setup(&co,&teams[0].buttons,&teams[1].buttons);
     pushGame.setup(&co);
@@ -706,109 +714,85 @@ void ofApp::keyPressed(int key){
     if(key == 'p')co.lock=!co.lock;
     
 }
-void ofApp::drawScores(){
-//    float a = teams[0].getDistVal() * time_energy; // this goes down.
-//    float b = teams[1].getDistVal() * time_energy;
-//    
-//    float a_time =- teams[0].time * (1.f-time_energy); // this goes up.
-//    float b_time =- teams[1].time * (1.f-time_energy);
-//    
-//    float a_tot = a+a_time;
-//    float b_tot = b+b_time;
-//    
-//    float grandTot = a_tot+b_tot;
-//    
-//    ofSetColor(100, 100, 255);
-//    float a_w = ofMap(a_tot, 0, grandTot, 0, 1920*2);
-//    ofDrawRectangle(0, 10, a_w, 20);
-//    ofSetColor(255, 100, 100);
-//    float b_w = ofMap(b_tot, 0, grandTot, 0, 1920*2);
-//    ofDrawRectangle(a_w, 10, b_w, 20);
-//    
-//    
-//    float max = MAX(a+a_time,b+b_time);
-//    
-//    
 
-}
 //--------------------------------------------------------------
-void ofApp::contactStart(ofxBox2dContactArgs &e) {
-    if(e.a != NULL && e.b != NULL) {
-        
-        if(e.a->GetType() == b2Shape::e_circle && e.b->GetType() == b2Shape::e_circle) {
-            
-            ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
-            ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
-            
-            
-            if(aData && bData) {
-                
-                //sound[aData->teamID].play();
-                if(!teams[bData->teamID].buttons[bData->buttonID].isDead() &&
-                   !teams[aData->teamID].buttons[aData->buttonID].isDead()
-                   )
-                {
-                    aData->bHit = true;
-                    bData->bHit = true;
-                    
-                    if(co.playSound){
-                        sound[bData->teamID].play();
-                    }
-                    
-                }
-                
-//                if(co.sceneNumber==7 && aData->bHit && bData->bHit){
+//void ofApp::contactStart(ofxBox2dContactArgs &e) {
+//    if(e.a != NULL && e.b != NULL) {
+//        
+//        if(e.a->GetType() == b2Shape::e_circle && e.b->GetType() == b2Shape::e_circle) {
+//            
+//            ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
+//            ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
+//            
+//            
+//            if(aData && bData) {
+//                
+//                //sound[aData->teamID].play();
+//                if(!teams[bData->teamID].buttons[bData->buttonID].isDead() &&
+//                   !teams[aData->teamID].buttons[aData->buttonID].isDead()
+//                   )
+//                {
+//                    aData->bHit = true;
+//                    bData->bHit = true;
 //                    
-//                    Button * b1 = &teams[aData->teamID].buttons[aData->buttonID];
-//                    Button * b2 = &teams[bData->teamID].buttons[bData->buttonID];
-//                    
-//
-//                        if(b1->finaleValue > b2->finaleValue){
-//                            b2->freezeUpdate = true;
-//                            b2->freezeTimer = 0.;
-//                            b2->box2Dcircle->setVelocity(0, 0);
-//                            //b1->value-= b2->value*finalePushDrain;
-//                        }
-//                        else if(b1->finaleValue < b2->finaleValue){
-//                            b1->freezeUpdate = true;
-//                            b1->freezeTimer = 0.;
-//                            b1->box2Dcircle->setVelocity(0, 0);
-//                           // b2->value-= b1->value*finalePushDrain;
-//                        }
-//                    if(abs(b1->finaleValue-b2->finaleValue)>0){
-//                        b1->finaleValue-=b2->value;
-//                        b1->updatefinaleValue = true;
-//                        b1->finaleValueTimer=0.;
-//                        
-//                        b2->finaleValue-=b1->value;
-//                        b2->updatefinaleValue = true;
-//                        b2->finaleValueTimer=0.;
-//
+//                    if(co.playSound){
+//                        sound[bData->teamID].play();
 //                    }
+//                    
 //                }
-            }
-        }
-    }
-}
+//                
+////                if(co.sceneNumber==7 && aData->bHit && bData->bHit){
+////                    
+////                    Button * b1 = &teams[aData->teamID].buttons[aData->buttonID];
+////                    Button * b2 = &teams[bData->teamID].buttons[bData->buttonID];
+////                    
+////
+////                        if(b1->finaleValue > b2->finaleValue){
+////                            b2->freezeUpdate = true;
+////                            b2->freezeTimer = 0.;
+////                            b2->box2Dcircle->setVelocity(0, 0);
+////                            //b1->value-= b2->value*finalePushDrain;
+////                        }
+////                        else if(b1->finaleValue < b2->finaleValue){
+////                            b1->freezeUpdate = true;
+////                            b1->freezeTimer = 0.;
+////                            b1->box2Dcircle->setVelocity(0, 0);
+////                           // b2->value-= b1->value*finalePushDrain;
+////                        }
+////                    if(abs(b1->finaleValue-b2->finaleValue)>0){
+////                        b1->finaleValue-=b2->value;
+////                        b1->updatefinaleValue = true;
+////                        b1->finaleValueTimer=0.;
+////                        
+////                        b2->finaleValue-=b1->value;
+////                        b2->updatefinaleValue = true;
+////                        b2->finaleValueTimer=0.;
+////
+////                    }
+////                }
+//            }
+//        }
+//    }
+//}
 
 //--------------------------------------------------------------
-void ofApp::contactEnd(ofxBox2dContactArgs &e) {
-    if(e.a != NULL && e.b != NULL) {
-        
-        ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
-        ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
-        
-        if(aData) {
-            aData->bHit = false;
-            
-        }
-        
-        if(bData) {
-            bData->bHit = false;
-           
-        }
-    }
-}
+//void ofApp::contactEnd(ofxBox2dContactArgs &e) {
+//    if(e.a != NULL && e.b != NULL) {
+//        
+//        ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
+//        ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
+//        
+//        if(aData) {
+//            aData->bHit = false;
+//            
+//        }
+//        
+//        if(bData) {
+//            bData->bHit = false;
+//           
+//        }
+//    }
+//}
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){

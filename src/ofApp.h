@@ -41,8 +41,8 @@ class ofApp : public ofBaseApp{
     string getAdress(int firstOrSecond, int _table, int _button);
     
     Team teams[2];
-    void contactStart(ofxBox2dContactArgs &e);
-    void contactEnd(ofxBox2dContactArgs &e);
+//    void contactStart(ofxBox2dContactArgs &e);
+//    void contactEnd(ofxBox2dContactArgs &e);
 
     
     ofFbo fbo;
@@ -72,8 +72,7 @@ class ofApp : public ofBaseApp{
     vector<string>alive;
     vector<float>alive_counter;
     void handleSceneChange();
-    void drawScores();
-    
+
     int PORT;
     int NUM_TABLES;
     int BUTTONS_PR_TABLE;

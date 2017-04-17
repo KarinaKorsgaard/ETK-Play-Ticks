@@ -23,8 +23,9 @@ public:
         
     };
     bool isDone(){
-        
-        if(buttons->at(spyId).getValue()==0.0 || areWeDone())return true;
+        if(spyId >= 0 && spyId < buttons->size()-1 ){
+            if(buttons->at(spyId).getValue()==0.0 || areWeDone())return true;
+        }
         else return false;
     };
     
@@ -38,7 +39,7 @@ public:
             haveLogged = true;
             string s = "spy from team "+ ofToString( buttons->at(spyId).teamNumber )+" beat the other team at"+ofGetTimestampString(co->timeStamp);
             co->log(s);
-            buttons->at(spyId).multValue(2);
+           // buttons->at(spyId).multValue(2);
         }
         return val==0.0;
     }
@@ -46,12 +47,6 @@ public:
     void update(){
         if(!isDone()){
             for(int i=0; i<buttons->size(); i++) {
-
-                // dont drain on collide
-//                if(buttons->at(i).isColliding() && !buttons->at(i).isDead()){
-//                    if(!isDone())buttons->at(i).addValue(-co->spyDrainer);
-//                }
-                
                 ofRectangle r = ofRectangle(30,30,1920-60,1080-60);
                 if(!r.inside(buttons->at(i).getBiquadPos()))buttons->at(i).setValue(0);
                 
@@ -59,36 +54,29 @@ public:
                 else buttons->at(i).update(co->spySpeed,r);
             }
         }
-        if(spyId!=-1){
-            if(!buttons->at(spyId).on){
-                buttons->at(spyId).on = true;
-                buttons->at(spyId).box2Dcircle->setPosition(1920/2,1080/2);
-                // buttons->at(spyId).value -=1;
-            }
-        }
-        
     }
 
     
     void draw(){
         
-        ofSetColor(0);
-        ofDrawRectangle(0, 0, 30+25, 1080);
-        ofDrawRectangle(0, 0, 1920, 30+25);
-        ofDrawRectangle(1920-(30+25), 0, 30+25, 1080);
-        ofDrawRectangle(0, 1080-(30+25), 1920, 30+25);
+        
 
         if(co->debug){
-            int blue = buttons->at(spyId).teamNumber==0 ? 255:0;
-            
-            int alpha = buttons->at(spyId).on ? 255:100;
-            ofSetColor(255-blue,0, blue, alpha);
-            ofDrawCircle(buttons->at(spyId).getBiquadPos(),60);
+            ofSetColor(0);
+            ofDrawRectangle(0, 0, 30+25, 1080);
+            ofDrawRectangle(0, 0, 1920, 30+25);
+            ofDrawRectangle(1920-(30+25), 0, 30+25, 1080);
+            ofDrawRectangle(0, 1080-(30+25), 1920, 30+25);
+            if(spyId != -1){
+                int blue = buttons->at(spyId).teamNumber==0 ? 255:0;
+                int alpha = buttons->at(spyId).on ? 255:100;
+                ofSetColor(255-blue,0, blue, alpha);
+                ofDrawCircle(buttons->at(spyId).getBiquadPos(),60);
+            }
         }
         
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
-            
             if(co->debug){
                 buttons->at(i).drawDebug();
             }
@@ -97,13 +85,11 @@ public:
     
     void begin(){
         haveLogged = false;
-        
         for(int i = 0; i<buttons->size();i++){
             if(buttons->at(i).isPlaying){
                 buttons->at(i).setPosition(ofRandom(100,1920-100), ofRandom(100,1080-100));
             }
         }
-
     };
     void reset(){
 

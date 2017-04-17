@@ -44,11 +44,7 @@ public:
 
         fc = 0.05f;
         filterLowPass.setFc(fc);
-        
-      //  deadImg.load("characters/dead.png");
-        legs[0].load("characters/arms/arm1.png");
-        legs[1].load("characters/arms/arm2.png");
-        
+           
     }
     
     
@@ -83,45 +79,41 @@ public:
             
             float scale = rad / 25.0f;
             ofSetColor(255);
+        
+            if(!isDead()){
+                armSwapper+=(dx+dy)*10.;
+                if(armSwapper>0.8)armSwapper=0.;
+                int aInd = armSwapper>.4 ? 0:1;
+                int w = rad*3.8;
+                legs[aInd]->draw(-w/2,-w/2 + rad*0.23 ,w,w);
+            }
             int charImg = isDead()?1:0;
-            
             img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
             
             ofSetColor(color[0]);
-            
-            ofTranslate(0,rad*0.35);
+            ofTranslate(0,rad*0.1);
             
             symbol->draw(-rad*0.65/2,-rad*0.65/2,rad*0.65,rad*0.65);
             
             float rectSize=0;
             if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,360 );
-        
+            float bugSize = 0.5;
             ofPath curve;
-            curve.setStrokeWidth(4*scale);
+            curve.setStrokeWidth(4.5*scale);
             
             curve.setFilled(false);
             curve.setStrokeColor(color[0]);
-            curve.setArcResolution(1000);
-            curve.moveTo(rad*0.45,0);
-            curve.arc(0, 0, rad*0.45, rad*0.45, 0, rectSize);
+            //curve.setArcResolution(1000);
+            curve.moveTo(rad*bugSize,0);
+            curve.arc(0, 0, rad*bugSize, rad*bugSize, 0, rectSize);
             curve.draw();
             
             ofNoFill();
             ofSetLineWidth(scale);
-            ofDrawCircle(0, 0, rad*0.45-(curve.getStrokeWidth()*0.5));
-            ofDrawCircle(0, 0, rad*0.45+(curve.getStrokeWidth()*0.5));
+            ofDrawCircle(0, 0, rad*bugSize-(curve.getStrokeWidth()*0.5));
+            ofDrawCircle(0, 0, rad*bugSize+(curve.getStrokeWidth()*0.5));
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
-        
-            ofSetColor(255);
-            if(!isDead()){
-                
-                armSwapper+=(dx+dy)*10.;
-                if(armSwapper>0.8)armSwapper=0.;
-                int aInd = armSwapper>.4 ? 0:1;
-                int w = rad*3.;
-                legs[aInd].draw(-w/2,-w/2,w,w);
-            }
             
             if(transform)ofPopMatrix();
         }
@@ -300,28 +292,35 @@ public:
         box2Dcircle->draw();
     }
     void setValue(double v){
-        value = v;
-        if(value <0)value = 0;
+        if(isPlaying){
+            value = v;
+            if(value <0.)value = 0.;
+        }
     }
     double getValue(){
         return value;
     }
     void addValue(double v){
-        value+=v;
-        if(value <0)value = 0;
+        if(isPlaying){
+            value+=v;
+            if(value <0.)value = 0.;
+        }
     }
     void multValue(double v){
-        value*=v;
-        if(value <0)value = 0;
+        if(isPlaying){
+            value*=v;
+            if(value <0.)value = 0.;
+        }
     }
     ofxBiquadFilter2f filterLowPass;
     float fc;
     
 
     
-    float px,py,dx,dy;
-    
-    
+    float px = 0.;
+    float py = 0.;
+    float dx = 0.;
+    float dy = 0.;
     
     float beforeRefillValue;
     float beginningValue;
@@ -345,8 +344,8 @@ public:
     bool on = false;
     bool prev_on = false;
     
-    float size_break;
-    float size_lim;
+    float size_break=50.;
+    float size_lim=50.;
     
     float dy_jump, dx_jump;
     bool isJumping;
@@ -363,14 +362,16 @@ public:
     ofImage *symbol;
     vector<ofColor> color;
     int symbolInt,colorInt;
+    
+    ofImage * legs[2];
 private:
-    ofImage legs[2];
+    
     float armSwapper;
     
     float r, r_raw;
-    double x;
-    double y;
-    double value;
+    double x=0.;
+    double y=0.;
+    double value=0.;
     
     float deadTimer;
 };

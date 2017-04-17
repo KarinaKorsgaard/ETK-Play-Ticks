@@ -16,7 +16,7 @@ public:
         buttons = b;
         co = _co;
         svg.load("svg/03_EasyMaze.svg");
-        path.load("img/03_EasyMaze.png");
+     //   path.load("img/03_EasyMaze.png");
         polys = getPolyline(svg);
         maze = polys[0];
         
@@ -77,7 +77,7 @@ public:
     void draw(){
         
         ofSetColor(255);
-        path.draw(0,0);
+   //     path.draw(0,0);
         
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();

@@ -11,24 +11,17 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        borders.load("img/02_borders.png");
     };
     bool isDone(){
         bool isInside=true;
-        bool allAreDead = true;
+        int moreThanOne = 0;
         
         for(int i = 0; i<buttons->size();i++){
             Button *b = &buttons->at(i);
-            if(!buttons->at(i).isDead()){
-                allAreDead =false;
-            }
-            if(b->isPlaying /*&& !b->isDead()*/){ // if b is not playing or is dead dont account.
-                
+        
+            if(b->isPlaying){ // if b is not playing or is dead dont account.
+                moreThanOne++;
                 ofPoint p =b->getBiquadPos();
-//                if(!b->on){
-//                    isInside=false;
-//                    //break;
-//                }
                 if( small.inside(p) ){
                     isInside=false;
                     //break;
@@ -40,7 +33,7 @@ public:
             }
 
         }
-       // if(allAreDead)isInside=false;
+        if(moreThanOne==0)isInside=false;
         return isInside;
     };
     
@@ -57,7 +50,7 @@ public:
     void draw(){
         
         ofSetColor(255);
-        borders.draw(0,0);
+      //  borders.draw(0,0);
         
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
@@ -115,7 +108,7 @@ public:
     void reset(){
         polys.clear();
     };
-    ofImage borders;
+  //  ofImage borders;
     commonObjects * co;
     ofxSVG svg;
     vector<ofPolyline> polys;

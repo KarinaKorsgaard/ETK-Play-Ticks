@@ -216,11 +216,10 @@ public:
 
         //ofSetColor(255,200);
         //basketTop.draw(0,0);
-        svg.draw();
+       // svg.draw();
         
         int red = CLAMP(int(ofMap(countDown,3,0,0,255)),50,200);
-        ofSetColor(red,255-red,50);
-        
+        ofSetColor(red,255-red,50); 
         winImg.draw(win);
         
         for(int i=0; i<buttons->size(); i++) {

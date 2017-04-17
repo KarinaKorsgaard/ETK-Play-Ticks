@@ -68,17 +68,6 @@ public:
             if(b->isDead())b->box2Dcircle->setRadius(0);
            // b->drain(co->drainCoefficient1);
             b->drain(0);
-        //    b->updateRadius(true);
-//            if(b->on && b->radius > 0){
-//                b->radius = (b->size_lim - (b->size_break/b->getValue())) / (1 + (b->size_break/b->getValue()));
-//                if(b->box2Dcircle->getRadius() < b->radius)b->box2Dcircle->setRadius(b->box2Dcircle->getRadius()+1);
-//                else b->box2Dcircle->setRadius(b->radius);
-//                b->box2Dcircle->alive = true;
-//            }
-//            if (b->getValue() <= 0 || !b->on || b->isDead()) {
-//                b->box2Dcircle->setRadius(0);
-//                b->box2Dcircle->alive = false;
-//            }
             
         }
        // cout << rects[0]->getPosition() << endl;
@@ -99,7 +88,7 @@ public:
         for(int i = 0 ; i< rects.size();i++)
             rects[i]->draw();
         
-        svg.draw();
+      //  svg.draw();
         
         for(int i = 0 ; i< buttons->size();i++){
             if(co->debug){
