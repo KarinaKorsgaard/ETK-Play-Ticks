@@ -86,7 +86,7 @@ public:
 //        //ofRotateZ(average->getRotation());
 //        //average->draw();
         ofSetColor(255);
-        float rad = average->getRadius();
+        float rad = average->getRadius() * 2.f;
         co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
 //        
 //        //body

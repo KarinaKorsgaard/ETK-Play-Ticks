@@ -41,17 +41,7 @@ public:
   //      box2Dcircle.get()->setMassFromShape = false;
         
         lastPos = ofVec2f(ofRandom(200,500),ofRandom(200,500));
-        
-//        ofColor c;
-//        c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
-//        colors.push_back(c);
-//        
-//        c.set(teamNumber*255,ofRandom(0,255),255-teamNumber*255);
-//        colors.push_back(c);
-//        
-//        c.set(teamNumber*255,ofRandom(220,255),255-teamNumber*255);
-//        colors.push_back(c);
-        
+
         fc = 0.05f;
         filterLowPass.setFc(fc);
         
@@ -88,20 +78,10 @@ public:
             if(transform){
                 ofPushMatrix();
                 ofTranslate(getBiquadPos());
-               // if(!isDead())
                 ofRotateZ(r);
             }
             
             float scale = rad / 25.0f;
-            
-//            if(on && !isDead()){
-//                float eye = -rad + rad*0.45/2.;
-//                ofSetColor(0);
-//                ofDrawCircle(3 *scale,eye ,5);
-//                ofDrawCircle(-3*scale,eye ,5);
-//            }
-            
-// body
             ofSetColor(255);
             int charImg = isDead()?1:0;
             
@@ -113,11 +93,6 @@ public:
             
             symbol->draw(-rad*0.65/2,-rad*0.65/2,rad*0.65,rad*0.65);
             
-            // circle_
-            //ofNoFill();
-            //ofSetLineWidth(1);
-            //ofDrawCircle(0,0,rad*0.8,rad*0.8);
-            //ofSetLineWidth(10);
             float rectSize=0;
             if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,360 );
         
@@ -137,11 +112,7 @@ public:
             ofDrawCircle(0, 0, rad*0.45+(curve.getStrokeWidth()*0.5));
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
-            
-            
-            //ofDrawRectangle(-4*scale,-15*scale+(35*scale-rectSize),8*scale,rectSize);
-            
-           // }
+        
             ofSetColor(255);
             if(!isDead()){
                 
@@ -154,9 +125,6 @@ public:
             
             if(transform)ofPopMatrix();
         }
-//         ofSetColor(200);
-//        ofDrawCircle( getPos(), 30 );
-//         ofDrawCircle( getBiquadPos(), 30 );
     }
     void setPosition(float x, float y){
         setPosition(ofVec2f(x,y));
@@ -188,16 +156,6 @@ public:
                 p.x = rect.width*x + rect.x;
                 p.y = rect.height*y + rect.y;
                 
-               // else p = getPosRaw();
-                //ofVec2f p = doble ? ofVec2f(x*1920 + 1920*teamNumber , y*1080) : getPosRaw();
-                
-//                if(!prev_on){
-//                    box2Dcircle->setPosition(lastPos);
-//                    box2Dcircle->setVelocity(0,0);
-//                    prev_on=true;
-//                }
-                
-                
                 distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
                 distToOrg /= (1980+1080);
                 
@@ -209,43 +167,16 @@ public:
                 
                     box2Dcircle->addAttractionPoint( p, attraction*distToOrg  );
             }
-                
-           // }
-          //  if(!on) {
-            //    prev_on = false;
-          //  }
-            
         }
         filterLowPass.update(getPos());
         //if(updateRad)
             updateRadius();
         
     }
-//    
-//    void freezeControl(float thres){
-//        if(freezeUpdate){
-//            freezeTimer+=ofGetLastFrameTime();
-//            if(freezeTimer>thres)freezeUpdate=false;
-//        }
-//        if(updatefinaleValue){
-//            finaleValueTimer+=ofGetLastFrameTime();
-//            if(finaleValueTimer>thres)updatefinaleValue=false;
-//        }else{
-//            finaleValue = value;
-//        }
-//        
-//    }
-    
+
     void updateWithGravity(float jump , float x_jump, float thresY){
         if(isPlaying && !isDead()){
             if(on ){
-//                if(!prev_on){
-//                    box2Dcircle->setPosition(lastPos);
-//                    box2Dcircle->setVelocity(0,0);
-//                    prev_on=true;
-//                }
-                
-              //  lastPos = getPos();
                 setDirection();
                 
                 float dif_y = dy_jump - getPosRaw().y;
@@ -263,27 +194,10 @@ public:
                 
                 
             }
-//            if(!on) {
-//                prev_on = false;
-//            }
-            
-            
         }
         filterLowPass.update(getPos());
         updateRadius();
-//
-//        // radius.
-//        if(value > 0 && on ){
-//            radius = beginningRad;
-//            
-//         //   if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
-//         //   else box2Dcircle->setRadius(radius);
-//            box2Dcircle->alive = true;
-//        }
-//        if (value <= 0 || !on || isDead()) {
-//         //   box2Dcircle->setRadius(0);
-//            box2Dcircle->alive = false;
-//        }
+
     }
     
     void setDirection(ofRectangle rect = ofRectangle(0,0,1920,1080)){
@@ -302,13 +216,10 @@ public:
     
     void updateRadius(){
         if(on && !isDead() && isPlaying){
-            radius = beginningRad;  //(size_lim - (size_break/value)) / (1 + (size_break/value));
-//            if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(box2Dcircle->getRadius()+1);
-        //    if(box2Dcircle->getRadius() < radius)box2Dcircle->setRadius(radius);
+            radius = beginningRad;
             box2Dcircle->alive = true;
         }
         else{
-         //   if(!isPush)box2Dcircle->setRadius(0);
             box2Dcircle->alive = false;
         }
     }

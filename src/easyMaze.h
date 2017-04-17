@@ -95,7 +95,7 @@ public:
         if(go)c.set(120,240,180);
         else c.set(255,120,120);
         
-        float rad = 45.f;
+        float rad = 45.f * 2.f;
         co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
         
         ofPopMatrix();
