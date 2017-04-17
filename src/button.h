@@ -109,9 +109,9 @@ public:
             
             ofSetColor(color[0]);
             
-            ofTranslate(0,rad*0.3);
+            ofTranslate(0,rad*0.35);
             
-            symbol->draw(-rad*0.7/2,-rad*0.7/2,rad*0.7,rad*0.7);
+            symbol->draw(-rad*0.65/2,-rad*0.65/2,rad*0.65,rad*0.65);
             
             // circle_
             //ofNoFill();
@@ -122,19 +122,19 @@ public:
             if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,360 );
         
             ofPath curve;
-            curve.setStrokeWidth(5*scale);
+            curve.setStrokeWidth(4*scale);
             
             curve.setFilled(false);
             curve.setStrokeColor(color[0]);
             curve.setArcResolution(1000);
-            curve.moveTo(rad*0.5,0);
-            curve.arc(0, 0, rad*0.5, rad*0.5, 0, rectSize);
+            curve.moveTo(rad*0.45,0);
+            curve.arc(0, 0, rad*0.45, rad*0.45, 0, rectSize);
             curve.draw();
             
             ofNoFill();
             ofSetLineWidth(scale);
-            ofDrawCircle(0, 0, rad*0.5-(2.5*scale));
-            ofDrawCircle(0, 0, rad*0.5+(2.5*scale));
+            ofDrawCircle(0, 0, rad*0.45-(curve.getStrokeWidth()*0.5));
+            ofDrawCircle(0, 0, rad*0.45+(curve.getStrokeWidth()*0.5));
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
             
@@ -148,7 +148,8 @@ public:
                 armSwapper+=(dx+dy)*10.;
                 if(armSwapper>0.8)armSwapper=0.;
                 int aInd = armSwapper>.4 ? 0:1;
-                legs[aInd].draw(-(rad+10),-(rad+10),rad*2+20,rad*2+20);
+                int w = rad*3.5;
+                legs[aInd].draw(-w/2,-w/2,w,w);
             }
             
             if(transform)ofPopMatrix();
