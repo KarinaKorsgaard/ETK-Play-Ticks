@@ -392,17 +392,17 @@ public:
         ofVec3f res;
         res.set(0,0,0);
         
-        int indx;
+        float indx = 0.;
         for(int i = 0; i<buttons.size();i++){
-            if(buttons[i].on && !buttons[i].isDead()){
-                res.x += buttons[i].getPosRaw().x;
-                res.y += buttons[i].getPosRaw().y;
+            if(buttons[i].isPlaying){
+                res.x += buttons[i].getRawData().x;
+                res.y += buttons[i].getRawData().y;
                 
-                res.z += buttons[i].getSpeed();
+                res.z += buttons[i].getSpeed()*100.;
                 indx++;
             }
         }
-        if(indx>0){
+        if(indx>0.){
             res.x/=indx;
             res.y/=indx;
         }
