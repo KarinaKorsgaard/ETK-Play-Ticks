@@ -588,6 +588,8 @@ void ofApp::handleSceneChange(){
                 b.img = old->img;
                 b.symbol = old->symbol;
                 b.radius = old->radius;
+                b.legs[0] = old->legs[0];
+                b.legs[1] = old->legs[1];
                 b.setValue(old->getValue());
                 b.isPlaying = old->isPlaying;
                 b.on = old->on;
@@ -633,6 +635,8 @@ void ofApp::handleSceneChange(){
                 b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
                 b.color = old->color;
                 b.img = old->img;
+                b.legs[0] = old->legs[0];
+                b.legs[1] = old->legs[1];
                 b.symbol = old->symbol;
                 b.radius = old->radius;
                 b.setValue(old->getValue());
