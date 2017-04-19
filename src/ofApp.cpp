@@ -404,10 +404,13 @@ void ofApp::draw(){
     fbo.begin();
     
     ofClear(0);
-    ofSetColor(225, 220, 255);
-    ofDrawRectangle(0,0,1920,1080);
-    ofSetColor(255, 220, 220);
-    ofDrawRectangle(1920,0,1920,1080);
+    
+//    if(!co.debug)ofBackground(0,195,0);
+//    else ofBackground(0, 0, 0);
+//    ofSetColor(225, 220, 255);
+//    ofDrawRectangle(0,0,1920,1080);
+//    ofSetColor(255, 220, 220);
+//    ofDrawRectangle(1920,0,1920,1080);
 
     if(co.sceneNumber!= co.sMap["PingPong"] && co.sceneNumber!=co.sMap["PushGame"] && co.sceneNumber!=co.sMap["GoOffEdge"] ){
 //        if(co.refill1){

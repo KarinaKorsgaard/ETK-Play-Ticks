@@ -32,21 +32,7 @@ public:
         bool allAreDead=true;
         if(go && filter.value().x > end) isInside = true;
         
-        if(isInside){
-            for(int i = 0; i<buttons->size();i++){
-                
-                if(!buttons->at(i).on && buttons->at(i).isPlaying){
-                    isInside=false;
-                    break;
-                }
-                
-                if(!buttons->at(i).isDead()){
-                    allAreDead =false;
-                }
-            }
-        }
-        
-        if(allAreDead)isInside=false;
+
         return isInside;
     };
     
@@ -69,9 +55,20 @@ public:
             if(indx>0)average = ofPoint(x/indx , y/indx);
             filter.update(average);
         }
-        if(go)
-            if(!maze.inside(filter.value()))go = false;
-        if(filter.value().x < start)go=true;
+        
+        if(go){
+            if(!maze.inside(filter.value())){
+                go = false;
+                //cout << "off track" << endl;
+            }
+        }
+        if(filter.value().x < start)
+        {
+            go=true;
+           // if(!go)
+            
+        }
+        cout << go << endl;
     };
     
     void draw(){
@@ -83,18 +80,20 @@ public:
             buttons->at(i).draw();
             if(co->debug){
                 buttons->at(i).drawDebug();
+                ofSetColor(255,0,0);
+                maze.draw();
             }
         }
         
         
-        ofSetColor(255,100,100);
+        
         ofPushMatrix();
         ofTranslate(filter.value());
         
         ofColor c;
         if(go)c.set(120,240,180);
         else c.set(255,120,120);
-        
+        ofSetColor(c);
         float rad = 45.f ;
         co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
         
