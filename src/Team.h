@@ -368,12 +368,10 @@ public:
         else if(s==co->sMap["Design"]) sDesign.draw();
         else if(s==co->sMap["Idle"]) idle.draw();
         
-        if(s!=co->sMap["Design"] ||
-           s!=co->sMap["PingPong"] ||
-           s!=co->sMap["PushGame"] ||
-           s!=co->sMap["Idle"] ) drawResult();
+        
         
         if(playAnimation){
+            ofSetColor(255);
             celebration.draw( 1920/2 - celebration.getWidth()/2,1080/2 - celebration.getHeight()/2 );
             for(int i = 0; i<buttons.size();i++){
                 Button * b = &buttons[i];
@@ -383,6 +381,11 @@ public:
                 
             }
         }
+        
+        if(s!=co->sMap["Design"] ||
+           s!=co->sMap["PingPong"] ||
+           s!=co->sMap["PushGame"] ||
+           s!=co->sMap["Idle"] ) drawResult();
 //        if(allAreDead())deadTime+=ofGetLastFrameTime();
 //        else deadTime = 0.;
     }
