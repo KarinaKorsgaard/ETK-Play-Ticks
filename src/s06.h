@@ -76,12 +76,12 @@ public:
 
         int indx=0;
         for(int i = 0; i<spacesToDraw.size();i++){
-                int red = spacesToDraw[i].x==-1 ?  230:25;
-                ofSetColor(red,255-red,150);
+                int red = spacesToDraw[i].x==-1 ?  255:0;
+                ofSetColor(red,255-red,0);
                 ofDrawCircle(i*30,0,10);
             
                 red = spacesToDraw[i].y==-1 ?  255:0;
-                ofSetColor(red,255-red,150);
+                ofSetColor(red,255-red,0);
                 ofDrawCircle(i*30,30,10);
 
         }
