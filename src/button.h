@@ -90,11 +90,6 @@ public:
             int charImg = isDead()?1:0;
             img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
             
-            ofSetColor(color[0]);
-            ofTranslate(0,rad*0.1);
-            
-            symbol->draw(-rad*0.65/2,-rad*0.65/2,rad*0.65,rad*0.65);
-            
             float rectSize=0;
             if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,360 );
             float bugSize = 0.5;
@@ -103,15 +98,30 @@ public:
             
             curve.setFilled(false);
             curve.setStrokeColor(color[0]);
-            //curve.setArcResolution(1000);
             curve.moveTo(rad*bugSize,0);
             curve.arc(0, 0, rad*bugSize, rad*bugSize, 0, rectSize);
-            curve.draw();
+            ofTranslate(0,rad*0.1);
             
             ofNoFill();
+            
+            ofSetLineWidth(scale*4.6);
+            ofSetColor(0,200);
+            ofDrawCircle(0, 0, rad*bugSize);
+
+            ofSetColor(color[0]);
+            
+            symbol->draw(-rad*0.65/2,-rad*0.65/2,rad*0.65,rad*0.65);
+            
+            
+            curve.draw();
+            
+            
+            
             ofSetLineWidth(scale);
             ofDrawCircle(0, 0, rad*bugSize-(curve.getStrokeWidth()*0.5));
             ofDrawCircle(0, 0, rad*bugSize+(curve.getStrokeWidth()*0.5));
+            
+            
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
             

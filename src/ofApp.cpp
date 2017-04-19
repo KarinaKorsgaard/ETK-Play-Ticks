@@ -9,6 +9,8 @@ void ofApp::setup(){
     font_x_small.load("fonts/GT.ttf", 20);
     
     
+    ofSetCircleResolution(1000);
+    
     font_small.load("fonts/GT.ttf", 30);
     font_medium.load("fonts/GT.ttf", 65);
     font_large.load("fonts/GT.ttf", 140);
@@ -19,7 +21,7 @@ void ofApp::setup(){
     co.font_large = &font_large;
     
     co.characterImgs.resize(2);
-    co.characterImgs[0].load("characters/body.png");
+    co.characterImgs[0].load("characters/body2.png");
     co.characterImgs[1].load("characters/dead.png");
  //   co.characterImgs[2].load("characters/belly.png");
     co.avergaTick.load("characters/averageTick.png");
