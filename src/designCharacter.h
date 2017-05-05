@@ -29,8 +29,17 @@ public:
         //cout << indx<<endl;
     };
     bool isDone(){
-        // do not drain here...
-        return true;
+        bool isDifferent = true;
+        for(int i = 0; i<buttons->size();i++){
+            for(int j = 0; j<buttons->size();j++){
+                if((buttons->at(i).symbolInt == buttons->at(j).symbolInt)||(buttons->at(i).colorInt == buttons->at(j).colorInt)){
+                    isDifferent=false;
+                    break;
+                }
+            }
+        }
+        if(buttons->size()<10)isDifferent=false;
+        return isDifferent;
     };
     
     void update(){

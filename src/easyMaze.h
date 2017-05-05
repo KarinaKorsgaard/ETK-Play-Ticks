@@ -21,7 +21,7 @@ public:
         maze = polys[0];
         
         start = 300;
-        end = 1920-50;
+        end = 1920-60;
         
         filter.setFc(0.05f);
         
@@ -29,10 +29,7 @@ public:
     
     bool isDone(){
         bool isInside=false;
-        bool allAreDead=true;
         if(go && filter.value().x > end) isInside = true;
-        
-
         return isInside;
     };
     
@@ -58,17 +55,22 @@ public:
         
         if(go){
             if(!maze.inside(filter.value())){
-                go = false;
-                //cout << "off track" << endl;
+                go=false;
+                sendOsc = true;
+                oscInt = 0;
             }
         }
         if(filter.value().x < start)
         {
-            go=true;
-           // if(!go)
+            if(!go){
+                go=true;
+                sendOsc = true;
+                oscInt = 1;
+            }
+
             
         }
-        cout << go << endl;
+
     };
     
     void draw(){
@@ -121,7 +123,8 @@ public:
     vector<ofPolyline> polys;
     
     vector<Button>*buttons;
-
+    bool sendOsc;
+    int oscInt;
 
     
 };

@@ -89,7 +89,7 @@ public:
             }
             int charImg = isDead()?1:0;
             img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
-            
+          /*
             float rectSize=0;
             if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,360 );
             float bugSize = 0.5;
@@ -121,7 +121,9 @@ public:
             ofDrawCircle(0, 0, rad*bugSize-(curve.getStrokeWidth()*0.5));
             ofDrawCircle(0, 0, rad*bugSize+(curve.getStrokeWidth()*0.5));
             
+          */
             
+            symbol->draw(0,0,rad*0.85,rad*0.85);
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
             

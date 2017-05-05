@@ -175,7 +175,16 @@ public:
         if(s==co->sMap["GetThrough"])getUp01.update();
         if(s==co->sMap["GetThrough_alt"])getUp_alt.update();
         
-        if(s==co->sMap["EasyMaze"])easyMaze.update();
+        if(s==co->sMap["EasyMaze"]){
+            easyMaze.update();
+            if(easyMaze.sendOsc){
+                easyMaze.sendOsc=false;
+                ofxOscMessage m;
+                m.setAddress("/easyMaze"+ofToString(teamId+1));
+                m.addIntArg(easyMaze.oscInt);
+                co->oscOut.sendMessage(m);
+            }
+        }
         
         if(s==co->sMap["Maze"])maze02.update();
         if(s==co->sMap["Maze_alt"])maze02_alt.update();
@@ -258,6 +267,7 @@ public:
         if(isDone){
             if(!playAnimation){
                 vector<int>win={
+                    co->sMap["Design"],
                     co->sMap["Area"],
                     co->sMap["GetThrough"],
                     co->sMap["GetThrough_alt"],
