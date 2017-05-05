@@ -241,7 +241,7 @@ public:
         
         if(s==co->sMap["DrainTest"])isDone = drainTest.isDone();
         // 09 ping pong
-        if(s==co->sMap["Design"])isDone= sDesign.isDone();
+        if(s==co->sMap["Design"])isDone=sDesign.isDone();
         if(s==co->sMap["Idle"])isDone= true; // idle
         
         

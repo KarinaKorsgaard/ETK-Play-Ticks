@@ -24,25 +24,33 @@ public:
         for(int i = 0; i<numColors;i++){
             colors[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
       
-          //  cout << colors[c].r <<endl;
+            cout << colors[c].r <<endl;
         }
-        //cout << indx<<endl;
+        cout << indx<<endl;
     };
     bool isDone(){
         bool isDifferent = true;
+        int indx =0;
         for(int i = 0; i<buttons->size();i++){
-            for(int j = 0; j<buttons->size();j++){
-                if((buttons->at(i).symbolInt == buttons->at(j).symbolInt)||(buttons->at(i).colorInt == buttons->at(j).colorInt)){
-                    isDifferent=false;
-                    break;
+            if(buttons->at(i).isPlaying)indx++;
+            for(int j = i; j<buttons->size();j++){
+                if((i!=j) && buttons->at(j).isPlaying ){
+                    
+                    if((buttons->at(i).symbolInt == buttons->at(j).symbolInt)&&
+                       (buttons->at(i).colorInt == buttons->at(j).colorInt)){
+                        isDifferent=false;
+                        break;
+                    }
                 }
             }
         }
-        if(buttons->size()<10)isDifferent=false;
+        if(indx<5)isDifferent=false;
         return isDifferent;
     };
     
     void update(){
+        cout << isDone() << endl;
+        
         for(int i=0; i<buttons->size(); i++) {
             ofVec3f data = buttons->at(i).getRawData();
             int x = ofMap(data.x,0,1,0,colors.size()) ;
@@ -53,10 +61,10 @@ public:
         //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
             buttons->at(i).color[0]=colors[x];
             buttons->at(i).symbol=&co->characterSymbols[y];
+           
             buttons->at(i).colorInt = x;
             buttons->at(i).symbolInt = y;
-            //buttons->at(i).symbol=&co->characterSymbols[CLAMP(y,0,co->characterSymbols.size()-1)];
-          //  buttons->at(i).colors[2]=colors[CLAMP(z,0,colors.size()-1)];
+
             
         }
     }

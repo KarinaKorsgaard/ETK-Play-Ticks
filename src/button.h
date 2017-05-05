@@ -122,8 +122,8 @@ public:
             ofDrawCircle(0, 0, rad*bugSize+(curve.getStrokeWidth()*0.5));
             
           */
-            
-            symbol->draw(0,0,rad*0.85,rad*0.85);
+            ofSetColor(color[0]);
+            symbol->draw(-rad*0.85/2,-rad*0.85/2,rad*0.85,rad*0.85);
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
             ofFill();
             
