@@ -26,7 +26,7 @@ public:
       
             cout << colors[c].r <<endl;
         }
-        cout << indx<<endl;
+        cout << indx << endl;
     };
     bool isDone(){
         bool isDifferent = true;
@@ -45,7 +45,8 @@ public:
             }
         }
         if(indx<5)isDifferent=false;
-        return isDifferent;
+       // return isDifferent;
+        return false;
     };
     
     void update(){
