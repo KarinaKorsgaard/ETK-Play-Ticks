@@ -1,6 +1,7 @@
 #pragma once
 
 #define N_SOUNDS 5
+#define VERSION "1.0"
 
 #include "ofMain.h"
 #include "ofxOsc.h"

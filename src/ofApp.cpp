@@ -451,7 +451,7 @@ void ofApp::draw(){
     syphon.publishTexture(&fbo.getTexture());
     gui.draw();
     guiScenes.draw();
-    
+     ofDrawBitmapString("version "+ofToString(VERSION), 10, gui.getHeight() + 30);
     for(int i = 0 ; i<NUM_TABLES;i++){
         int red = receivingTables[i]?20:200;
         ofSetColor(red, 200-red , 0);
