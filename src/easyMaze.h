@@ -107,10 +107,10 @@ public:
     
     void begin(){
         go = false;
-        for(int i = 0; i<buttons->size();i++){
-            if(buttons->at(i).isPlaying)
-                buttons->at(i).setPosition(200, 1040);
-        }
+//        for(int i = 0; i<buttons->size();i++){
+//            if(buttons->at(i).isPlaying)
+//                buttons->at(i).setPosition(200, 1040);
+//        }
     };
     
     void reset(){
