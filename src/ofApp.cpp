@@ -90,7 +90,7 @@ void ofApp::setup(){
             sd->buttonID = indx - (teamNum * ((BUTTONS_PR_TABLE*NUM_TABLES)/2));
             sd->teamID = teamNum;
             sd->bHit	= false;
-            b.setPosition(ofRandom(1920), ofRandom(-100,-50));
+            b.setPosition(ofRandom(1940), ofRandom(-100,-50));
             indx++;
             
             teams[teamNum].buttons.push_back(b);
@@ -309,7 +309,7 @@ void ofApp::update(){
                         
                         if(b->on && !b->isPlaying){
                             b->isPlaying = true;
-                            b->box2Dcircle->setPosition(x, 100);
+                            b->box2Dcircle->setPosition(x, y);
                         }
                         //int table = b->table + teams[t].teamId*NUM_TABLES/2;
                         
