@@ -144,8 +144,8 @@ public:
     }
     
     void set(float _x, float _y, float _r){
-        x=_x;
-        y=_y;
+        x=CLAMP(_x,0,1);
+        y=CLAMP(_y,0,1);
         r_raw=_r;
     }
     

@@ -309,7 +309,7 @@ void ofApp::update(){
                         
                         if(b->on && !b->isPlaying){
                             b->isPlaying = true;
-                            b->box2Dcircle->setPosition(x, 20);
+                            b->box2Dcircle->setPosition(x, 100);
                         }
                         //int table = b->table + teams[t].teamId*NUM_TABLES/2;
                         
