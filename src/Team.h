@@ -341,6 +341,7 @@ public:
     void draw(){
         ofFill();
         int s = co->sceneNumber;
+        
         if(co->debug){
             ofSetColor(255,200);
             for(int i=0; i<buttons.size(); i++) {
@@ -366,8 +367,6 @@ public:
             for(int i = 0; i<rectShapes.size();i++){
                 rectShapes[i]->draw();
             }
-            //cout << polyShapes.size()<<endl;
-        
             spy04.draw();
         }
         else if(s==co->sMap["Market"])market05.draw();
@@ -428,8 +427,8 @@ public:
         string t = timeToString(time);
         co->font_medium->drawString( t ,50, 120);
         ofRectangle r = co->font_medium->getStringBoundingBox("00:00",0,0);
-        ofDrawLine(r.width + 50 + 50, 40, r.width + 50 + 50, 40+20+co->font_medium->getLineHeight() );
-        co->font_medium->drawString( ofToString(getDistVal(),0) ,r.width + 50 + 100,120);
+       // ofDrawLine(r.width + 50 + 50, 40, r.width + 50 + 50, 40+20+co->font_medium->getLineHeight() );
+       // co->font_medium->drawString( ofToString(getDistVal(),0) ,r.width + 50 + 100,120);
         
         // cout << time << endl;
     }

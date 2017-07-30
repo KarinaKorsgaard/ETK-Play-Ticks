@@ -8,6 +8,20 @@ public:
     float upThres;
     shared_ptr<ofxBox2dCircle> average;
     ofxBiquadFilter2f filter;
+    
+    commonObjects * co;
+    ofxSVG svg;
+    vector<ofPolyline> polys;
+    
+    vector<Button>*buttons;
+    
+    
+    ofVec2f averagePos = ofVec2f(1920/2.f,1080.f);
+    ofxBiquadFilter2f filterLowPass;
+    float fc;
+    
+    ofRectangle winningArea;
+    
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
@@ -20,10 +34,6 @@ public:
             if(x>10 && x<min )min = x;
         }
         upThres = min;
-//        ofxSVG svg2;
-//        svg2.load("svg/03_win_area_alt.svg");
-//        winningArea = getPolyline(svg2)[0].getBoundingBox();
-        
         filter.setFc(0.05f);
         
     };
@@ -138,17 +148,6 @@ public:
         average->destroy();
     }
     
-    commonObjects * co;
-    ofxSVG svg;
-    vector<ofPolyline> polys;
-    
-    vector<Button>*buttons;
-    
-    
-    ofVec2f averagePos = ofVec2f(1920/2.f,1080.f);
-    ofxBiquadFilter2f filterLowPass;
-    float fc;
-    
-    ofRectangle winningArea;
+
     
 };
