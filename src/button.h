@@ -48,12 +48,12 @@ public:
     }
     
     
-    void drawDebug(ofRectangle rect = ofRectangle(0,0,1920,1080)){
+    void drawDebug(ofRectangle rect = ofRectangle(0,0, 1920,1080)){
         if(on && !isDead() && isPlaying){
             ofVec2f p;
             
-            p.x = rect.width*x + rect.x;
-            p.y = rect.height*y + rect.y;
+            p.x = rect.width * x + rect.x;
+            p.y = rect.height * y + rect.y;
             
             
             ofPushMatrix();
@@ -144,59 +144,71 @@ public:
     }
     
     void set(float _x, float _y, float _r){
-        x=CLAMP(_x,0,1);
+        x=CLAMP(_x,0,2);
         y=CLAMP(_y,0,1);
         r_raw=_r;
     }
     
-    void update(float attraction , ofRectangle rect = ofRectangle(0,0,1920,1080)){
+    void update(float attraction ,bool doubleSize = true, ofRectangle rect = ofRectangle(0,0, 1920,1080)){
         box2Dcircle->setVelocity(0,0);
+        
         if(isPlaying && !isDead()){
             
             if(on){
                 
                 ofVec2f p;
-
-                p.x = rect.width*x + rect.x;
+                
+                int multiX = doubleSize ? teamNumber * 1920 : 0;
+                p.x = multiX + rect.width *x + rect.x;
                 p.y = rect.height*y + rect.y;
                 
                 distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
                 distToOrg /= (1980+1080);
                 
-                lastPos = getPos();
+                box2Dcircle->addAttractionPoint( p , attraction*distToOrg  );
                 
-                setDirection(rect);
+                setDirection(filterLowPass.value(), lastPos);
+                //setDirection(filterLowPass.value(), getPos());
+                lastPos = filterLowPass.value();
+                
+                
 
                 //if(!freezeUpdate){
                 
-                    box2Dcircle->addAttractionPoint( p, attraction*distToOrg  );
+                
             }
         }
         filterLowPass.update(getPos());
-        //if(updateRad)
-            updateRadius();
+        updateRadius();
         
     }
 
-    void updateWithGravity(float jump , float x_jump, float thresY){
+    void updateWithGravity(float jump , float x_jump, float thresY, bool doubleSize = true){
         if(isPlaying && !isDead()){
             if(on ){
-                setDirection();
+                int multiX = doubleSize ? teamNumber * 1920 : 0;
+                
                 
                 float dif_y = dy_jump - getPosRaw().y;
                 dy_jump = getPosRaw().y;
                 
-                float dif_x = getPosRaw().x - getPos().x ;
+                float dif_x = (getPosRaw().x + multiX) - getPos().x ;
                 
                 if( abs(box2Dcircle->getVelocity().y) < thresY)isJumping = false;
                 else isJumping = true;
 
                 if(!isJumping && dif_y>0)box2Dcircle->addForce(ofVec2f(0,-1), jump);
                 
-                box2Dcircle->setVelocity(0,box2Dcircle->getVelocity().y);
-                box2Dcircle->addForce(ofVec2f( dif_x*x_jump , 0) , abs(dif_x)*x_jump);
+               
                 
                 
+                box2Dcircle->setVelocity(0, box2Dcircle->getVelocity().y);
+                box2Dcircle->addForce(ofVec2f( dif_x * x_jump , 0) , abs(dif_x)*x_jump);
+                
+                //box2Dcircle->addAttractionPoint(ofVec2f( xPos , 0) , abs(dif_x)*x_jump);
+                
+                setDirection(filterLowPass.value(), lastPos);
+                lastPos = filterLowPass.value();
             }
         }
         filterLowPass.update(getPos());
@@ -204,18 +216,13 @@ public:
 
     }
     
-    void setDirection(ofRectangle rect = ofRectangle(0,0,1920,1080)){
+    void setDirection(ofVec2f v1, ofVec2f v2){
+        ofVec2f v = v2 - v1;
         
-        ofVec2f p;
+        ofVec2f up = ofVec2f(0,1);
+        r = up.angle(v);
         
-        p.x = rect.width*x + rect.x;
-        p.y = rect.height*y + rect.y;
-        
-        ofVec2f up;
-        vel.x = -(p.x - filterLowPass.value().x);
-        vel.y = p.y - filterLowPass.value().y;
-        up.set(0,-1);
-        r = vel.angle(up);
+                
     }
     
     void updateRadius(){
@@ -263,6 +270,7 @@ public:
             else return false;
         }else return false;
     }
+    
     void reviveDeadTicks(float thres, float amount){
         if(isDead()){
             deadTimer+=ofGetLastFrameTime();
@@ -275,7 +283,7 @@ public:
     }
     
     ofPoint getGridPos(int t, int i){
-        return ofPoint(i * 140 + 140, t * 70 + 140 );
+        return ofPoint((teamNumber * 1920)+ (i * 140 + 140), t * 70 + 140 );
     }
     
     ofVec2f getPosRaw(){
@@ -303,22 +311,22 @@ public:
     void drawb2d(){
         box2Dcircle->draw();
     }
-    void setValue(double v){
+    void setValue(float v){
         if(isPlaying){
             value = v;
             if(value <0.)value = 0.;
         }
     }
-    double getValue(){
+    float getValue(){
         return value;
     }
-    void addValue(double v){
+    void addValue(float v){
         if(isPlaying){
             value+=v;
             if(value <0.)value = 0.;
         }
     }
-    void multValue(double v){
+    void multValue(float v){
         if(isPlaying){
             value*=v;
             if(value <0.)value = 0.;
@@ -381,9 +389,9 @@ private:
     float armSwapper;
     
     float r, r_raw;
-    double x=0.;
-    double y=0.;
-    double value=0.;
+    float x=0.;
+    float y=0.;
+    float value=0.;
     
     float deadTimer;
 };

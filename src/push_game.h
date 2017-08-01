@@ -54,8 +54,8 @@ public:
             Button * b = &buttons->at(i);
             if(!isDone() && !b->isDead()){
                 
-                if(i<buttons->size()/2 )b->update(co->attraction*b->getValue(), ofRectangle(deadZone+60,0,1980-deadZone,1080));
-                else b->update(co->attraction*b->getValue()*2., ofRectangle(1980,0,1980-deadZone,1080));
+                if(i<buttons->size()/2 )b->update(co->attraction*b->getValue(),true, ofRectangle(deadZone+60,0,1980-deadZone,1080));
+                else b->update(co->attraction*b->getValue()*2.,true, ofRectangle(1980,0,1980-deadZone,1080));
             }
             if(i<buttons->size()/2 && b->getBiquadPos().x+b->radius < deadZone){
                 b->setValue(0);

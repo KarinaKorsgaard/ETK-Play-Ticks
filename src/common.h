@@ -84,7 +84,10 @@ public:
     vector<ofImage> characterImgs;
     vector<ofImage> characterSymbols;
     
-    map<string, int>sMap;
+    //map< string , int >sMap;
+    
+    map< int , string >sMap;
+    
     ofImage legs[2];
     
     int NUM_TABLES;
@@ -197,21 +200,7 @@ public:
         }
     }
     
-//    void drawGrid(int t, int b, map<int,Button>*buttons){
-//        ofPushStyle();
-//        ofSetLineWidth(4);
-//        ofSetColor(255);
-//        ofNoFill();
-//        for(auto b: *buttons){
-//            ofPushMatrix();
-//            ofTranslate(b.second.getGridPos());
-//            ofDrawRectangle(-35,-35,70,70);
-//            
-//            ofPopMatrix();
-//        }
-//        ofPopStyle();
-//    }
-    
+
     
     vector<ofPolyline> getPolyline(ofxSVG svg, bool doble = false){
        // vector<ofPolyline> result;

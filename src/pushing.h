@@ -48,7 +48,7 @@ public:
         for(int i = 0 ; i< buttons->size();i++){
             Button * b = &buttons->at(i);
             //if(beginTime>.1)
-            b->update(b->getValue() * b->getValue(), ofRectangle(deadZone,deadZone,1920-deadZone*2,1080-deadZone*2));
+            b->update(b->getValue() * b->getValue(),true, ofRectangle(deadZone,deadZone,1920-deadZone*2,1080-deadZone*2));
             
             if(b->getPos().x < deadZone           )b->setValue(0);
             else if(b->getPos().x > 1920-deadZone)b->setValue(0);

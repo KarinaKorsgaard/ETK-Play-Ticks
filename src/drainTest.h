@@ -1,7 +1,7 @@
 #include "ofMain.h"
-#include "common.h"
+#include "Scene.h"
 
-class DrainTest : public commonFunctions{
+class DrainTest : public Scene{
     
 public:
     vector<Button>*buttons;
@@ -38,13 +38,7 @@ public:
                 buttons->at(i).drawDebug();
             }
         }
-        
-//        ofSetColor(ofColor::royalBlue);
-//        for(int i = 0; i< head.size();i++)
-//            co->font_medium->drawString(head[i], 50, 100+i*co->font_medium->getLineHeight());
-//        
-//        for(int i = 0; i< bread.size();i++)
-//            co->font_small->drawString(bread[i], 50, 180+i*co->font_small->getLineHeight());
+
     };
     
     void begin(){

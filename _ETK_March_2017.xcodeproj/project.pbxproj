@@ -159,25 +159,25 @@
 		209BCEF79F286C9203801938 /* b2GearJoint.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = b2GearJoint.h; path = ../../../addons/ofxBox2d/libs/Box2D/Dynamics/Joints/b2GearJoint.h; sourceTree = SOURCE_ROOT; };
 		20F35AFADAF0068B067E713F /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
 		2174A7B91F2E05EE0022C956 /* genericScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = genericScene.h; sourceTree = "<group>"; };
+		2174A7BA1F2E1AE20022C956 /* Scene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
+		2174A7BC1F305BE40022C956 /* 12_Ground.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 12_Ground.h; sourceTree = "<group>"; };
 		219B5F601E7A70520002FD2A /* pushing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pushing.h; sourceTree = "<group>"; };
 		21A9BC861E72C76B005F90E3 /* pingPong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pingPong.h; sourceTree = "<group>"; };
-		21A9BC8E1E7694CE005F90E3 /* Idle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Idle.h; sourceTree = "<group>"; };
+		21A9BC8E1E7694CE005F90E3 /* 11_Cherades.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 11_Cherades.h; sourceTree = "<group>"; };
 		21A9BC921E7828F8005F90E3 /* push_game.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = push_game.h; sourceTree = "<group>"; };
-		21A9BC951E796C70005F90E3 /* easyMaze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = easyMaze.h; sourceTree = "<group>"; };
-		21AE24D61E6DF68700150433 /* s03.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s03.h; sourceTree = "<group>"; };
+		21A9BC951E796C70005F90E3 /* 03_Trail.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 03_Trail.h; sourceTree = "<group>"; };
 		21AE24DA1E6EBE1900150433 /* ofxBiquadFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBiquadFilter.cpp; sourceTree = "<group>"; };
 		21AE24DB1E6EBE1900150433 /* ofxBiquadFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBiquadFilter.h; sourceTree = "<group>"; };
 		21AE24DC1E6EBE1900150433 /* ofxBiquadFilterInstance.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxBiquadFilterInstance.cpp; sourceTree = "<group>"; };
 		21AE24DD1E6EBE1900150433 /* ofxBiquadFilterInstance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxBiquadFilterInstance.h; sourceTree = "<group>"; };
-		21AE24E21E6EC62A00150433 /* designCharacter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = designCharacter.h; sourceTree = "<group>"; };
+		21AE24E21E6EC62A00150433 /* 01_Design.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 01_Design.h; sourceTree = "<group>"; };
 		21AE24E31E6EDDE000150433 /* drainTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = drainTest.h; sourceTree = "<group>"; };
 		21AE24E71E6EEB6D00150433 /* ButtonData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ButtonData.h; sourceTree = "<group>"; };
-		21AE24E81E6EEFC500150433 /* s04.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s04.h; sourceTree = "<group>"; };
-		21AE24EA1E6F120A00150433 /* s05.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s05.h; sourceTree = "<group>"; };
-		21AE24EC1E6F5B5700150433 /* s06.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s06.h; sourceTree = "<group>"; };
+		21AE24EA1E6F120A00150433 /* 08_Fences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 08_Fences.h; sourceTree = "<group>"; };
+		21AE24EC1E6F5B5700150433 /* 10_Factories.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 10_Factories.h; sourceTree = "<group>"; };
 		21D00CA41E93DEF2009FFBA7 /* sceneNames.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = sceneNames.txt; path = bin/data/sceneNames.txt; sourceTree = SOURCE_ROOT; };
-		21DEC74F1E7AF01F004A5BBA /* s02alt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s02alt.h; sourceTree = "<group>"; };
-		21DEC7501E7AF257004A5BBA /* s03_alt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s03_alt.h; sourceTree = "<group>"; };
+		21DEC74F1E7AF01F004A5BBA /* 04_Maze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 04_Maze.h; sourceTree = "<group>"; };
+		21DEC7501E7AF257004A5BBA /* 07_AverageMaze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 07_AverageMaze.h; sourceTree = "<group>"; };
 		21E6CA4E1E6D5E0300E0C55D /* Team.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Team.h; sourceTree = "<group>"; };
 		21E6CA4F1E6D5EE100E0C55D /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		21E6CA501E6D636F00E0C55D /* button.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = button.h; sourceTree = "<group>"; };
@@ -187,7 +187,7 @@
 		21E6CA581E6D7C3200E0C55D /* tinyxml.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = tinyxml.h; sourceTree = "<group>"; };
 		21E6CA591E6D7C3200E0C55D /* tinyxmlerror.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlerror.cpp; sourceTree = "<group>"; };
 		21E6CA5A1E6D7C3200E0C55D /* tinyxmlparser.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = tinyxmlparser.cpp; sourceTree = "<group>"; };
-		21E6CA5F1E6D80CF00E0C55D /* s01.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s01.h; sourceTree = "<group>"; };
+		21E6CA5F1E6D80CF00E0C55D /* 02_Area.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 02_Area.h; sourceTree = "<group>"; };
 		21E6CA621E6D81DD00E0C55D /* ofxSvg.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxSvg.cpp; sourceTree = "<group>"; };
 		21E6CA631E6D81DD00E0C55D /* ofxSvg.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxSvg.h; sourceTree = "<group>"; };
 		21E6CA671E6D81DD00E0C55D /* src_colors.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = src_colors.cpp; sourceTree = "<group>"; };
@@ -197,7 +197,6 @@
 		21E6CA6B1E6D81DD00E0C55D /* svgtiny_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = svgtiny_internal.h; sourceTree = "<group>"; };
 		21E6CA6C1E6D81DD00E0C55D /* svgtiny_list.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = svgtiny_list.cpp; sourceTree = "<group>"; };
 		21E6CA721E6DA18000E0C55D /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = bin/data/config.xml; sourceTree = SOURCE_ROOT; };
-		21E6CA761E6DB3BE00E0C55D /* s02.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = s02.h; sourceTree = "<group>"; };
 		229CB9C8AF92D3460F8D554A /* ofxBox2d.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxBox2d.cpp; path = ../../../addons/ofxBox2d/src/ofxBox2d.cpp; sourceTree = SOURCE_ROOT; };
 		22FDF81C4A468B788F424022 /* ofxTrueTypeFontUC.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxTrueTypeFontUC.h; path = ../../../addons/ofxTrueTypeFontUC/src/ofxTrueTypeFontUC.h; sourceTree = SOURCE_ROOT; };
 		23640F57DF6C4BB6BFC5DA4C /* PacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/PacketListener.h; sourceTree = SOURCE_ROOT; };
@@ -400,6 +399,18 @@
 			name = Box2D;
 			sourceTree = "<group>";
 		};
+		2174A7BB1F2F633C0022C956 /* old_scenes */ = {
+			isa = PBXGroup;
+			children = (
+				21AE24E31E6EDDE000150433 /* drainTest.h */,
+				219B5F601E7A70520002FD2A /* pushing.h */,
+				2174A7B91F2E05EE0022C956 /* genericScene.h */,
+				21A9BC921E7828F8005F90E3 /* push_game.h */,
+				21A9BC861E72C76B005F90E3 /* pingPong.h */,
+			);
+			name = old_scenes;
+			sourceTree = "<group>";
+		};
 		21AE24D81E6EBE1900150433 /* ofxBiquadFilter */ = {
 			isa = PBXGroup;
 			children = (
@@ -503,22 +514,17 @@
 		21E6CA741E6DB38300E0C55D /* scenes */ = {
 			isa = PBXGroup;
 			children = (
-				21A9BC951E796C70005F90E3 /* easyMaze.h */,
-				21A9BC921E7828F8005F90E3 /* push_game.h */,
-				21A9BC8E1E7694CE005F90E3 /* Idle.h */,
-				21AE24E31E6EDDE000150433 /* drainTest.h */,
-				219B5F601E7A70520002FD2A /* pushing.h */,
-				21E6CA5F1E6D80CF00E0C55D /* s01.h */,
-				21E6CA761E6DB3BE00E0C55D /* s02.h */,
-				21DEC74F1E7AF01F004A5BBA /* s02alt.h */,
-				21AE24D61E6DF68700150433 /* s03.h */,
-				21DEC7501E7AF257004A5BBA /* s03_alt.h */,
-				2174A7B91F2E05EE0022C956 /* genericScene.h */,
-				21AE24E81E6EEFC500150433 /* s04.h */,
-				21AE24EA1E6F120A00150433 /* s05.h */,
-				21AE24EC1E6F5B5700150433 /* s06.h */,
-				21A9BC861E72C76B005F90E3 /* pingPong.h */,
-				21AE24E21E6EC62A00150433 /* designCharacter.h */,
+				21AE24E21E6EC62A00150433 /* 01_Design.h */,
+				21E6CA5F1E6D80CF00E0C55D /* 02_Area.h */,
+				21A9BC951E796C70005F90E3 /* 03_Trail.h */,
+				21DEC74F1E7AF01F004A5BBA /* 04_Maze.h */,
+				21DEC7501E7AF257004A5BBA /* 07_AverageMaze.h */,
+				21AE24EA1E6F120A00150433 /* 08_Fences.h */,
+				21AE24EC1E6F5B5700150433 /* 10_Factories.h */,
+				21A9BC8E1E7694CE005F90E3 /* 11_Cherades.h */,
+				2174A7BC1F305BE40022C956 /* 12_Ground.h */,
+				2174A7BA1F2E1AE20022C956 /* Scene.h */,
+				2174A7BB1F2F633C0022C956 /* old_scenes */,
 			);
 			name = scenes;
 			sourceTree = "<group>";

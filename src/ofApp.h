@@ -99,11 +99,10 @@ class ofApp : public ofBaseApp{
         return c*t*t + b;
     }
     
-    ofxBox2d world;
-    PingPong pingPong;
-    PushGame pushGame;
-    Pushing push2;
-    
+    ofxBox2d box2d;
+    ofVideoPlayer groundVideo;
+    bool isGroundDone;
+    ofPixels groundPixels;
 
    // vector<Button>giantButtonMap;
 

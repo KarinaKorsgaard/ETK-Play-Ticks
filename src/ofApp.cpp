@@ -3,6 +3,12 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 
+    
+    box2d.init();
+    box2d.setGravity(0, 0);
+    box2d.createBounds(ofRectangle(0,0,1920 * 2,1080));
+    box2d.enableEvents();
+    
     //set common objects to point at fonts and button map
     syphon.setName("tick games");
     //load fonts
@@ -39,10 +45,12 @@ void ofApp::setup(){
     
     for(int i = 0; i<2;i++){
         teams[i].setup(i,&co);
+        teams[i].box2d = &box2d;
         teams[i].time = 0;//xml.getValue("startTime", 0.0);
         co.size_break = xml.getValue("size_break_point", 0.0);
         co.size_lim = xml.getValue("size_limit", 0.0);
     }
+    
     float startRad = xml.getValue("size", 0.0);
     float startVal=0.;
     startVal+=xml.getValue("startValue", 0.0);
@@ -79,7 +87,7 @@ void ofApp::setup(){
             Button b = * new Button;
             
            // void setup(int _row, int _table,int _teamNum, string _address, string _secondAdress, float val, float size, ofxBox2d *world){
-            b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startVal, startRad, &teams[teamNum].box2d);
+            b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startVal, startRad, &box2d);
             b.size_lim = co.size_lim;
             b.size_break= co.size_break;
             b.img = &co.characterImgs;
@@ -107,9 +115,6 @@ void ofApp::setup(){
 //    ofAddListener(teams[1].box2d.contactStartEvents, this, &ofApp::contactStart);
 //    ofAddListener(teams[1].box2d.contactEndEvents, this, &ofApp::contactEnd);
 
-    pingPong.setup(&co,&teams[0].buttons,&teams[1].buttons);
-    pushGame.setup(&co);
-    push2.setup(&co);
     
     //allocate framebuffer
     fbo.allocate(1920*2, 1080, GL_RGBA);
@@ -124,8 +129,8 @@ void ofApp::setup(){
             p.set(name,false);
             scenes.add(p);
             b_scenes.push_back(p);
-            co.sMap[ofSplitString(name, "-")[1]]=i;
-           //cout <<" map  "+ ofSplitString(name, "-")[1] << endl;
+            co.sMap[i]=ofSplitString(name, "-")[1];
+           cout <<" map  "+ ofSplitString(name, "-")[1] << endl;
         }
     }
     
@@ -156,12 +161,7 @@ void ofApp::setup(){
     gravity.add(co.gravityReward.set("gravityReward",50,0,100));
     
     
-    spyGame.setName("spy game");
-    //spyGame.add(co.spyDrainer.set("drain",0.2,0.,2));
-    spyGame.add(co.pauseTeam1.set("pause team toggle", false));
-    //spyGame.add(co.pauseTeam2.set("pause team 2", true));
-    
-    spyGame.add(co.spySpeed.set("Spy Speed",30.,0.,500));
+
     
     market.setName("market control");
     
@@ -170,8 +170,8 @@ void ofApp::setup(){
     market.add(co.marketDone1.set("finish market 1",false));
     market.add(co.marketDone2.set("finish market 2",false));
     
-    push.setName("PushGame");
-    push.add(co.blockForce.set("repel force",0.2,0.,200));
+    //push.setName("PushGame");
+    //push.add(co.blockForce.set("repel force",0.2,0.,200));
     
 //    finale.add(co.startFinale.set("begin",false));
 //    finale.add(co.deadTimeFinale.set("push time",0.1,0.,2));
@@ -197,8 +197,7 @@ void ofApp::setup(){
     gui.add(physics);
     gui.add(gameMechs);
     gui.add(gravity);
-    gui.add(spyGame);
-    gui.add(push);
+   // gui.add(push);
     gui.add(idle);
     
     
@@ -229,6 +228,7 @@ void ofApp::setup(){
     }
     
     
+    groundPixels.setNumChannels(3);
     
 }
 
@@ -267,13 +267,13 @@ void ofApp::update(){
                 p_b_scenes[i]=false;
             }
         }
-        //if(co.sceneNumber == co.sMap["GoOffEdge"]) Catastrophy? 
         handleSceneChange();
     }
     
     double beforeOSC;
     if(co.debug)beforeOSC = ofGetElapsedTimef();
-    // update from incoming osc
+
+    
     while (receiver.hasWaitingMessages()) {
         ofxOscMessage m;
         receiver.getNextMessage(m);
@@ -285,9 +285,6 @@ void ofApp::update(){
         if(!co.lock){
             int uT=2;
             
-            if(co.sceneNumber == co.sMap["PushGame"] ||
-               co.sceneNumber == co.sMap["GoOffEdge"]
-               )uT = 1;
             
             for(int t = 0; t < uT ; t++){
                 for(int i = 0; i < teams[t].buttons.size(); i++){
@@ -303,83 +300,70 @@ void ofApp::update(){
                     else if( m.getAddress()==b->address ){
                         b->on = true;
                         
-                        double x = reverseX ? 1.- (m.getArgAsFloat(0)/127.0f) : m.getArgAsFloat(0)/127.0f;
-                        double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
+                        double x = reverseX ? 1.- (m.getArgAsFloat(0)/127.0) : m.getArgAsFloat(0)/127.0;
+                        //x += t;
+                        double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0) : m.getArgAsFloat(1)/127.0;
+                        
                         b->set( x , y , m.getArgAsFloat(2) );
                         
                         if(b->on && !b->isPlaying){
                             b->isPlaying = true;
                             b->box2Dcircle->setPosition(x, y);
                         }
-                        //int table = b->table + teams[t].teamId*NUM_TABLES/2;
-                        
-                        
-                        if(teams[t].spy04.spyId == -1)
-                            teams[t].spy04.spyId=i;
-                        
+
                         break;
                     }
-                    
                 }
             }
         }
     }
-    //if(co.debug)cout<< ofGetElapsedTimef()-beforeOSC << endl;
-    if(co.sceneNumber != co.sMap["PushGame"] && co.sceneNumber != co.sMap["GoOffEdge"]){
-        if(!co.refill1){
-            teams[0].update();
-            if(co.sceneNumber == co.sMap["SpyGame"]){
-                if(teams[0].spy04.areWeDone() && co.logReport){
-                    co.log("the spy outsmarted team 0");
+    
+    teams[0].update();
+    teams[1].update();
+
+    if(co.sMap[co.sceneNumber] == "GroundGame"){
+        
+        int aliveCounter = 0;
+        
+        if(groundVideo.isFrameNew())
+            groundPixels = groundVideo.getPixels();
+       
+        for(int t = 0; t < 2 ; t++){
+            for(int i = 0; i < teams[t].buttons.size(); i++){
+                
+                Button *b = &teams[t].buttons[i];
+                
+                b->update(co.attraction, false);
+                
+                if(!b->isDead() && b->isPlaying && !isGroundDone){
+                    float x = b->getBiquadPos().x;
+                    float y = b->getBiquadPos().y;
+                    
+                    if(x<1920){
+                        x *= groundVideo.getWidth()/1920.;
+                        y *= groundVideo.getHeight()/1080.;
+                        
+                        if(groundPixels.getColor(x,y).r < 10){
+                            b->setValue(0);
+                        }
+                    }
                 }
-            }
-        }
-        if(!co.refill2){
-            teams[1].update();
-            if(co.sceneNumber == co.sMap["SpyGame"]){
-                if(teams[1].spy04.areWeDone() && co.logReport){
-                    co.log("the spy outsmarted team 1");
-                }
+                if(!b->isDead() && b->isPlaying)aliveCounter++;
             }
         }
         
-//        if(teams[0].allAreDead() && teams[0].deadTime>co.deadTimer && !co.refill1){
-//            co.refill1 = true;
-//            ofxOscMessage m;
-//            m.setAddress("/dead1");
-//            co.oscOut.sendMessage(m);
-//        }
-//        if(teams[1].allAreDead() && teams[1].deadTime>co.deadTimer && !co.refill2){
-//            co.refill2 = true;
-//            ofxOscMessage m;
-//            m.setAddress("/dead2");
-//            co.oscOut.sendMessage(m);
-//        }
+        if(aliveCounter != 1)
+            groundVideo.update();
+        else isGroundDone = true;
     }
-    if(co.sceneNumber == co.sMap["PingPong"] && !co.refill2 && !co.refill1){
-        pingPong.update();
-    }
-    if(co.sceneNumber == co.sMap["PushGame"] && !co.refill2 && !co.refill1){
-        pushGame.update();
-    }
-    if(co.sceneNumber == co.sMap["GoOffEdge"] && !co.refill2 && !co.refill1){
-        push2.update();
-    }
-    if(co.sceneNumber != co.sMap["PushGame"] && co.sceneNumber != co.sMap["SpyGame"]){
+    
+    else
+    {
         teams[0].reviveTicks(co.deadTimer,co.refillCoef);
         teams[1].reviveTicks(co.deadTimer,co.refillCoef);
     }
     
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
-    
-//    if(alertDialog){
-//        for(int i = 0;i<receivingTables.size();i++){
-//            if(!receivingTables[i])alive_counter[i]+=ofGetLastFrameTime();
-//            else alive_counter[i]=0;
-//            
-//            if(alive_counter[i]>15)ofSystemAlertDialog("table "+ofToString(i+1));
-//        }
-//    }
     
     if(co.playSound){
         for(int i = 0; i<2; i++){
@@ -396,6 +380,8 @@ void ofApp::update(){
             }
         }
     }
+    
+    box2d.update();
 
 }
 
@@ -406,52 +392,22 @@ void ofApp::draw(){
     fbo.begin();
     
     ofClear(0);
+    ofBackground(200);
+    if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);
     
-//    if(!co.debug)ofBackground(0,195,0);
-//    else ofBackground(0, 0, 0);
-//    ofSetColor(225, 220, 255);
-//    ofDrawRectangle(0,0,1920,1080);
-//    ofSetColor(255, 220, 220);
-//    ofDrawRectangle(1920,0,1920,1080);
+    teams[0].draw();
+    teams[1].draw();
 
-    if(co.sceneNumber!= co.sMap["PingPong"] && co.sceneNumber!=co.sMap["PushGame"] && co.sceneNumber!=co.sMap["GoOffEdge"] ){
-//        if(co.refill1){
-//            refill(0,easeRefill1);
-//            
-//        }else{
-            teams[0].draw();
-        //    easeRefill1 = ofGetElapsedTimef();
-           // teams[0].recordValues();
-  //      }
-        
-        
-//        if(co.refill2){
-//            refill(1,easeRefill2);
-//        }
-//        else {
-            ofPushMatrix();
-            ofTranslate(1920, 0);
-            teams[1].draw();
-            ofPopMatrix();
-            
-       //     easeRefill2 = ofGetElapsedTimef();
-         //   teams[1].recordValues();
-     //   }
-        
-    }
-    if(co.sceneNumber==co.sMap["PingPong"])
-        pingPong.draw();
-    if (co.sceneNumber==co.sMap["PushGame"])
-        pushGame.draw();
-    if (co.sceneNumber==co.sMap["GoOffEdge"])
-        push2.draw();
     
+
+
     fbo.end();
 
     syphon.publishTexture(&fbo.getTexture());
     gui.draw();
     guiScenes.draw();
-     ofDrawBitmapString("version "+ofToString(VERSION), 10, gui.getHeight() + 30);
+    
+    ofDrawBitmapString("version "+ofToString(VERSION), 10, gui.getHeight() + 30);
     for(int i = 0 ; i<NUM_TABLES;i++){
         int red = receivingTables[i]?20:200;
         ofSetColor(red, 200-red , 0);
@@ -462,211 +418,19 @@ void ofApp::draw(){
 
 void ofApp::handleSceneChange(){
     
-    for(int i = 0;i<receivingTables.size();i++){
-        receivingTables[i]=false;
+    if(co.sMap[co.sceneNumber] == "GroundGame"){
+        groundVideo.load("ground.mov");
+        
+        groundPixels.allocate(groundVideo.getWidth(), groundVideo.getHeight(), GL_RGB);
+        
+      //  groundVideo.setSpeed(0.2f);
+        groundVideo.setLoopState(OF_LOOP_NONE);
+        groundVideo.play();
+        isGroundDone = false;
+        
+    }else if(co.sMap[p_sceneNumber] == "GroundGame"){
+      //  groundVideo.unload();
     }
-    
-    if(co.sceneNumber == co.sMap["PingPong"])pingPong.begin();
-    if(p_sceneNumber  == co.sMap["PingPong"]) pingPong.reset();
-
-    
-    
-    if( (p_sceneNumber == co.sMap["PushGame"] && teamSize!=-1) ){
-        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-        pushGame.reset();
-        
-        if(teams[0].buttons.size() != teamSize ){
-            for(int i = 0;i<teamSize;i++){
-                
-                
-                teams[0].buttons.at(i).box2Dcircle->destroy();
-                teams[0].buttons.at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-                //virtual void setPhysics(float density, float bounce, float friction);
-                teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
-                teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
-                teams[0].buttons.at(i).box2Dcircle.get()->setRadius(teams[0].buttons.at(i).beginningRad);
-                
-                
-                teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value
-                teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
-                teams[0].buttons.pop_back();
-                
-            }
-            
-        }
-        cout << "PUSH GAME 1 team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-    }
-    if( (p_sceneNumber== co.sMap["GoOffEdge"] && teamSize!=-1) ){
-        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-        push2.reset();
-        
-        if(teams[0].buttons.size() != teamSize ){
-            for(int i = 0;i<teamSize;i++){
-                
-                
-                teams[0].buttons.at(i).box2Dcircle->destroy();
-                teams[0].buttons.at(i).box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-                //virtual void setPhysics(float density, float bounce, float friction);
-                teams[0].buttons.at(i).box2Dcircle.get()->setPhysics(3., 0.0, 40.);
-                teams[0].buttons.at(i).box2Dcircle.get()->setup(teams[0].box2d.getWorld(), teams[0].buttons.at(i).lastPos.x, teams[0].buttons.at(i).lastPos.y, 1);
-                teams[0].buttons.at(i).box2Dcircle.get()->setRadius(teams[0].buttons.at(i).beginningRad);
-                
-                teams[1].buttons[i].setValue( teams[0].buttons[i+teamSize].getValue() ); // update value
-                teams[0].buttons.back().box2Dcircle->destroy(); // destroy and remove.
-                teams[0].buttons.pop_back();
-                
-            }
-            
-        }
-        cout << "PUSH GAME 2 team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-    }
-
-    
-    
-    //if(key-'0'<10){
-     //   co.sceneNumber = key-'0';
-    co.log("");
-    co.log("scene "+ofToString(co.sceneNumber)+" began at: " + ofGetTimestampString(co.timeStamp));
-    co.log("team 1 collected value: "+ofToString(teams[0].getDistVal()));
-    co.log("team 2 collected value: "+ofToString(teams[1].getDistVal()));
-   // }
-    // spy fuckups....
-    
-    if(teams[0].spy04.spyId!=-1 && teams[1].spy04.spyId!=-1){
-        if(co.sceneNumber == co.sMap["SpyGame"]){
-            if(teams[0].gravity03.theWinner!=-1)teams[0].spy04.spyId = teams[0].gravity03.theWinner;
-            if(teams[1].gravity03.theWinner!=-1)teams[1].spy04.spyId = teams[1].gravity03.theWinner;
-            
-            Button a = teams[0].buttons[teams[0].spy04.spyId]; // 5
-            Button b = teams[1].buttons[teams[1].spy04.spyId]; // 8
-            
-            if(a.teamNumber == 0 && b.teamNumber == 1){
-                if(a.isDead())a.addValue(20);
-                if(b.isDead())b.addValue(20);
-                
-                teams[0].buttons[teams[0].spy04.spyId] = b;
-                teams[1].buttons[teams[1].spy04.spyId] = a;
-                
-                shared_ptr <ofxBox2dCircle> c = teams[0].buttons[teams[0].spy04.spyId].box2Dcircle;
-                shared_ptr <ofxBox2dCircle> d = teams[1].buttons[teams[1].spy04.spyId].box2Dcircle;
-                
-                teams[0].buttons[teams[0].spy04.spyId].box2Dcircle = d;
-                teams[1].buttons[teams[1].spy04.spyId].box2Dcircle = c;
-                
-            }
-        }
-        if(p_sceneNumber == co.sMap["SpyGame"]){
-            
-            Button a = teams[0].buttons[teams[0].spy04.spyId];
-            Button b = teams[1].buttons[teams[1].spy04.spyId];
-            if(a.teamNumber == 1 && b.teamNumber == 0){
-                teams[0].buttons[teams[0].spy04.spyId] = b;
-                teams[1].buttons[teams[1].spy04.spyId] = a;
-                
-                shared_ptr <ofxBox2dCircle> c = teams[0].buttons[teams[0].spy04.spyId].box2Dcircle;
-                shared_ptr <ofxBox2dCircle> d = teams[1].buttons[teams[1].spy04.spyId].box2Dcircle;
-                
-                teams[0].buttons[teams[0].spy04.spyId].box2Dcircle = d;
-                teams[1].buttons[teams[1].spy04.spyId].box2Dcircle = c;
-                
-            }
-        }
-    }
-    
-    if(co.sceneNumber == co.sMap["PushGame"] ){
-        
-        teamSize=teams[1].buttons.size();
-        
-       // teams[0].box2d.getWorld()->ClearForces();
-        
-        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-        
-        if(teams[0].buttons.size() == teamSize ){
-            
-            for(int i = 0;i<teams[1].buttons.size();i++){
-                Button * old = &teams[1].buttons[i];
-                
-                Button b = * new Button;
-            
-                b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
-                b.color = old->color;
-                b.img = old->img;
-                b.symbol = old->symbol;
-                b.radius = old->radius;
-                b.legs[0] = old->legs[0];
-                b.legs[1] = old->legs[1];
-                b.setValue(old->getValue());
-                b.isPlaying = old->isPlaying;
-                b.on = old->on;
-                b.size_lim = old->size_lim;
-                b.size_break = old->size_break;
-//
-                teams[0].buttons.push_back(b);
-
-                
-            }
-            cout << "team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-            
-            pushGame.begin(&teams[0].buttons);
-            
-            for(int b = 0; b<teams[1].buttons.size();b++){
-                teams[1].buttons[b].box2Dcircle->alive = false;
-               // teams[1].buttons[b].box2Dcircle->setRadius(0);
-            }
-            
-            
-            
-        }
-    }
-
-    
-    //
-    
-    if(co.sceneNumber == co.sMap["GoOffEdge"] ){
-        
-        teamSize=teams[1].buttons.size();
-        
-      //  teams[0].box2d.getWorld()->ClearForces();
-        
-        cout << "team 0 was " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-        
-        if(teams[0].buttons.size() == teamSize ){
-            
-            for(int i = 0;i<teams[1].buttons.size();i++){
-                Button * old = &teams[1].buttons[i];
-                
-                Button b = * new Button;
-                
-                b.setup(old->ID, old->table , old->teamNumber, old->address, old->secondAdress, old->beginningValue, old->beginningRad, &teams[0].box2d);
-                b.color = old->color;
-                b.img = old->img;
-                b.legs[0] = old->legs[0];
-                b.legs[1] = old->legs[1];
-                b.symbol = old->symbol;
-                b.radius = old->radius;
-                b.setValue(old->getValue());
-                b.isPlaying = old->isPlaying;
-                b.on = old->on;
-                b.size_lim = old->size_lim;
-                b.size_break = old->size_break;
-                //
-                teams[0].buttons.push_back(b);
-                
-                
-            }
-            cout << "team 0 is now " + ofToString(teams[0].buttons.size()) + " big"<<endl;
-            
-            push2.begin(&teams[0].buttons);
-            
-            for(int b = 0; b<teams[1].buttons.size();b++){
-                teams[1].buttons[b].box2Dcircle->alive = false;
-              //  teams[1].buttons[b].box2Dcircle->setRadius(0);
-            }
-  
-        }
-    }
-    
-    
     
     
     p_sceneNumber = co.sceneNumber;
