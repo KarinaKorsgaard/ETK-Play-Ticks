@@ -2,9 +2,12 @@
 1-Area
 2-Trail
 3-Maze
-4-AverageMaze
-5-Fences
-7-Factories
+4-Representative
+5-Logic
+6-AverageMaze
+7-Fences
+8-Fight
+9-Factories
 10-Charades
-12-GroundGame
-14-Idle
+11-GroundGame
+12-Idle

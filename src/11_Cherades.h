@@ -4,8 +4,7 @@
 class Idle : public Scene{
     
 public:
-    vector<Button>*buttons;
-    commonObjects * co;
+    
     bool done = false;
     
     

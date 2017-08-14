@@ -13,6 +13,14 @@ public:
     ofxBiquadFilter2f filter;
     ofPoint average;
     
+
+    ofxSVG svg;
+    ofImage path;
+    vector<ofPolyline> polys;
+    
+    bool sendOsc;
+    int oscInt;
+    
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
@@ -108,24 +116,12 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
         go = false;
-//        for(int i = 0; i<buttons->size();i++){
-//            if(buttons->at(i).isPlaying)
-//                buttons->at(i).setPosition(200, 1040);
-//        }
     };
     
     void reset(){
        
     };
-    
-    commonObjects * co;
-    ofxSVG svg;
-    ofImage path;
-    vector<ofPolyline> polys;
-    
-    vector<Button>*buttons;
-    bool sendOsc;
-    int oscInt;
+
 
     
 };

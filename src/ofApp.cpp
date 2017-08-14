@@ -7,16 +7,13 @@ void ofApp::setup(){
     box2d.init();
     box2d.setGravity(0, 0);
     box2d.createBounds(ofRectangle(0,0,1920 * 2,1080));
-    box2d.enableEvents();
+   // box2d.enableEvents();
+    
+   // ofSetCircleResolution(1000);
     
     //set common objects to point at fonts and button map
     syphon.setName("tick games");
-    //load fonts
     font_x_small.load("fonts/GT.ttf", 20);
-    
-    
-    ofSetCircleResolution(1000);
-    
     font_small.load("fonts/GT.ttf", 30);
     font_medium.load("fonts/GT.ttf", 65);
     font_large.load("fonts/GT.ttf", 140);
@@ -29,15 +26,20 @@ void ofApp::setup(){
     co.characterImgs.resize(2);
     co.characterImgs[0].load("characters/body2.png");
     co.characterImgs[1].load("characters/dead.png");
- //   co.characterImgs[2].load("characters/belly.png");
     co.avergaTick.load("characters/averageTick.png");
     
     co.legs[0].load("characters/arms/arm1.png");
     co.legs[1].load("characters/arms/arm2.png");
     
-    co.characterSymbols.resize(6);
-    for(int i = 0 ; i< 6 ; i++)co.characterSymbols[i].load("characters/symbols/marker_000"+ofToString(i)+".png");
     co.sceneNumber = 0;
+    co.numPresentButtons[0] = 0;
+    co.numPresentButtons[1] = 0;
+    
+    co.characterSymbols.resize(6);
+    for(int i = 0 ; i< 6 ; i++)
+        co.characterSymbols[i].load("characters/symbols/marker_000"+ofToString(i)+".png");
+    
+    
     
     ofxXmlSettings xml;
     xml.load("config.xml");
@@ -67,7 +69,6 @@ void ofApp::setup(){
     receiver.setup(PORT);
     int portout = xml.getValue("PORT_OUT", 0);
     string ip = xml.getValue("PORT_OUT_IP", "");
-    cout << ip + ofToString(portout)<<endl;
     co.oscOut.setup(ip, portout);
     int portIn = xml.getValue("PORT_IN", 0);
     co.oscIn.setup(portIn);
@@ -85,14 +86,14 @@ void ofApp::setup(){
         for(int j = 0; j<BUTTONS_PR_TABLE;j++){
             
             Button b = * new Button;
-            
-           // void setup(int _row, int _table,int _teamNum, string _address, string _secondAdress, float val, float size, ofxBox2d *world){
             b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startVal, startRad, &box2d);
+            
             b.size_lim = co.size_lim;
             b.size_break= co.size_break;
             b.img = &co.characterImgs;
             b.legs[0] = &co.legs[0];
             b.legs[1] = &co.legs[1];
+            
             b.box2Dcircle.get()->setData(new ButtonData());
             ButtonData * sd = (ButtonData*)b.box2Dcircle.get()->getData();
             sd->buttonID = indx - (teamNum * ((BUTTONS_PR_TABLE*NUM_TABLES)/2));
@@ -106,8 +107,7 @@ void ofApp::setup(){
         }
     }
     
-    teams[0].setupScenes();
-    teams[1].setupScenes();
+
     
 //    ofAddListener(teams[0].box2d.contactStartEvents, this, &ofApp::contactStart);
 //    ofAddListener(teams[0].box2d.contactEndEvents, this, &ofApp::contactEnd);
@@ -120,8 +120,8 @@ void ofApp::setup(){
     fbo.allocate(1920*2, 1080, GL_RGBA);
     ofEnableAntiAliasing();
     
+    
     scenes.setName("scenes");
-
     for(int i = 0; i<16;i++){
         string name = cc.getLine("sceneNames.txt", i);
         if(name.length()>0){
@@ -130,56 +130,51 @@ void ofApp::setup(){
             scenes.add(p);
             b_scenes.push_back(p);
             co.sMap[i]=ofSplitString(name, "-")[1];
-           cout <<" map  "+ ofSplitString(name, "-")[1] << endl;
+          
+        }else{
+            break;
         }
     }
     
     p_b_scenes.resize(b_scenes.size());
     
     physics.setName("physics");
-    physics.add(co.attraction.set("attraction",1,0,500));
+    physics.add(co.attraction.set("attraction",1,0,2500));
     physics.add(co.fc.set("fc position",0.05,0.01,0.4));
-    
+    physics.add(co.moveThemOut.set("move ticks out of walls", false));
     
     gameMechs.setName("game controls");
-    //gameMechs.add(co.lessIsMore.set("less is more", false));
     gameMechs.add(co.deadTimer.set("dead time",5,1,30));
-//    gameMechs.add(co.refill1.set("refill 1", false));
-//    gameMechs.add(co.refill2.set("refill 2", false));
     gameMechs.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
-//    gameMechs.add(co.refillTime.set("refill animation time",5,1,10));
-    
-    
     gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,5));
     gameMechs.add(co.drainCoefficient2.set("drain team 2",1,0,5));
 
     gravity.setName("gravity game");
     gravity.add(co.gravity.set("gravity",1,0,50));
-    gravity.add(co.jump.set("jumpiness",1,0,10));
-    gravity.add(co.x_jump.set("attraction to x",0.001,0,.01));
-    gravity.add(co.thresY_gravity.set("dy threshold",0.001,0,0.1));
-    gravity.add(co.gravityReward.set("gravityReward",50,0,100));
     
     
-
+    logic.setName("logic game");
+    logic.add(co.logicPrecision.set("logic precision", 0.1, 0.01, 2.f));
+    for(int i = 0 ; i<6; i++){
+        ofParameter<float>t;
+        co.targetCircleRot.push_back(t);
+        logic.add(co.targetCircleRot.back().set("circle"+ofToString(i+1),0,0,360));
+    }
+    logic.add(co.showLogicTargets.set(false));
+   // gravity.add(co.jump.set("jumpiness",1,0,10));
+   // gravity.add(co.x_jump.set("attraction to x",0.001,0,.01));
+   // gravity.add(co.thresY_gravity.set("dy threshold",0.001,0,0.1));
+   // gravity.add(co.gravityReward.set("gravityReward",50,0,100));
     
     market.setName("market control");
-    
-    market.add(co.marketReward.set("reward",0.5,0.,2));
-    market.add(co.divideTimeTime.set("divideTimeToButtons",50.,1.,100.));
+   // market.add(co.marketReward.set("reward",0.5,0.,2));
+   // market.add(co.divideTimeTime.set("divideTimeToButtons",50.,1.,100.));
     market.add(co.marketDone1.set("finish market 1",false));
     market.add(co.marketDone2.set("finish market 2",false));
     
-    //push.setName("PushGame");
-    //push.add(co.blockForce.set("repel force",0.2,0.,200));
-    
-//    finale.add(co.startFinale.set("begin",false));
-//    finale.add(co.deadTimeFinale.set("push time",0.1,0.,2));
-//    finale.add(finalePushDrain.set("push drain",0.01,0.,0.1));
-    
-    idle.setName("charades");
-    idle.add(co.idleA.set("a is done",false));
-    idle.add(co.idleB.set("b is done",false));
+    charades.setName("charades");
+    charades.add(co.idleA.set("a is done",false));
+    charades.add(co.idleB.set("b is done",false));
     
     guiScenes.setup(scenes);
     guiScenes.saveToFile("scenes.xml");
@@ -188,19 +183,15 @@ void ofApp::setup(){
     gui.add(reverseX.set("reverse X",false));
     gui.add(reverseY.set("reverse Y",false));
     gui.add(alertDialog.set("Alert Dialogs",false));
-    gui.add(co.logReport.set("log report",false));
+    //gui.add(co.logReport.set("log report",false));
     gui.add(co.playSound.set("play sound",false));
-    
     gui.add(co.sendAverageData.set("sendAverageData",false));
     
-  //  gui.add(time_energy.set("time energy balance",0.5,0,1));
     gui.add(physics);
     gui.add(gameMechs);
+    gui.add(logic);
     gui.add(gravity);
-   // gui.add(push);
-    gui.add(idle);
-    
-    
+    gui.add(charades);
     gui.add(market);
     
     gui.loadFromFile("settings.xml");
@@ -221,23 +212,23 @@ void ofApp::setup(){
     co.deathSound.setVolume(0.1f);
     
     receivingTables.resize(NUM_TABLES);
-    alive_counter.resize(NUM_TABLES);
-    
+
     for(int i = 0;i<receivingTables.size();i++){
         receivingTables[i]=false;
     }
     
-    
     groundPixels.setNumChannels(3);
     
+    teams[0].setupScenes();
+    teams[1].setupScenes();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    //co.pauseTeam1=!co.pauseTeam2;
-    //co.pauseTeam2=!co.pauseTeam1;
+    ofSetWindowTitle(ofToString(ofGetFrameRate()));
     
+    // make tabels red by interval
     alertCounter ++;
     if(alertCounter > ofGetFrameRate()*6){
         alertCounter=0;
@@ -246,12 +237,78 @@ void ofApp::update(){
         }
     }
     
-    while(co.oscIn.hasWaitingMessages()){
-        ofxOscMessage m;
-        co.oscIn.getNextMessage(m);
-        if(m.getAddress() == "/next")b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size()-1)]=true;
+    updateOsc();
+    handleSceneChange();
+    teams[0].update();
+    teams[1].update();
+
+    
+    if(co.sMap[co.sceneNumber] == "GroundGame")
+    {
+        updateGroundGame();
+    }
+    else
+    {
+        teams[0].reviveTicks(co.deadTimer,co.refillCoef);
+        teams[1].reviveTicks(co.deadTimer,co.refillCoef);
+    }
+    if(co.sMap[co.sceneNumber] == "Fight")
+    {
+        fightBall->update();
     }
     
+    
+    if(co.playSound){
+        for(int i = 0; i<2; i++){
+            for(int j = 0 ; j<teams[i].buttons.size();j++){
+                if(teams[i].buttons[j].isDead()){
+                    if(teams[i].buttons[j].deadSoundCheck){
+                        teams[i].buttons[j].deadSoundCheck=false;
+                        co.deathSound.play();
+                    }else{
+                        teams[i].buttons[j].deadSoundCheck=true;
+                    }
+                }
+            }
+        }
+    }
+    
+    box2d.update();
+
+}
+
+//--------------------------------------------------------------
+void ofApp::draw(){
+
+    fbo.begin();
+    ofClear(0);
+    
+    ofBackground(200);
+    if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);
+    if(co.sMap[co.sceneNumber] == "Fight")fightBall->draw();
+    
+    teams[0].draw();
+    teams[1].draw();
+    
+    fbo.end();
+
+    syphon.publishTexture(&fbo.getTexture());
+    gui.draw();
+    guiScenes.draw();
+    
+    //ofDrawBitmapString("version "+ofToString(VERSION), 10, gui.getHeight() + 30);
+    for(int i = 0 ; i<NUM_TABLES;i++){
+        int red = receivingTables[i]?20:200;
+        ofSetColor(red, 200-red , 0);
+        ofDrawRectangle(gui.getWidth()*2 + 40, i*20+20, 18, 18);
+    }
+
+
+}
+//--------------------------------------------------------------
+void ofApp::handleSceneChange(){
+
+    // toggle scenechanges
     int resent = -1;
     for(int i = 0; i<b_scenes.size();i++){
         if(b_scenes[i] && !p_b_scenes[i]){
@@ -267,175 +324,43 @@ void ofApp::update(){
                 p_b_scenes[i]=false;
             }
         }
-        handleSceneChange();
-    }
-    
-    double beforeOSC;
-    if(co.debug)beforeOSC = ofGetElapsedTimef();
 
-    
-    while (receiver.hasWaitingMessages()) {
-        ofxOscMessage m;
-        receiver.getNextMessage(m);
-        //if(co.debug)cout << m.getAddress() << endl;
-        for (int i = 0 ; i<alive.size(); i++) {
-            if(!receivingTables[i])if(m.getAddress() == alive[i])receivingTables[i]=true;
-        }
-        
-        if(!co.lock){
-            int uT=2;
+        if(co.sMap[co.sceneNumber] == "Fight"){
+            fightBall = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
+            fightBall.get()->setPhysics(1., 1.0, 0.0);
+            fightBall.get()->setup(box2d.getWorld(), 1920,1080/2 , 40);
+            fightBall.get()->alive = true;
             
+            fightBall.get()->setVelocity(10, 5);
             
-            for(int t = 0; t < uT ; t++){
-                for(int i = 0; i < teams[t].buttons.size(); i++){
-                    
-                    Button *b = &teams[t].buttons[i];
-                    
-                    if (m.getAddress()==b->secondAdress){
-                        if(m.getArgAsInt32(0)==0){
-                            b->on = false;
-                            break;
-                        }
-                    }
-                    else if( m.getAddress()==b->address ){
-                        b->on = true;
-                        
-                        double x = reverseX ? 1.- (m.getArgAsFloat(0)/127.0) : m.getArgAsFloat(0)/127.0;
-                        //x += t;
-                        double y = reverseY ? 1.- (m.getArgAsFloat(1)/127.0) : m.getArgAsFloat(1)/127.0;
-                        
-                        b->set( x , y , m.getArgAsFloat(2) );
-                        
-                        if(b->on && !b->isPlaying){
-                            b->isPlaying = true;
-                            b->box2Dcircle->setPosition(x, y);
-                        }
-
-                        break;
-                    }
-                }
-            }
-        }
-    }
-    
-    teams[0].update();
-    teams[1].update();
-
-    if(co.sMap[co.sceneNumber] == "GroundGame"){
-        
-        int aliveCounter = 0;
-        
-        if(groundVideo.isFrameNew())
-            groundPixels = groundVideo.getPixels();
-       
-        for(int t = 0; t < 2 ; t++){
-            for(int i = 0; i < teams[t].buttons.size(); i++){
-                
-                Button *b = &teams[t].buttons[i];
-                
-                b->update(co.attraction, false);
-                
-                if(!b->isDead() && b->isPlaying && !isGroundDone){
-                    float x = b->getBiquadPos().x;
-                    float y = b->getBiquadPos().y;
-                    
-                    if(x<1920){
-                        x *= groundVideo.getWidth()/1920.;
-                        y *= groundVideo.getHeight()/1080.;
-                        
-                        if(groundPixels.getColor(x,y).r < 10){
-                            b->setValue(0);
-                        }
-                    }
-                }
-                if(!b->isDead() && b->isPlaying)aliveCounter++;
-            }
+            Fight * f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
+            Fight * f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);
+            
+            f1->ball = fightBall;
+            f2->ball = fightBall;
+   
+        }else if(co.sMap[p_sceneNumber] == "Fight"){
+            fightBall->destroy();
         }
         
-        if(aliveCounter != 1)
-            groundVideo.update();
-        else isGroundDone = true;
-    }
-    
-    else
-    {
-        teams[0].reviveTicks(co.deadTimer,co.refillCoef);
-        teams[1].reviveTicks(co.deadTimer,co.refillCoef);
-    }
-    
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
-    
-    if(co.playSound){
-        for(int i = 0; i<2; i++){
-            for(int j = 0 ; j<teams[i].buttons.size();j++){
-                if(teams[i].buttons[j].isDead()){
-                    if(teams[i].buttons[j].deadSoundCheck){
-                        teams[i].buttons[j].deadSoundCheck=false;
-                        co.deathSound.play();
-                    }else{
-                        teams[i].buttons[j].deadSoundCheck=true;
-                    }
-                    
-                }
+        
+        if(co.sMap[co.sceneNumber] == "GroundGame"){
+            if(!groundVideo.isLoaded()){
+                groundVideo.load("ground.mov");
+                groundPixels.allocate(groundVideo.getWidth(), groundVideo.getHeight(), GL_RGB);
             }
+            groundVideo.setSpeed(0.2f);
+            groundVideo.setLoopState(OF_LOOP_NONE);
+            groundVideo.play();
+            isGroundDone = false;
+        }else if(co.sMap[p_sceneNumber] == "GroundGame"){
+            groundVideo.stop();
         }
+        
+        p_sceneNumber = co.sceneNumber;
     }
-    
-    box2d.update();
-
 }
-
 //--------------------------------------------------------------
-void ofApp::draw(){
-    
-
-    fbo.begin();
-    
-    ofClear(0);
-    ofBackground(200);
-    if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);
-    
-    teams[0].draw();
-    teams[1].draw();
-
-    
-
-
-    fbo.end();
-
-    syphon.publishTexture(&fbo.getTexture());
-    gui.draw();
-    guiScenes.draw();
-    
-    ofDrawBitmapString("version "+ofToString(VERSION), 10, gui.getHeight() + 30);
-    for(int i = 0 ; i<NUM_TABLES;i++){
-        int red = receivingTables[i]?20:200;
-        ofSetColor(red, 200-red , 0);
-        ofDrawRectangle(gui.getWidth()*2 + 40, i*20+20, 18, 18);
-    }
-
-}
-
-void ofApp::handleSceneChange(){
-    
-    if(co.sMap[co.sceneNumber] == "GroundGame"){
-        groundVideo.load("ground.mov");
-        
-        groundPixels.allocate(groundVideo.getWidth(), groundVideo.getHeight(), GL_RGB);
-        
-      //  groundVideo.setSpeed(0.2f);
-        groundVideo.setLoopState(OF_LOOP_NONE);
-        groundVideo.play();
-        isGroundDone = false;
-        
-    }else if(co.sMap[p_sceneNumber] == "GroundGame"){
-      //  groundVideo.unload();
-    }
-    
-    
-    p_sceneNumber = co.sceneNumber;
-}
-
 void ofApp::refill(int team, float timef){
     float t=ofGetElapsedTimef()-timef;
     for(int i=0; i<teams[team].buttons.size(); i++) {
@@ -462,7 +387,7 @@ void ofApp::refill(int team, float timef){
     if(t>co.refillTime && team == 0)co.refill1=false;
     if(t>co.refillTime && team == 1)co.refill2=false;
 }
-
+//--------------------------------------------------------------
 void ofApp::exit(){
 
     if(co.logReport){
@@ -485,137 +410,110 @@ void ofApp::keyPressed(int key){
     
     if(key == 'd')co.debug=!co.debug;
     if(key == 'p')co.lock=!co.lock;
+}
+
+//--------------------------------------------------------------
+// SPECIAL SCENES
+//--------------------------------------------------------------
+void ofApp::updateGroundGame(){
+    //int aliveCounter = 0;
+    int deadCounter = 0;
     
+    if(groundVideo.isFrameNew())
+        groundPixels = groundVideo.getPixels();
+    
+    if(groundPixels.isAllocated()){
+        
+        for(int t = 0; t < 2 ; t++){
+            for(int i = 0; i < teams[t].buttons.size(); i++){
+                
+                Button *b = &teams[t].buttons[i];
+                b->update(co.attraction, false);
+                
+                
+                // kill
+                if(!b->isDead() && b->isPlaying && !isGroundDone){
+                    float x = b->getBiquadPos().x;
+                    float y = b->getBiquadPos().y;
+                    
+                    if(x<1920){
+                        x *= groundVideo.getWidth()/1920.;
+                        y *= groundVideo.getHeight()/1080.;
+                        
+                        if(groundPixels.getColor(x,y).r < 10){
+                            b->setValue(0);
+                        }
+                    }
+                }
+                if(b->isDead() && b->isPlaying)deadCounter++;
+                
+                if(deadCounter == co.numPresentButtons[0]+co.numPresentButtons[1] - 2){
+                    //cout << "i tried to kill everyone" << endl;
+                    isGroundDone = true;
+                    break;
+                }
+            }
+            if(isGroundDone)break;
+        }
+    }
+    if(!isGroundDone)groundVideo.update();
 }
 
 //--------------------------------------------------------------
-//void ofApp::contactStart(ofxBox2dContactArgs &e) {
-//    if(e.a != NULL && e.b != NULL) {
-//        
-//        if(e.a->GetType() == b2Shape::e_circle && e.b->GetType() == b2Shape::e_circle) {
-//            
-//            ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
-//            ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
-//            
-//            
-//            if(aData && bData) {
-//                
-//                //sound[aData->teamID].play();
-//                if(!teams[bData->teamID].buttons[bData->buttonID].isDead() &&
-//                   !teams[aData->teamID].buttons[aData->buttonID].isDead()
-//                   )
-//                {
-//                    aData->bHit = true;
-//                    bData->bHit = true;
-//                    
-//                    if(co.playSound){
-//                        sound[bData->teamID].play();
-//                    }
-//                    
-//                }
-//                
-////                if(co.sceneNumber==7 && aData->bHit && bData->bHit){
-////                    
-////                    Button * b1 = &teams[aData->teamID].buttons[aData->buttonID];
-////                    Button * b2 = &teams[bData->teamID].buttons[bData->buttonID];
-////                    
-////
-////                        if(b1->finaleValue > b2->finaleValue){
-////                            b2->freezeUpdate = true;
-////                            b2->freezeTimer = 0.;
-////                            b2->box2Dcircle->setVelocity(0, 0);
-////                            //b1->value-= b2->value*finalePushDrain;
-////                        }
-////                        else if(b1->finaleValue < b2->finaleValue){
-////                            b1->freezeUpdate = true;
-////                            b1->freezeTimer = 0.;
-////                            b1->box2Dcircle->setVelocity(0, 0);
-////                           // b2->value-= b1->value*finalePushDrain;
-////                        }
-////                    if(abs(b1->finaleValue-b2->finaleValue)>0){
-////                        b1->finaleValue-=b2->value;
-////                        b1->updatefinaleValue = true;
-////                        b1->finaleValueTimer=0.;
-////                        
-////                        b2->finaleValue-=b1->value;
-////                        b2->updatefinaleValue = true;
-////                        b2->finaleValueTimer=0.;
-////
-////                    }
-////                }
-//            }
-//        }
-//    }
-//}
-
-//--------------------------------------------------------------
-//void ofApp::contactEnd(ofxBox2dContactArgs &e) {
-//    if(e.a != NULL && e.b != NULL) {
-//        
-//        ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
-//        ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
-//        
-//        if(aData) {
-//            aData->bHit = false;
-//            
-//        }
-//        
-//        if(bData) {
-//            bData->bHit = false;
-//           
-//        }
-//    }
-//}
-
-//--------------------------------------------------------------
-void ofApp::keyReleased(int key){
-
+void ofApp::updateOsc(){
+    // change scene by incoming OSC
+    while(co.oscIn.hasWaitingMessages()){
+        ofxOscMessage m;
+        co.oscIn.getNextMessage(m);
+        if(m.getAddress() == "/next")
+            b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size()-1)]=true;
+    }
+    
+    while (receiver.hasWaitingMessages()) {
+        ofxOscMessage m;
+        receiver.getNextMessage(m);
+        
+        for (int i = 0 ; i<alive.size(); i++) {
+            if(!receivingTables[i])if(m.getAddress() == alive[i])receivingTables[i]=true;
+        }
+        
+        if(!co.lock){
+            for(int t = 0; t < 2 ; t++){
+                for(int i = 0; i < teams[t].buttons.size(); i++){
+                    
+                    Button *b = &teams[t].buttons[i];
+                    
+                    if (m.getAddress()==b->secondAdress){
+                        if(m.getArgAsInt32(0)==0){
+                            b->on = false;
+                            break;
+                        }
+                    }
+                    else if( m.getAddress()==b->address ){
+                        b->on = true;
+                        
+                        float x = reverseX ? 1.f- (m.getArgAsFloat(0)/127.0f) : m.getArgAsFloat(0)/127.0f;
+                        float y = reverseY ? 1.f- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
+                        b->set( x , y , m.getArgAsFloat(2) );
+                        
+                        if(b->on && !b->isPlaying){
+                            b->isPlaying = true;
+                            
+                            // prevent them getting stuck on edges
+                            x = CLAMP(x, 0.1, 0.9);
+                            y = CLAMP(y, 0.1, 0.9);
+                            b->setPosition(x * 1920 + b->teamNumber*1920, y*1080);
+                            co.numPresentButtons[b->teamNumber]++;
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
-//--------------------------------------------------------------
-void ofApp::mouseMoved(int x, int y ){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseDragged(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mousePressed(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseReleased(int x, int y, int button){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseEntered(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::mouseExited(int x, int y){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::windowResized(int w, int h){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::gotMessage(ofMessage msg){
-
-}
-
-//--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
-
-}
 
 //--------------------------------------------------------------
 string ofApp:: getAdress(int _firstSecond, int _tabel, int _button){
@@ -647,3 +545,82 @@ string ofApp:: getAdress(int _firstSecond, int _tabel, int _button){
    // ofLog() << result <<endl;
     return result;
 }
+
+//--------------------------------------------------------------
+//void ofApp::contactStart(ofxBox2dContactArgs &e) {
+//    if(e.a != NULL && e.b != NULL) {
+//
+//        if(e.a->GetType() == b2Shape::e_circle && e.b->GetType() == b2Shape::e_circle) {
+//
+//            ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
+//            ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
+//
+//
+//            if(aData && bData) {
+//
+//                //sound[aData->teamID].play();
+//                if(!teams[bData->teamID].buttons[bData->buttonID].isDead() &&
+//                   !teams[aData->teamID].buttons[aData->buttonID].isDead()
+//                   )
+//                {
+//                    aData->bHit = true;
+//                    bData->bHit = true;
+//
+//                    if(co.playSound){
+//                        sound[bData->teamID].play();
+//                    }
+//
+//                }
+//
+////                if(co.sceneNumber==7 && aData->bHit && bData->bHit){
+////
+////                    Button * b1 = &teams[aData->teamID].buttons[aData->buttonID];
+////                    Button * b2 = &teams[bData->teamID].buttons[bData->buttonID];
+////
+////
+////                        if(b1->finaleValue > b2->finaleValue){
+////                            b2->freezeUpdate = true;
+////                            b2->freezeTimer = 0.;
+////                            b2->box2Dcircle->setVelocity(0, 0);
+////                            //b1->value-= b2->value*finalePushDrain;
+////                        }
+////                        else if(b1->finaleValue < b2->finaleValue){
+////                            b1->freezeUpdate = true;
+////                            b1->freezeTimer = 0.;
+////                            b1->box2Dcircle->setVelocity(0, 0);
+////                           // b2->value-= b1->value*finalePushDrain;
+////                        }
+////                    if(abs(b1->finaleValue-b2->finaleValue)>0){
+////                        b1->finaleValue-=b2->value;
+////                        b1->updatefinaleValue = true;
+////                        b1->finaleValueTimer=0.;
+////
+////                        b2->finaleValue-=b1->value;
+////                        b2->updatefinaleValue = true;
+////                        b2->finaleValueTimer=0.;
+////
+////                    }
+////                }
+//            }
+//        }
+//    }
+//}
+
+//--------------------------------------------------------------
+//void ofApp::contactEnd(ofxBox2dContactArgs &e) {
+//    if(e.a != NULL && e.b != NULL) {
+//
+//        ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
+//        ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
+//
+//        if(aData) {
+//            aData->bHit = false;
+//
+//        }
+//
+//        if(bData) {
+//            bData->bHit = false;
+//
+//        }
+//    }
+//}

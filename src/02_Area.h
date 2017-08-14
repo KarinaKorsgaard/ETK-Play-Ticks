@@ -6,71 +6,79 @@
 class Area : public Scene{
     
 public:
-    vector<Button>*buttons;
-    //Blob blob;
-    ofImage donut;
-    ofPolyline big,small;
+
+    int bigRadius,smallRadius;
     
     Area(){};
     ~Area(){};
     
-    
 
+    ofxSVG svg;
+    ofPolyline poly;
+
+
+    ofVec2f midt;
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        svg.load("svg/01_win_area.svg");
-        donut.load("img/01_dounut.png");
-        vector<ofPolyline> p = getPolyline(svg);
+        midt = ofVec2f(1920 / 2 + (1920 * teamNumber) , 1080 / 2);
         
+//        svg.load("svg/01_win_area.svg");
+//        vector<ofPolyline> p = getPolyline(svg);
+//        
     
-        float a;
-        float o;
-        int indx=0;
-        int aa, oo;
-        for(int i = 0; i<p.size();i++){
-            float w = p[i].getBoundingBox().width;
-            if(w<1900){
-                if(indx == 0){a = w;aa = i;}
-                else{ o = w;oo=i;}
-                indx++;
-            }
-        }
+//        float a;
+//        float o;
+//        int indx=0;
+//        int aa, oo;
+//        for(int i = 0; i<p.size();i++){
+//            float w = p[i].getBoundingBox().width;
+//            if(w<1900){
+//                if(indx == 0){a = w;aa = i;}
+//                else{ o = w;oo=i;}
+//                indx++;
+//            }
+//        }
         
-        if(a>o){
-            big = p[aa];
-            small = p[oo];
-        }
-        else{
-            big = p[oo];
-            small = p[aa];
-        }
+        
+//        if(a>o){
+//            big = p[aa];
+//            small = p[oo];
+//        }
+//        else{
+//            big = p[oo];
+//            small = p[aa];
+//        }
     };
     
     bool isDone(bool b = false){
         bool isInside=true;
-        bool allAreDead = true;
+
         for(int i = 0; i<buttons->size();i++){
 
-//            if(!buttons->at(i).on && buttons->at(i).isPlaying){
-//                isInside=false;
-//                break;
-//            }
             if(buttons->at(i).isPlaying){
                 ofPoint p = buttons->at(i).getBiquadPos();
                 
-                if(!big.inside(p) || small.inside(p)){
+                
+                ofVec2f a = p - midt;
+                float dist = a.dot(a);
+                              
+                if(dist > bigRadius || dist < smallRadius){
                     isInside=false;
                     break;
                 }
+//                if(!big.inside(p) || small.inside(p)){
+//                    isInside=false;
+//                    break;
+//                }
             }
-            if(!buttons->at(i).isDead()){
-                allAreDead =false;
-            }
+//            if(!buttons->at(i).isDead()){
+//                allAreDead =false;
+//            }
             
         }
-        if(allAreDead)isInside = false;
+      //  if(allAreDead)isInside = false;
         return isInside;
     };
     
@@ -89,20 +97,43 @@ public:
             buttons->at(i).draw();
             if(co->debug){
                 buttons->at(i).drawDebug();
-                
+                ofNoFill();
                 ofSetColor(255,0,0);
-                big.draw();
-                small.draw();
+                ofDrawCircle(midt, bigRadius);
+                ofDrawCircle(midt, smallRadius);
+                ofFill();
             }
         }
     };
     
-    void begin(ofxBox2d * world = nullptr){};
-    void reset(){};
+    void begin(ofxBox2d * world = nullptr){
+        
+        int numPlayers = 0;
+        int radius = 1;
+        
+        for(int i = 0; i<buttons->size();i++){
+            if(buttons->at(i).isPlaying){
+                radius = buttons->at(i).radius;
+                numPlayers ++;
+            }
+        }
+        
+        float l = numPlayers * radius * 2;
+        float d = l / PI;
+  
+        d/=2;
+        
+        bigRadius = d == 0 ? 286 : d;
+        
+        bigRadius += radius; /// albue rum
+        smallRadius = bigRadius - 20;
+    };
+    
+    void reset(){
+    
+    };
 
-    commonObjects * co;
-    ofxSVG svg;
-    ofPolyline poly;
+
     
     
 };

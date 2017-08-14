@@ -19,6 +19,65 @@
 
 class Button{
 public:
+    
+    ofxBiquadFilter2f filterLowPass;
+    float fc;
+    
+    
+    
+    float px = 0.;
+    float py = 0.;
+    float dx = 0.;
+    float dy = 0.;
+    
+    float beforeRefillValue;
+    float beginningValue;
+    float radius;
+    
+    int row;
+    int table;
+    int ID;
+    
+    int teamNumber;
+    
+    bool isPlaying = false;
+    
+    vector<ofColor>colors;
+    
+    string address;
+    string secondAdress;
+    
+    shared_ptr<ofxBox2dCircle> box2Dcircle;
+    
+    bool on = false;
+    bool prev_on = false;
+    
+    float size_break=50.;
+    float size_lim=50.;
+    
+    float dy_jump, dx_jump;
+    bool isJumping;
+    
+    float distToOrg;
+    
+    ofVec2f vel;
+    float p_drain;
+    bool deadSoundCheck = false;
+    
+    ofVec2f lastPos;
+    
+    ofVec2f lastPosForPolys;
+    
+    float beginningRad;
+    vector<ofImage> *img;
+    ofImage *symbol;
+    vector<ofColor> color;
+    int symbolInt,colorInt;
+    
+    ofImage * legs[2];
+    
+    bool isWinner = false;
+    
     void setup(int _row, int _table,int _teamNum, string _address, string _secondAdress, float val, float size, ofxBox2d *world){
         ID = _row;
         table = _table;
@@ -34,7 +93,7 @@ public:
         
         box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
-        box2Dcircle.get()->setPhysics(3., 0.0, 40.0);
+        box2Dcircle.get()->setPhysics(3., .0, 40.0);
         box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), 1);
         box2Dcircle.get()->alive = false;
         box2Dcircle.get()->setRadius(beginningRad);
@@ -44,6 +103,9 @@ public:
 
         fc = 0.05f;
         filterLowPass.setFc(fc);
+        
+        
+        
            
     }
     
@@ -55,6 +117,7 @@ public:
             p.x = rect.width * x + rect.x;
             p.y = rect.height * y + rect.y;
             
+            p.x += teamNumber * 1920;
             
             ofPushMatrix();
             ofTranslate(p);
@@ -89,39 +152,7 @@ public:
             }
             int charImg = isDead()?1:0;
             img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
-          /*
-            float rectSize=0;
-            if(value>0)rectSize=ofMap((size_lim - (size_break/value)) / (1 + (size_break/value)),0,size_lim,0,360 );
-            float bugSize = 0.5;
-            ofPath curve;
-            curve.setStrokeWidth(4.5*scale);
-            
-            curve.setFilled(false);
-            curve.setStrokeColor(color[0]);
-            curve.moveTo(rad*bugSize,0);
-            curve.arc(0, 0, rad*bugSize, rad*bugSize, 0, rectSize);
-            ofTranslate(0,rad*0.1);
-            
-            ofNoFill();
-            
-            ofSetLineWidth(scale*4.6);
-            ofSetColor(0,200);
-            ofDrawCircle(0, 0, rad*bugSize);
 
-            ofSetColor(color[0]);
-            
-            symbol->draw(-rad*0.65/2,-rad*0.65/2,rad*0.65,rad*0.65);
-            
-            
-            curve.draw();
-            
-            
-            
-            ofSetLineWidth(scale);
-            ofDrawCircle(0, 0, rad*bugSize-(curve.getStrokeWidth()*0.5));
-            ofDrawCircle(0, 0, rad*bugSize+(curve.getStrokeWidth()*0.5));
-            
-          */
             ofSetColor(color[0]);
             symbol->draw(-rad*0.85/2,-rad*0.85/2,rad*0.85,rad*0.85);
             //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
@@ -156,6 +187,8 @@ public:
             
             if(on){
                 
+                
+                
                 ofVec2f p;
                 
                 int multiX = doubleSize ? teamNumber * 1920 : 0;
@@ -169,10 +202,42 @@ public:
                 
                 setDirection(filterLowPass.value(), lastPos);
                 //setDirection(filterLowPass.value(), getPos());
+                
+                
+                lastPos = filterLowPass.value();
+                moveBackToBoard();
+ 
+            }
+        }
+        filterLowPass.update(getPos());
+        updateRadius();
+    }
+
+    
+    void updateFences(float attraction ,bool doubleSize = true, ofRectangle rect = ofRectangle(0,0, 1920,1080)){
+        box2Dcircle->setVelocity(0,0);
+        
+        if(isPlaying && !isDead()){
+            
+            if(on){
+                
+                ofVec2f p;
+                
+                int multiX = doubleSize ? teamNumber * 1920 : 0;
+                p.x = multiX + rect.width *x + rect.x;
+                p.y = 1060;
+                
+                distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
+                distToOrg /= (1980+1080);
+                
+                box2Dcircle->addAttractionPoint( p , attraction*distToOrg  );
+                
+                setDirection(filterLowPass.value(), lastPos);
+                //setDirection(filterLowPass.value(), getPos());
                 lastPos = filterLowPass.value();
                 
                 
-
+                moveBackToBoard();
                 //if(!freezeUpdate){
                 
                 
@@ -180,49 +245,111 @@ public:
         }
         filterLowPass.update(getPos());
         updateRadius();
-        
     }
-
-    void updateWithGravity(float jump , float x_jump, float thresY, bool doubleSize = true){
-        if(isPlaying && !isDead()){
-            if(on ){
-                int multiX = doubleSize ? teamNumber * 1920 : 0;
+    
+//    void updateWithGravity(float jump , float x_jump, float thresY, bool doubleSize = true){
+//        if(isPlaying && !isDead()){
+//            if(on ){
+//                int multiX = doubleSize ? teamNumber * 1920 : 0;
+//                
+//                
+//                float dif_y = dy_jump - getPosRaw().y;
+//                dy_jump = getPosRaw().y;
+//                
+//                float dif_x = (getPosRaw().x + multiX) - getPos().x ;
+//                
+//                if( abs(box2Dcircle->getVelocity().y) < thresY)isJumping = false;
+//                else isJumping = true;
+//
+//                if(!isJumping && dif_y>0)box2Dcircle->addForce(ofVec2f(0,-1), jump);
+//                
+//                box2Dcircle->setVelocity(0, box2Dcircle->getVelocity().y);
+//                box2Dcircle->addForce(ofVec2f( dif_x * x_jump , 0) , abs(dif_x)*x_jump);
+//                
+//                //box2Dcircle->addAttractionPoint(ofVec2f( xPos , 0) , abs(dif_x)*x_jump);
+//                
+//                setDirection(filterLowPass.value(), lastPos);
+//                lastPos = filterLowPass.value();
+//                
+//                moveBackToBoard();
+//            }
+//        }
+//        filterLowPass.update(getPos());
+//        updateRadius();
+//    }
+    
+    void moveBackToBoard(){
+        if(getPos().x<0)setPosition(radius, getPos().y);
+        if(getPos().x>1920*2)setPosition(1920*2 - radius, getPos().y);
+        
+        if(getPos().y<0)setPosition(getPos().x, radius);
+        if(getPos().y>1080)setPosition(getPos().x, 1080-radius);
+    }
+    
+    void getOutOfPolys(vector<ofPolyline>polys){
+        if(isPlaying){
+            if(lastPosForPolys == getPos()){
+                cout << "... checking "<< ofGetElapsedTimef() <<endl;
                 
-                
-                float dif_y = dy_jump - getPosRaw().y;
-                dy_jump = getPosRaw().y;
-                
-                float dif_x = (getPosRaw().x + multiX) - getPos().x ;
-                
-                if( abs(box2Dcircle->getVelocity().y) < thresY)isJumping = false;
-                else isJumping = true;
-
-                if(!isJumping && dif_y>0)box2Dcircle->addForce(ofVec2f(0,-1), jump);
-                
-               
-                
-                
-                box2Dcircle->setVelocity(0, box2Dcircle->getVelocity().y);
-                box2Dcircle->addForce(ofVec2f( dif_x * x_jump , 0) , abs(dif_x)*x_jump);
-                
-                //box2Dcircle->addAttractionPoint(ofVec2f( xPos , 0) , abs(dif_x)*x_jump);
-                
-                setDirection(filterLowPass.value(), lastPos);
-                lastPos = filterLowPass.value();
-            }
-        }
-        filterLowPass.update(getPos());
-        updateRadius();
-
+                for(int i = 0; i<polys.size();i++){
+                    
+                    if(polys[i].inside(getPos())){
+                        
+                        ofRectangle r = polys[i].getBoundingBox();
+                        ofVec2f newPos = getPos();
+                        
+                        float distLeft = newPos.x - r.x;
+                        float distRight = newPos.x - (r.x+r.width);
+                        float distTop = newPos.y - r.y;
+                        float distBot = newPos.y - (r.y + r.height);
+                        
+                        float xdist = MIN(abs(distLeft),abs(distRight));
+                        float ydist = MIN(abs(distTop),abs(distBot));
+                        cout << "x dist "<<xdist << " ydist "<<ydist<<endl;
+                        bool changeX = xdist < ydist;
+                        
+                        cout << "old pos "<<newPos.x <<" "<<newPos.y <<ydist<<endl;
+                        if(changeX)newPos.x += xdist;
+                        else newPos.y += ydist;
+                        
+                        
+                        if(newPos.y > 1080)
+                            newPos.y -= r.height;
+                        if(newPos.x > 1920*2)
+                            newPos.x -= r.width;
+                        
+                        if(newPos.y < 0)
+                            newPos.y += r.height;
+                        if(newPos.x < 0)
+                            newPos.x += r.width;
+                        
+                        
+                        setPosition(newPos);
+                        cout << "new pos "<<getPos().x <<" "<<getPos().y <<ydist<<endl;
+                        
+                        if(polys[i].inside(newPos))
+                            cout << "still in poly!!"<<endl;
+                        
+                        cout << "changed pos " << endl;
+                        
+                        break;
+                    }//if isinside
+                }//forloop
+                cout << "done checking "<< ofGetElapsedTimef() <<endl;
+            }//lastpos ==
+        }//if is playing
+        
+        lastPosForPolys = getPos();
     }
     
     void setDirection(ofVec2f v1, ofVec2f v2){
         ofVec2f v = v2 - v1;
-        
-        ofVec2f up = ofVec2f(0,1);
-        r = up.angle(v);
-        
-                
+        if( v.length() > 1. ){
+            
+            
+            ofVec2f up = ofVec2f(0,1);
+            r = up.angle(v);
+        }
     }
     
     void updateRadius(){
@@ -332,58 +459,7 @@ public:
             if(value <0.)value = 0.;
         }
     }
-    ofxBiquadFilter2f filterLowPass;
-    float fc;
-    
 
-    
-    float px = 0.;
-    float py = 0.;
-    float dx = 0.;
-    float dy = 0.;
-    
-    float beforeRefillValue;
-    float beginningValue;
-    float radius;
-    
-    int row;
-    int table;
-    int ID;
-    
-    int teamNumber;
-    
-    bool isPlaying = false;
-    
-    vector<ofColor>colors;
-    
-    string address;
-    string secondAdress;
-    
-    shared_ptr<ofxBox2dCircle> box2Dcircle;
-    
-    bool on = false;
-    bool prev_on = false;
-    
-    float size_break=50.;
-    float size_lim=50.;
-    
-    float dy_jump, dx_jump;
-    bool isJumping;
-    
-    float distToOrg;
-
-    ofVec2f vel;
-    float p_drain;
-    bool deadSoundCheck = false;
-    
-    ofVec2f lastPos;
-    float beginningRad;
-    vector<ofImage> *img;
-    ofImage *symbol;
-    vector<ofColor> color;
-    int symbolInt,colorInt;
-    
-    ofImage * legs[2];
 private:
     
     float armSwapper;

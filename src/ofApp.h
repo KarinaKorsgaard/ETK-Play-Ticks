@@ -12,9 +12,7 @@
 #include "ofxXmlSettings.h"
 #include "ofxSyphonServer.h"
 #include "ButtonData.h"
-#include "pingPong.h"
-#include "push_game.h"
-#include "pushing.h"
+
 
 class ofApp : public ofBaseApp{
 
@@ -24,60 +22,44 @@ class ofApp : public ofBaseApp{
 		void draw();
 
 		void keyPressed(int key);
-		void keyReleased(int key);
-		void mouseMoved(int x, int y );
-		void mouseDragged(int x, int y, int button);
-		void mousePressed(int x, int y, int button);
-		void mouseReleased(int x, int y, int button);
-		void mouseEntered(int x, int y);
-		void mouseExited(int x, int y);
-		void windowResized(int w, int h);
-		void dragEvent(ofDragInfo dragInfo);
-		void gotMessage(ofMessage msg);
-    //void exit();
-    void exit();
-    int p_sceneNumber;
-    ofxOscReceiver receiver;
-    
-    string getAdress(int firstOrSecond, int _table, int _button);
-    
-    Team teams[2];
-//    void contactStart(ofxBox2dContactArgs &e);
-//    void contactEnd(ofxBox2dContactArgs &e);
 
     
+    void exit();
+    void updateOsc();
+    void handleSceneChange();
+    string getAdress(int firstOrSecond, int _table, int _button);
+    int p_sceneNumber;
+    
+    ofxOscReceiver receiver;
+    int PORT;
+    int NUM_TABLES;
+    int BUTTONS_PR_TABLE;
+    
+    Team teams[2];
     ofFbo fbo;
+    ofxSyphonServer syphon;
     commonObjects co;
     commonFunctions cc;
+    
+    ofxBox2d box2d;
+//    void contactStart(ofxBox2dContactArgs &e);
+//    void contactEnd(ofxBox2dContactArgs &e);
     
     ofSoundPlayer  sound[N_SOUNDS];
     
     ofxPanel gui;
     ofxPanel guiScenes;
-    vector<bool>receivingTables;
-    ofParameterGroup physics;
-    ofParameterGroup market;
-    ofParameterGroup spyGame;
-    
-    ofParameterGroup gameMechs;
-    ofParameterGroup gravity;
+
+    ofParameterGroup physics,market,gameMechs,gravity,charades,logic;
     ofParameter<bool>reverseX,reverseY,alertDialog;
     ofParameterGroup scenes;
+    
     vector< ofParameter<bool> >b_scenes;
     vector<bool>p_b_scenes;
-//    ofParameter<float>time_energy;
-//    ofParameter<float>finalePushDrain;
-    ofParameterGroup push;
-    ofParameterGroup idle;
-
-    vector<string>alive;
-    vector<float>alive_counter;
-    void handleSceneChange();
-
-    int PORT;
-    int NUM_TABLES;
-    int BUTTONS_PR_TABLE;
     
+    vector<bool>receivingTables;
+    vector<string>alive;
+
     int teamSize=-1;
     int alertCounter;
     
@@ -86,12 +68,18 @@ class ofApp : public ofBaseApp{
     ofxTrueTypeFontUC font_medium;
     ofxTrueTypeFontUC font_large;
     
-    ofxSyphonServer syphon;
+    
     bool toggleRefill = false;
     float easeRefill1 = 0.;
     float easeRefill2 = 0.;
     
     void refill(int team, float timef);
+
+    ofVideoPlayer groundVideo;
+    bool isGroundDone;
+    void updateGroundGame();
+    ofPixels groundPixels;
+
     
     float ease(float t, float b, float c, float d) {
         c -=b;
@@ -99,11 +87,8 @@ class ofApp : public ofBaseApp{
         return c*t*t + b;
     }
     
-    ofxBox2d box2d;
-    ofVideoPlayer groundVideo;
-    bool isGroundDone;
-    ofPixels groundPixels;
-
+    
+    shared_ptr<ofxBox2dCircle>fightBall;
    // vector<Button>giantButtonMap;
 
 };

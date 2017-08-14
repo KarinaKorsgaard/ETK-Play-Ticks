@@ -9,11 +9,9 @@ public:
     shared_ptr<ofxBox2dCircle> average;
     ofxBiquadFilter2f filter;
     
-    commonObjects * co;
+
     ofxSVG svg;
     
-    
-    vector<Button>*buttons;
     
     
     ofVec2f averagePos = ofVec2f(1920/2.f,1080.f);

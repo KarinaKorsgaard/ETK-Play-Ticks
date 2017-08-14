@@ -4,14 +4,9 @@
 class Ground : public Scene{
     
 public:
-    vector<Button>*buttons;
-//    commonObjects * co;
-//    bool done = false;
 
-    
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
-//        co = _co;
     };
     
     
@@ -21,13 +16,7 @@ public:
     
     
     void update(){
-//        isDone();
-//        
-//        if(!done){
-//            for(int i=0; i<buttons->size(); i++) {
-//                buttons->at(i).update(co->attraction, false);
-//            }
-//        }
+
     }
     
     
@@ -40,7 +29,7 @@ public:
     
     
     void begin(ofxBox2d * world = nullptr){
-      //  done = false;
+
     }
     
     

@@ -5,9 +5,9 @@ class Maze : public Scene{
     
 public:
     
-    vector<Button>*buttons;
+
     float upThres;
-    commonObjects * co;
+
     ofxSVG svg;
     bool done = false;
     
@@ -25,8 +25,7 @@ public:
             if(x<1060 && x>max )max = x;
         }
         upThres = max;
-        cout << upThres<< endl;
-        cout << "maze debugging " << endl;
+
     };
     
     bool isDone(bool b = false){

@@ -3,10 +3,13 @@
 	<1-Area>0</1-Area>
 	<2-Trail>0</2-Trail>
 	<3-Maze>0</3-Maze>
-	<4-AverageMaze>0</4-AverageMaze>
-	<5-Fences>0</5-Fences>
-	<7-Factories>0</7-Factories>
+	<4-Representative>0</4-Representative>
+	<5-Logic>0</5-Logic>
+	<6-AverageMaze>0</6-AverageMaze>
+	<7-Fences>0</7-Fences>
+	<8-Fight>0</8-Fight>
+	<9-Factories>0</9-Factories>
 	<10-Charades>0</10-Charades>
-	<12-GroundGame>0</12-GroundGame>
-	<14-Idle>0</14-Idle>
+	<11-GroundGame>0</11-GroundGame>
+	<12-Idle>0</12-Idle>
 </scenes>

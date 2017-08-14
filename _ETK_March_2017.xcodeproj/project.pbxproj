@@ -161,6 +161,9 @@
 		2174A7B91F2E05EE0022C956 /* genericScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = genericScene.h; sourceTree = "<group>"; };
 		2174A7BA1F2E1AE20022C956 /* Scene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
 		2174A7BC1F305BE40022C956 /* 12_Ground.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 12_Ground.h; sourceTree = "<group>"; };
+		2174A7BF1F30AC0F0022C956 /* 05_RepresentativeGame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 05_RepresentativeGame.h; sourceTree = "<group>"; };
+		2174A7C01F30AE840022C956 /* 06_LogicGame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 06_LogicGame.h; sourceTree = "<group>"; };
+		2174A7C11F30B2E00022C956 /* 09_Fight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 09_Fight.h; sourceTree = "<group>"; };
 		219B5F601E7A70520002FD2A /* pushing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pushing.h; sourceTree = "<group>"; };
 		21A9BC861E72C76B005F90E3 /* pingPong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pingPong.h; sourceTree = "<group>"; };
 		21A9BC8E1E7694CE005F90E3 /* 11_Cherades.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 11_Cherades.h; sourceTree = "<group>"; };
@@ -518,8 +521,11 @@
 				21E6CA5F1E6D80CF00E0C55D /* 02_Area.h */,
 				21A9BC951E796C70005F90E3 /* 03_Trail.h */,
 				21DEC74F1E7AF01F004A5BBA /* 04_Maze.h */,
+				2174A7BF1F30AC0F0022C956 /* 05_RepresentativeGame.h */,
+				2174A7C01F30AE840022C956 /* 06_LogicGame.h */,
 				21DEC7501E7AF257004A5BBA /* 07_AverageMaze.h */,
 				21AE24EA1E6F120A00150433 /* 08_Fences.h */,
+				2174A7C11F30B2E00022C956 /* 09_Fight.h */,
 				21AE24EC1E6F5B5700150433 /* 10_Factories.h */,
 				21A9BC8E1E7694CE005F90E3 /* 11_Cherades.h */,
 				2174A7BC1F305BE40022C956 /* 12_Ground.h */,

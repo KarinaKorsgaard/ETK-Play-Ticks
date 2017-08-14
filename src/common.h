@@ -46,6 +46,11 @@ public:
     ofParameter<float>drainCoefficient2;
     ofParameter<float>refillCoef;
     ofParameter<float>blockForce;
+    
+    ofParameter<float>logicPrecision;
+    vector<ofParameter<float>>targetCircleRot;
+    ofParameter<bool>showLogicTargets;
+    
     ofParameter<int>gravity;
     ofParameter<int>gravityReward;
     ofParameter<bool>lessIsMore;
@@ -72,6 +77,8 @@ public:
     
     ofParameter<bool>playSound;
     
+    ofParameter<bool>moveThemOut;
+    
     ofParameter<bool>startFinale;
     ofParameter<float>deadTimeFinale;
 
@@ -84,15 +91,13 @@ public:
     vector<ofImage> characterImgs;
     vector<ofImage> characterSymbols;
     
-    //map< string , int >sMap;
-    
     map< int , string >sMap;
     
     ofImage legs[2];
     
     int NUM_TABLES;
     int BUTTONS_PR_TABLE;
-    
+    int numPresentButtons[2];
     ofImage avergaTick;
     
     void log(string l){
@@ -100,6 +105,9 @@ public:
             logs.push_back(l);
         }
     }
+    
+    int numSymbolsPresent[2], numColorsPresent[2];
+    
 private:
     
     
@@ -234,7 +242,6 @@ public:
             }
             indx++;
         }
-        cout << str <<endl;
         return str;
     }
     
