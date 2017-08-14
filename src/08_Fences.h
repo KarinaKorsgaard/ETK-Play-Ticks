@@ -20,17 +20,17 @@ public:
         co = _co;
         
         ofxSVG movingSvg;
-        movingSvg.load("svg/05_movingEscalator.svg");
+        movingSvg.load("svg/08_EscalatorMoving.svg");
         movingPolys = getPolyline(movingSvg);
         
         
         ofxSVG svg2;
-        svg2.load("svg/05_win_rect.svg");
+        svg2.load("svg/08_EscalatorWinArea.svg");
         winningArea = getPolyline(svg2)[0].getBoundingBox();
         
         ofxSVG svg;
        // svg.load("svg/05_fences.svg");
-        svg.load("svg/05_escalator.svg");
+        svg.load("svg/08_EscalatorSolids.svg");
         
         solidPolys = getPolyline(svg);
         theWinner=-1;

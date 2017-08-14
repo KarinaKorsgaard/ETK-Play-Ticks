@@ -24,7 +24,7 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        svg.load("svg/03_EasyMaze.svg");
+        svg.load("svg/03_Trail.svg");
      //   path.load("img/03_EasyMaze.png");
         polys = getPolyline(svg);
         maze = polys[0];

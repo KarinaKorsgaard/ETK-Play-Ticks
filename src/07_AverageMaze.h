@@ -23,7 +23,7 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        svg.load("svg/03_maze_alt.svg");
+        svg.load("svg/07_AverageMaze.svg");
         solidPolys = getPolyline(svg);
         
         float min = 1080;

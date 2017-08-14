@@ -16,7 +16,7 @@ public:
         co = _co;
         //borders.load("img/02_borders_alt.png");
         
-        svg.load("svg/02_borders_alt.svg");
+        svg.load("svg/04_Maze.svg");
         solidPolys = getPolyline(svg);
         
         float max = 0;

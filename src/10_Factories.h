@@ -162,12 +162,12 @@ public:
     void setup(commonObjects*_co, vector<Button>*b, int _team){
         buttons = b;
         co = _co;
-        svg.load("svg/06_solid_objects.svg");
+        svg.load("svg/10_FactorySolids.svg");
         solidPolys = getPolyline(svg);
         team = _team;
         
         ofxSVG svg2;
-        svg2.load("svg/06_factory_areas.svg");
+        svg2.load("svg/10_FactoryAreas.svg");
         polysOutline = getPolyline(svg2);
         
         cout << polysOutline.size() << " num baskets" << endl;
@@ -178,7 +178,7 @@ public:
         }
         
         ofxSVG svg3;
-        svg3.load("svg/06_win_rect.svg");
+        svg3.load("svg/10_FactoryButton.svg");
         win = getPolyline(svg3)[0].getBoundingBox();
         win.x += 1920 * teamNumber;
         winImg.load("img/06_win.png");

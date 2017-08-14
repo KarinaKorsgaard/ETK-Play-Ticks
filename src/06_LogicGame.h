@@ -68,36 +68,22 @@ public:
 class Logic : public Scene{
     
 public:
-    
-    ofPolyline winArea;
-    
+
     Logic(){};
     ~Logic(){};
 
-    ofxSVG svg;
-    ofPolyline poly;
-    
-   // vector<Button *> winButtons;
     vector<circle> circles;
-    
-   // vector<float> p_buttonRotation;
-   // vector<float> DeltaButtonRotation;
-    //Tile tiles[GRID][GRID];
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        
-       // winButtons.resize(6);
-       // rotations.resize(6);
-        
+
         for(int i = 0; i < 6 ; i++){
             circle c = *new circle;
             c.setup(i, 280, co->targetCircleRot[i]);
             circles.push_back(c);
         }
-        
-        svg.load("svg/06_logic.svg");
+
     }
     
     bool isDone(bool b = false){
