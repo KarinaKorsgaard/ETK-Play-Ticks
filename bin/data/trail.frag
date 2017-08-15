@@ -17,15 +17,21 @@ float rand(in float y){
 }
 
 
-float circle(in vec2 _st, in vec2 _mask, float _r, float t){
-    vec2 dist = _st-_mask;
-    
-    float radius = _r - t*_r;
-    float r = smoothstep(radius-(radius*t),
-                         radius+(radius*t),
-                         dot(dist,dist)*4.0);
-    
-    return step(r,rand(rand(_st.x)*rand(_st.y)));
+float circle(in vec2 _st, in vec2 _mask, float _r, float t , float border){
+    float result = 0.;
+    if (_st.x < border) {
+        result = 0.;
+    }else {
+        vec2 dist = _st-_mask;
+        
+        float radius = _r - t*_r;
+        float r = smoothstep(radius-(radius*t),
+                             radius+(radius*t),
+                             dot(dist,dist)*4.0);
+        result = step(r,rand(rand(_st.x)*rand(_st.y)));
+    }
+    return result;
+
 }
 
 void main (void) {
@@ -34,11 +40,11 @@ void main (void) {
     
     vec4 color = texture2D(tex,gl_FragCoord.xy/u_resolution.xy);
     
-    float c1 = circle(uv, u_mask1/u_resolution.xx, u_radius1 , 0.2);
-    float c2 = circle(uv, u_mask2/u_resolution.xx, u_radius2 , 0.2);
+    float c1 = circle(uv, u_mask1/u_resolution.xx, u_radius1 , 0.2 , 0.);
+    float c2 = circle(uv, u_mask2/u_resolution.xx, u_radius2 , 0.2, 0.5);
     
-    float c3 = circle(uv, u_beginLight1/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2);
-    float c4 = circle(uv, u_beginLight2/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2);
+    float c3 = circle(uv, u_beginLight1/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2, 0.);
+    float c4 = circle(uv, u_beginLight2/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2, 0.5);
     
     color *=1.-(c1+c2+c3+c4);
     
@@ -49,7 +55,7 @@ void main (void) {
     //color.rg += c4;
    
     float t = sin(u_time*2.)*0.1 + 0.2;
-    float c = circle(uv, u_mask1/u_resolution.xx, u_radius1*0.2,t );
+    float c = circle(uv, u_mask1/u_resolution.xx, u_radius1*0.2,t, 0. );
     color.a +=0.5* c;
     color.r +=0.9* c;
     color.g +=0.6* c;
@@ -57,7 +63,7 @@ void main (void) {
     
     
     t = sin((u_time+13. )*2.)*0.1 + 0.2;
-    c = circle(uv, u_mask2/u_resolution.xx, u_radius2*0.2,t );
+    c = circle(uv, u_mask2/u_resolution.xx, u_radius2*0.2,t ,0.5);
     color.a +=0.5* c;
     color.r +=0.9* c;
     color.g +=0.6* c;
