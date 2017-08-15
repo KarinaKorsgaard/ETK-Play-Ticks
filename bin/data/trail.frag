@@ -48,10 +48,10 @@ void main (void) {
     
     color *=1.-(c1+c2+c3+c4);
     
-    color.rgba +=c3*0.7;
+    color.rgba +=c3;
     //color.rg += c3;
     
-    color.rgba +=c4*0.7;
+    color.rgba +=c4;
     //color.rg += c4;
    
     float t = sin(u_time*2.)*0.1 + 0.2;

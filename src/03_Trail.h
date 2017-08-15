@@ -104,9 +104,9 @@ public:
                 co->trailRadius[teamNumber]*=0.99;
             else co->trailRadius[teamNumber] = 0.;
         }else {
-            if(co->trailRadius[teamNumber] < 0.05)
+            if(co->trailRadius[teamNumber] < co->maxTrailRadius)
                 co->trailRadius[teamNumber]+=0.002;
-            else co->trailRadius[teamNumber] = 0.05;
+            else co->trailRadius[teamNumber] = co->maxTrailRadius;
         }
     };
     

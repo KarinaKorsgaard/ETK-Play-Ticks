@@ -158,9 +158,9 @@ void ofApp::setup(){
     design.add(co.designDone1.set("team 1 ready",false));
     design.add(co.designDone2.set("team 2 ready",false));
     
-    gravity.setName("escalator");
+    gravity.setName("escalator and trail");
     gravity.add(co.gravity.set("gravity",1,0,50));
-    //gravity.add(co.trailRadius[0].set("trailRadius1", 0.1, 0., 1.));
+    gravity.add(co.maxTrailRadius.set("maxTrailRadius", 0.001, 0., 0.05));
     //gravity.add(co.trailRadius[1].set("trailRadius2", 0.1, 0., 1.));
     
     logic.setName("logic");

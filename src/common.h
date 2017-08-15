@@ -54,6 +54,8 @@ public:
     ofParameter<float>drainCoefficient1;
     ofParameter<float>drainCoefficient2;
     ofParameter<float>refillCoef;
+    
+    ofParameter<float>maxTrailRadius;
 
     float trailRadius[2];
     
