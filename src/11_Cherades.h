@@ -6,12 +6,14 @@ class Idle : public Scene{
 public:
     
     bool done = false;
+    bool isDouble = true;
+    ofRectangle rect;
     
-    
-    void setup(commonObjects*_co, vector<Button>*b){
+    void setup(commonObjects*_co, vector<Button>*b, bool _isDouble = true, ofRectangle _r =ofRectangle(0,0, 1920,1080)){
         buttons = b;
         co = _co;
- 
+        rect = _r;
+        isDouble = _isDouble;
     };
     
 
@@ -24,7 +26,7 @@ public:
     void update(){
         if(!done){
             for(int i=0; i<buttons->size(); i++) {
-                buttons->at(i).update(co->attraction);
+                buttons->at(i).update(co->attraction, isDouble, rect);
             }
         }
     }

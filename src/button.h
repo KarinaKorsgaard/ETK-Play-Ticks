@@ -202,7 +202,7 @@ public:
                 distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
                 distToOrg /= (1980+1080);
                 
-                box2Dcircle->addAttractionPoint( p , attraction*distToOrg  );
+                box2Dcircle->addAttractionPoint( p , attraction  );
                 
                 setDirection(filterLowPass.value(), lastPos);
                 //setDirection(filterLowPass.value(), getPos());
@@ -218,7 +218,7 @@ public:
     }
 
     
-    void updateFences(float attraction ,bool doubleSize = true, ofRectangle rect = ofRectangle(0,0, 1920,1080)){
+    void updateFences(float attraction, float gravity ,bool doubleSize = true, ofRectangle rect = ofRectangle(0,0, 1920,1080)){
         box2Dcircle->setVelocity(0,0);
         
         if(isPlaying && !isDead()){
@@ -234,8 +234,8 @@ public:
                 distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
                 distToOrg /= (1980+1080);
                 
-                box2Dcircle->addAttractionPoint( p , attraction*distToOrg  );
-                box2Dcircle->addForce(ofVec2f(0,1), 50);
+                box2Dcircle->addAttractionPoint( p , attraction  );
+                box2Dcircle->addForce(ofVec2f(0,1), gravity);
                 
                 setDirection(filterLowPass.value(), lastPos);
                 //setDirection(filterLowPass.value(), getPos());

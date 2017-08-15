@@ -57,7 +57,7 @@ public:
             moveEscalators = false;
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
-                buttons->at(i).updateFences(co->attraction);
+                buttons->at(i).updateFences(co->attraction, co->gravity);
                 
                 if(!moveEscalators){
                     if (start.inside(buttons->at(i).getPos()))
@@ -102,7 +102,7 @@ public:
         
         float addX = teamNumber == 0 ? 0 : 1920;
         
-        world->setGravity(0,co->gravity);
+        //world->setGravity(0,co->gravity);
         createScene(world,movingPolys);
         
         for(int i = 0; i<buttons->size();i++){

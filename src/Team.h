@@ -108,10 +108,14 @@ public:
         fight.setup(co,&buttons);
         factories.setup(co,&buttons);
         charades07.setup(co,&buttons);
-        idle.setup(co,&buttons);
+        idle.setup(co,&buttons, false, ofRectangle(0,0,1920*2,1080));
         ground.setup(co,&buttons);
         
+        scenes["Design"]->begin(box2d);
+        scenes["Design"]->update();
+        scenes["Design"]->reset();
         scenes[co->sMap[co->sceneNumber]]->begin(box2d);
+        
            
     }
     
@@ -129,12 +133,18 @@ public:
             
             scenes[co->sMap[p_sceneNum]]->reset();
             
-
+            
+            if(teamId == 0){
+                co->background.clear();
+                co->background.load("img/backgrounds/"+co->sMap[p_sceneNum]+".png");
+            }
+            
+            
             //--------------------------------------------------------------
-            if(co->sMap[s]=="Fences")
-                box2d->setGravity(0,co->gravity);
-            if(co->sMap[p_sceneNum]=="Fences")
-                box2d->setGravity(0,0);
+//            if(co->sMap[s]=="Fences")
+//                box2d->setGravity(0,co->gravity);
+//            if(co->sMap[p_sceneNum]=="Fences")
+//                box2d->setGravity(0,0);
             //--------------------------------------------------------------
             
             p_sceneNum = s;
@@ -205,7 +215,8 @@ public:
     void draw(){
         ofFill();
         int s = co->sceneNumber;
-        
+        if(co->background.isAllocated())
+            co->background.draw(teamId*1920 , 0, 1920, 0);
         scenes[co->sMap[s]]->draw();
         
 

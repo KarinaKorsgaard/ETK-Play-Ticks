@@ -87,8 +87,7 @@ public:
     void draw(){
         
         ofSetColor(255);
-        co->background.draw(teamNumber*1920,0,1920,1080);
-        
+
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             if(co->debug){
@@ -112,8 +111,9 @@ public:
     
     
     void begin(ofxBox2d * world = nullptr){
-        if(teamNumber == 0){co->avergaTick.load("img/characters/03_TrailAverageTick.png");
-            co->background.load("img/backgrounds/03_trail.png");
+        if(teamNumber == 0){
+            co->avergaTick.load("img/characters/03_TrailAverageTick.png");
+            
         }
         go = false;
         
@@ -123,9 +123,10 @@ public:
     
     void reset(){
         if(teamNumber == 0)
-            co->background.clear();
+            co->avergaTick.clear();
         
         maze.clear();
+        
     };
 
 

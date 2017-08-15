@@ -17,6 +17,7 @@ float rand(in float y){
 
 float circle(in vec2 _st, in vec2 _mask, float _r, float t){
     vec2 dist = _st-_mask;
+    
     float radius = _r - t*_r;
     float r = smoothstep(radius-(radius*t),
                          radius+(radius*t),

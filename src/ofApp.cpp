@@ -138,8 +138,8 @@ void ofApp::setup(){
     
     physics.setName("general");
     
-    physics.add(reverseX.set("reverse X",false));
-    physics.add(reverseY.set("reverse Y",false));
+    physics.add(reverseX.set("reverse X",true));
+    physics.add(reverseY.set("reverse Y",true));
     physics.add(co.playSound.set("play sound",false));
     physics.add(co.sendAverageData.set("sendAverageData",false));
     
@@ -184,7 +184,8 @@ void ofApp::setup(){
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
-    gui.add(restartApp.set("RESTART",false));
+    gui.add(startScene.set("START SCENE",false));
+    
     gui.add(physics);
    // gui.add(gameMechs);
     gui.add(design);
@@ -238,9 +239,11 @@ void ofApp::update(){
     
     updateOsc();
     handleSceneChange();
-    teams[0].update();
-    teams[1].update();
-
+    
+    if(startScene){
+        teams[0].update();
+        teams[1].update();
+    }
     
     if(co.sMap[co.sceneNumber] == "GroundGame")
     {
@@ -290,10 +293,7 @@ void ofApp::draw(){
     if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);
     if(co.sMap[co.sceneNumber] == "Fight")fightBall->draw();
     
-    teams[0].draw();
-    teams[1].draw();
-    
-    
+
     if(co.sMap[co.sceneNumber] == "Trail"){
         Trail * trail = static_cast<Trail *>(teams[0].scenes[co.sMap[co.sceneNumber]]);
         
@@ -310,6 +310,9 @@ void ofApp::draw(){
         fbo.draw(0,0);
         trailShader.end();
     }
+    
+    teams[0].draw();
+    teams[1].draw();
     
     fbo.end();
     
@@ -341,6 +344,7 @@ void ofApp::handleSceneChange(){
         }
     }
     if(resent!=-1){
+        startScene = false;
         for(int i = 0; i<b_scenes.size();i++){
             if(i!=resent){
                 b_scenes[i]=false;
