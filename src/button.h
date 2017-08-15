@@ -93,8 +93,8 @@ public:
         
         box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
-        box2Dcircle.get()->setPhysics(3., .0, 40.0);
-        box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), 1);
+        box2Dcircle.get()->setPhysics(1., .0, 0.0);
+        box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), beginningRad);
         box2Dcircle.get()->alive = false;
         box2Dcircle.get()->setRadius(beginningRad);
   //      box2Dcircle.get()->setMassFromShape = false;
@@ -111,6 +111,7 @@ public:
     
     
     void drawDebug(ofRectangle rect = ofRectangle(0,0, 1920,1080)){
+        ofPushStyle();
         if(on && !isDead() && isPlaying){
             ofVec2f p;
             
@@ -128,10 +129,12 @@ public:
             
             if(on)ofDrawLine(getPos(),p);
         }
+        ofPopStyle();
     }
     
     void draw(bool transform = true, bool sizeMatters = false, bool allon = false){
        // if(on || allon){
+        ofPushStyle();
         if(isPlaying ){
             float rad = sizeMatters ? box2Dcircle->getRadius() : beginningRad ;
             if(transform){
@@ -160,6 +163,7 @@ public:
             
             if(transform)ofPopMatrix();
         }
+        ofPopStyle();
     }
     void setPosition(float x, float y){
         setPosition(ofVec2f(x,y));
@@ -225,12 +229,13 @@ public:
                 
                 int multiX = doubleSize ? teamNumber * 1920 : 0;
                 p.x = multiX + rect.width *x + rect.x;
-                p.y = 1060;
+                p.y = 1080;
                 
                 distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
                 distToOrg /= (1980+1080);
                 
                 box2Dcircle->addAttractionPoint( p , attraction*distToOrg  );
+                box2Dcircle->addForce(ofVec2f(0,1), 50);
                 
                 setDirection(filterLowPass.value(), lastPos);
                 //setDirection(filterLowPass.value(), getPos());
@@ -246,37 +251,7 @@ public:
         filterLowPass.update(getPos());
         updateRadius();
     }
-    
-//    void updateWithGravity(float jump , float x_jump, float thresY, bool doubleSize = true){
-//        if(isPlaying && !isDead()){
-//            if(on ){
-//                int multiX = doubleSize ? teamNumber * 1920 : 0;
-//                
-//                
-//                float dif_y = dy_jump - getPosRaw().y;
-//                dy_jump = getPosRaw().y;
-//                
-//                float dif_x = (getPosRaw().x + multiX) - getPos().x ;
-//                
-//                if( abs(box2Dcircle->getVelocity().y) < thresY)isJumping = false;
-//                else isJumping = true;
-//
-//                if(!isJumping && dif_y>0)box2Dcircle->addForce(ofVec2f(0,-1), jump);
-//                
-//                box2Dcircle->setVelocity(0, box2Dcircle->getVelocity().y);
-//                box2Dcircle->addForce(ofVec2f( dif_x * x_jump , 0) , abs(dif_x)*x_jump);
-//                
-//                //box2Dcircle->addAttractionPoint(ofVec2f( xPos , 0) , abs(dif_x)*x_jump);
-//                
-//                setDirection(filterLowPass.value(), lastPos);
-//                lastPos = filterLowPass.value();
-//                
-//                moveBackToBoard();
-//            }
-//        }
-//        filterLowPass.update(getPos());
-//        updateRadius();
-//    }
+
     
     void moveBackToBoard(){
         if(getPos().x<0)setPosition(radius, getPos().y);
@@ -303,12 +278,14 @@ public:
                         float distTop = newPos.y - r.y;
                         float distBot = newPos.y - (r.y + r.height);
                         
+                        cout << distLeft << " "<< distRight << " "<< distTop << " "<< distBot << " "<<endl;
+                        
                         float xdist = MIN(abs(distLeft),abs(distRight));
                         float ydist = MIN(abs(distTop),abs(distBot));
                         cout << "x dist "<<xdist << " ydist "<<ydist<<endl;
                         bool changeX = xdist < ydist;
                         
-                        cout << "old pos "<<newPos.x <<" "<<newPos.y <<ydist<<endl;
+                        cout << "old pos "<<newPos.x <<" "<<newPos.y <<endl;
                         if(changeX)newPos.x += xdist;
                         else newPos.y += ydist;
                         
@@ -325,7 +302,7 @@ public:
                         
                         
                         setPosition(newPos);
-                        cout << "new pos "<<getPos().x <<" "<<getPos().y <<ydist<<endl;
+                        cout << "new pos "<<getPos().x <<" "<<getPos().y <<endl;
                         
                         if(polys[i].inside(newPos))
                             cout << "still in poly!!"<<endl;

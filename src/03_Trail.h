@@ -76,16 +76,23 @@ public:
                 sendOsc = true;
                 oscInt = 1;
             }
-
-            
         }
 
+        if(!go){
+            if(co->trailRadius[teamNumber] > 0.0)
+                co->trailRadius[teamNumber]*=0.99;
+            else co->trailRadius[teamNumber] = 0.;
+        }else {
+            if(co->trailRadius[teamNumber] < 0.05)
+                co->trailRadius[teamNumber]*=1.1;
+            else co->trailRadius[teamNumber] = 0.05;
+        }
     };
     
     void draw(){
         
         ofSetColor(255);
-   //     path.draw(0,0);
+        co->background.draw(teamNumber*1920,0,1920,1080);
         
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
@@ -100,12 +107,7 @@ public:
         
         ofPushMatrix();
         ofTranslate(filter.value());
-        
-        ofColor c;
-        if(go)c.set(120,240,180);
-        else c.set(255,120,120);
-        ofSetColor(c);
-        float rad = 45.f ;
+        float rad = co->avergaTick.getWidth()/2;
         co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
         
         ofPopMatrix();
@@ -115,11 +117,15 @@ public:
     
     
     void begin(ofxBox2d * world = nullptr){
+        if(teamNumber == 0){co->avergaTick.load("img/characters/03_TrailAverageTick.png");
+            co->background.load("img/backgrounds/03_trail.png");
+        }
         go = false;
     };
     
     void reset(){
-       
+        if(teamNumber == 0)
+            co->background.clear();
     };
 
 

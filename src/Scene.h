@@ -30,6 +30,8 @@ class Scene {
     
     vector<Button>*buttons;
     commonObjects * co;
+   
+    
     
     virtual void draw() = 0;
     virtual void update() = 0;
@@ -75,9 +77,6 @@ class Scene {
         return polys;
         
     }
-    
-    
-
 
 };
 

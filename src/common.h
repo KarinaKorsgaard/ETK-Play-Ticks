@@ -26,6 +26,8 @@ public:
     bool start;
     bool debug;
     bool logDone = false;
+    
+    ofImage background;
     vector<string>logs;
 
     string timeStamp = "%H:%M";
@@ -33,6 +35,9 @@ public:
     int sceneNumber;
     float size_break;
     float size_lim;
+    
+    float tennisPoint[2];
+    
     
     ofxOscSender oscOut;
     ofxOscReceiver oscIn;
@@ -45,28 +50,29 @@ public:
     ofParameter<float>drainCoefficient1;
     ofParameter<float>drainCoefficient2;
     ofParameter<float>refillCoef;
-    ofParameter<float>blockForce;
+
+    float trailRadius[2];
     
     ofParameter<float>logicPrecision;
     vector<ofParameter<float>>targetCircleRot;
     ofParameter<bool>showLogicTargets;
     
     ofParameter<int>gravity;
-    ofParameter<int>gravityReward;
-    ofParameter<bool>lessIsMore;
-    ofParameter<float>divideTimeTime;
+
     
     ofParameter<bool>marketDone1;
     ofParameter<bool>marketDone2;
-    ofParameter<float>marketReward;
+    
+    ofParameter<bool>designDone1;
+    ofParameter<bool>designDone2;
+
     ofParameter<bool>idleA;
     ofParameter<bool>idleB;
     
-    ofParameter<float>spyDrainer;
-    ofParameter<float>spySpeed;
+
     ofParameter<bool>pauseTeam1;
     ofParameter<bool>pauseTeam2;
-    ofParameter<float>thresY_gravity;
+
     
     ofParameter<bool>refill1;
     ofParameter<bool>refill2;
@@ -107,6 +113,47 @@ public:
     }
     
     int numSymbolsPresent[2], numColorsPresent[2];
+    
+    int lookUp[37][2];
+    
+    void fillLookUp(){
+        
+        lookUp[36][0] = 6;
+        lookUp[36][1] = 6;
+        
+        for (int X = 36; X >= 0 ; X--){
+            
+            int M = 0;
+            int N = floor(sqrt(X));
+            
+            while (N > 0){
+                if (X % N == 0){
+                    M = X / N;
+                    break;
+                }
+                else
+                    N--;
+            }
+            
+            if ( (M != 0 || X <= 3) && M < 7 ){
+                lookUp[X][0] = M;
+                lookUp[X][1] = N;
+            }
+            else {
+                lookUp[X][0] = lookUp[X+1][0];
+                lookUp[X][1] = lookUp[X+1][1];
+            }
+            lookUp[17][0] = 5;
+            lookUp[17][1] = 4;
+            
+            lookUp[18][0] = 5;
+            lookUp[18][1] = 4;
+            
+            cout << X << " : "<<lookUp[X][0]<<" "<<lookUp[X][1]<< endl;
+        }
+        
+    }
+    
     
 private:
     

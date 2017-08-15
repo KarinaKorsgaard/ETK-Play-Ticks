@@ -63,7 +63,7 @@ public:
     Idle idle;
     Idle charades07;
     
-    bool setSecondsToTakeOff = true;
+    //bool setSecondsToTakeOff = true;
     Ground ground;
 
     std::map<string, Scene *>scenes;
@@ -124,7 +124,6 @@ public:
         
         if(p_sceneNum != s){
             reset();
-            
 
             if(scenes[co->sMap[s]]->solidPolys.size()>0){
                 createScene(scenes[co->sMap[s]]->solidPolys);
@@ -134,22 +133,19 @@ public:
             
 
             //--------------------------------------------------------------
-            // special rules:
-            if(co->sMap[p_sceneNum]=="Factories"){
-                secondsToTakeOff = 0;
-                setSecondsToTakeOff = true;
-            }
-            
+            if(co->sMap[s]=="Fences")
+                box2d->setGravity(0,co->gravity);
             if(co->sMap[p_sceneNum]=="Fences")
                 box2d->setGravity(0,0);
             //--------------------------------------------------------------
+            
             p_sceneNum = s;
         }
         
         scenes[co->sMap[s]]->update();
         if(co->moveThemOut){
             scenes[co->sMap[s]]->moveOutOfSolids(scenes[co->sMap[s]]->solidPolys);
-            co->moveThemOut = false;
+            if(teamId == 1)co->moveThemOut = false;
         }
         
         //--------------------------------------------------------------
@@ -157,27 +153,14 @@ public:
         
         if(co->sMap[s] == "Factories")
             forceDone = teamId == 0 ? co->marketDone1 : co->marketDone2;
+        if(co->sMap[s] == "Design")
+            forceDone = teamId == 0 ? co->designDone1 : co->designDone2;
         if(co->sMap[s] == "Charades")
-            forceDone = teamId == 0 ? co->idleA : co->idleA;
-
+            forceDone = teamId == 0 ? co->idleA : co->idleB;
+        //--------------------------------------------------------------
         isDone = scenes[co->sMap[s]]->isDone(forceDone);
         
-        //--------------------------------------------------------------
-        // special rules
-        if(co->sMap[s]=="Factories"){
-            if(isDone && setSecondsToTakeOff){
-                setSecondsToTakeOff = false;
-                Factories * f = static_cast<Factories *>(scenes[co->sMap[s]]);
-                secondsToTakeOff = f->basketEfficency ;
-                cout << secondsToTakeOff << endl;
-            }
-        }
-    
-        //--------------------------------------------------------------
-        
-        
-      
-        
+
         if(!isDone){
             drainTime();
             drainIndividuals();
@@ -185,9 +168,7 @@ public:
         }
         
         else if (isDone){
-            if(co->sMap[s] == "Factories")
-                takeOffSeconds();
-            
+ 
             if (!celebration.isPlaying()){
                 celebration.play();
                 
@@ -254,15 +235,21 @@ public:
     
     
     void drawResult(){
+        float t = time;
+        int s = co->sceneNumber;
+        if(co->sMap[s]=="Design"){
+        Design * d = static_cast<Design *>(scenes[co->sMap[s]]);
+            t = d->countDown;
+        }
+ 
         ofSetColor(ofColor::royalBlue);
-        string t = timeToString(time);
-        co->font_medium->drawString( t , 50 + (teamId * 1920), 120);
+        co->font_medium->drawString( timeToString(t) , 50 + (teamId * 1920), 120);
         ofRectangle r = co->font_medium->getStringBoundingBox("00:00",0,0);
     }
 
     
     void drainTime(){
-        time += ofGetLastFrameTime();
+        if(co->sMap[co->sceneNumber]!="Design")time += ofGetLastFrameTime();
     }
     
     void drainIndividuals(){
@@ -297,23 +284,23 @@ public:
     
 
     
-    void divideTimeToButtons(){
-        if(time>0){
-            for(int i = 0; i<buttons.size();i++){
-                if(buttons[i].isDead())continue;
-                buttons[i].addValue(-ofGetLastFrameTime()*co->divideTimeTime);
-                time-=ofGetLastFrameTime();
-            }
-        }
-    }
+//    void divideTimeToButtons(){
+//        if(time>0){
+//            for(int i = 0; i<buttons.size();i++){
+//                if(buttons[i].isDead())continue;
+//                buttons[i].addValue(-ofGetLastFrameTime()*co->divideTimeTime);
+//                time-=ofGetLastFrameTime();
+//            }
+//        }
+//    }
     
-    void takeOffSeconds(){
-        
-        if(secondsToTakeOff>0){
-            secondsToTakeOff-=ofGetLastFrameTime() * 5.;
-            time-=ofGetLastFrameTime() * 5.;
-        }
-    };
+//    void takeOffSeconds(){
+//        
+//        if(secondsToTakeOff>0){
+//            secondsToTakeOff-=ofGetLastFrameTime() * 5.;
+//            time-=ofGetLastFrameTime() * 5.;
+//        }
+//    };
     
     
 private:

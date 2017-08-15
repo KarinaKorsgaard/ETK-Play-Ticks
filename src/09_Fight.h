@@ -29,7 +29,8 @@ public:
     }
     
     bool isDone(bool b = false){
-        return point > gameOverPoint;
+        int t = teamNumber * -1 +1;
+        return co->tennisPoint[t] > gameOverPoint;
     }
     
     void update(){
@@ -41,8 +42,8 @@ public:
             ballx = teamNumber == 0 ? ballx : ofMap(ballx , 1920, 1920*2 , 1920, 0);
 
             if(ballx < ball->getRadius() * 2){
-                point ++;
-                cout <<"teamnumber "<< teamNumber << " got "<<point << " points" << endl;
+                co->tennisPoint[teamNumber] ++;
+                cout <<"teamnumber "<< teamNumber << " got "<<co->tennisPoint[teamNumber] << " points" << endl;
                 ball->setPosition(1920, 1080/2);
                 int xvel = teamNumber == 1 ? -20 : 20;
                 ball->setVelocity(xvel, 20);
@@ -65,7 +66,7 @@ public:
         ofNoFill();
         ofDrawRectangle(20 + 1920*teamNumber , 1080-40, 1880 , 20);
         ofFill();
-        int left = gameOverPoint - point;
+        int left = gameOverPoint - co->tennisPoint[teamNumber];
         
         ofDrawRectangle(20 + 1920*teamNumber , 1080-40 , left * ( 1880  / gameOverPoint ) , 20);
         
@@ -74,6 +75,8 @@ public:
     }
     
     void begin(ofxBox2d * world = nullptr){
+        
+        co->tennisPoint[teamNumber] = 0;
         cout << "set button" << endl;
         int firstOn = -1;
         bool isSet = false;

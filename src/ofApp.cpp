@@ -2,34 +2,31 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+    trailShader.load("trail");
     
     box2d.init();
     box2d.setGravity(0, 0);
     box2d.createBounds(ofRectangle(0,0,1920 * 2,1080));
-   // box2d.enableEvents();
-    
-   // ofSetCircleResolution(1000);
-    
+
     //set common objects to point at fonts and button map
     syphon.setName("tick games");
-    font_x_small.load("fonts/GT.ttf", 20);
     font_small.load("fonts/GT.ttf", 30);
     font_medium.load("fonts/GT.ttf", 65);
-    font_large.load("fonts/GT.ttf", 140);
+
+    co.fillLookUp();
     
     //set common objects to point at fonts and button map
     co.font_small = &font_small;
     co.font_medium = &font_medium;
-    co.font_large = &font_large;
+    //co.font_large = &font_large;
     
     co.characterImgs.resize(2);
-    co.characterImgs[0].load("characters/body2.png");
-    co.characterImgs[1].load("characters/dead.png");
-    co.avergaTick.load("characters/averageTick.png");
+    co.characterImgs[0].load("img/characters/body.png");
+    co.characterImgs[1].load("img/characters/dead.png");
+    //co.avergaTick.load("characters/averageTick.png");
     
-    co.legs[0].load("characters/arms/arm1.png");
-    co.legs[1].load("characters/arms/arm2.png");
+    co.legs[0].load("img/characters/arms/arm1.png");
+    co.legs[1].load("img/characters/arms/arm2.png");
     
     co.sceneNumber = 0;
     co.numPresentButtons[0] = 0;
@@ -37,7 +34,7 @@ void ofApp::setup(){
     
     co.characterSymbols.resize(6);
     for(int i = 0 ; i< 6 ; i++)
-        co.characterSymbols[i].load("characters/symbols/marker_000"+ofToString(i)+".png");
+        co.characterSymbols[i].load("img/symbols/marker_000"+ofToString(i)+".png");
     
     
     
@@ -138,22 +135,34 @@ void ofApp::setup(){
     
     p_b_scenes.resize(b_scenes.size());
     
-    physics.setName("physics");
+    physics.setName("general");
+    
+    physics.add(reverseX.set("reverse X",false));
+    physics.add(reverseY.set("reverse Y",false));
+    physics.add(co.playSound.set("play sound",false));
+    physics.add(co.sendAverageData.set("sendAverageData",false));
+    
     physics.add(co.attraction.set("attraction",1,0,2500));
     physics.add(co.fc.set("fc position",0.05,0.01,0.4));
     physics.add(co.moveThemOut.set("move ticks out of walls", false));
     
-    gameMechs.setName("game controls");
-    gameMechs.add(co.deadTimer.set("dead time",5,1,30));
-    gameMechs.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
-    gameMechs.add(co.drainCoefficient1.set("drain team 1",1,0,5));
-    gameMechs.add(co.drainCoefficient2.set("drain team 2",1,0,5));
+    //physics.setName("game controls");
+    physics.add(co.deadTimer.set("dead time",5,1,30));
+    physics.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
+    //physics.add(co.drainCoefficient1.set("drain team 1",1,0,5));
+    //physics.add(co.drainCoefficient2.set("drain team 2",1,0,5));
 
-    gravity.setName("gravity game");
+    
+    design.setName("Design");
+    design.add(co.designDone1.set("team 1 ready",false));
+    design.add(co.designDone2.set("team 2 ready",false));
+    
+    gravity.setName("escalator");
     gravity.add(co.gravity.set("gravity",1,0,50));
+    //gravity.add(co.trailRadius[0].set("trailRadius1", 0.1, 0., 1.));
+    //gravity.add(co.trailRadius[1].set("trailRadius2", 0.1, 0., 1.));
     
-    
-    logic.setName("logic game");
+    logic.setName("logic");
     logic.add(co.logicPrecision.set("logic precision", 0.1, 0.01, 2.f));
     for(int i = 0 ; i<6; i++){
         ofParameter<float>t;
@@ -161,14 +170,8 @@ void ofApp::setup(){
         logic.add(co.targetCircleRot.back().set("circle"+ofToString(i+1),0,0,360));
     }
     logic.add(co.showLogicTargets.set(false));
-   // gravity.add(co.jump.set("jumpiness",1,0,10));
-   // gravity.add(co.x_jump.set("attraction to x",0.001,0,.01));
-   // gravity.add(co.thresY_gravity.set("dy threshold",0.001,0,0.1));
-   // gravity.add(co.gravityReward.set("gravityReward",50,0,100));
-    
-    market.setName("market control");
-   // market.add(co.marketReward.set("reward",0.5,0.,2));
-   // market.add(co.divideTimeTime.set("divideTimeToButtons",50.,1.,100.));
+
+    market.setName("factories");
     market.add(co.marketDone1.set("finish market 1",false));
     market.add(co.marketDone2.set("finish market 2",false));
     
@@ -180,15 +183,10 @@ void ofApp::setup(){
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
-    gui.add(reverseX.set("reverse X",false));
-    gui.add(reverseY.set("reverse Y",false));
-    gui.add(alertDialog.set("Alert Dialogs",false));
-    //gui.add(co.logReport.set("log report",false));
-    gui.add(co.playSound.set("play sound",false));
-    gui.add(co.sendAverageData.set("sendAverageData",false));
-    
+
     gui.add(physics);
-    gui.add(gameMechs);
+   // gui.add(gameMechs);
+    gui.add(design);
     gui.add(logic);
     gui.add(gravity);
     gui.add(charades);
@@ -280,7 +278,11 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+    
     fbo.begin();
+    
+    
+    
     ofClear(0);
     
     ofBackground(200);
@@ -290,9 +292,31 @@ void ofApp::draw(){
     teams[0].draw();
     teams[1].draw();
     
+    
+    if(co.sMap[co.sceneNumber] == "Trail"){
+        Trail * trail = static_cast<Trail *>(teams[0].scenes[co.sMap[co.sceneNumber]]);
+        
+        trailShader.begin();
+        trailShader.setUniform2f("u_resolution", 1920*2, 1080);
+        trailShader.setUniform2f("u_mask1", trail->filter.value().x, trail->filter.value().y);
+        
+        trail = static_cast<Trail *>(teams[1].scenes[co.sMap[co.sceneNumber]]);
+        trailShader.setUniform2f("u_mask2", trail->filter.value().x, trail->filter.value().y);
+        trailShader.setUniform1f("u_radius1", co.trailRadius[0]);
+        trailShader.setUniform1f("u_radius2", co.trailRadius[1]);
+        
+        trailShader.setUniform1f("u_time", ofGetElapsedTimef());
+        fbo.draw(0,0);
+        trailShader.end();
+    }
+    
     fbo.end();
+    
 
+    
     syphon.publishTexture(&fbo.getTexture());
+    
+    
     gui.draw();
     guiScenes.draw();
     
@@ -349,10 +373,20 @@ void ofApp::handleSceneChange(){
                 groundVideo.load("ground.mov");
                 groundPixels.allocate(groundVideo.getWidth(), groundVideo.getHeight(), GL_RGB);
             }
-            groundVideo.setSpeed(0.2f);
+            
             groundVideo.setLoopState(OF_LOOP_NONE);
             groundVideo.play();
             isGroundDone = false;
+            for(int t = 0; t < 2 ; t++){
+                for(int i = 0; i < teams[t].buttons.size(); i++){
+                    
+                    Button *b = &teams[t].buttons[i];
+                    if(b->teamNumber == 1)
+                        b->setPosition(b->getPos().x-1920  , b->getPos().y);
+                }
+            }
+            
+            
         }else if(co.sMap[p_sceneNumber] == "GroundGame"){
             groundVideo.stop();
         }
@@ -447,7 +481,7 @@ void ofApp::updateGroundGame(){
                 }
                 if(b->isDead() && b->isPlaying)deadCounter++;
                 
-                if(deadCounter == co.numPresentButtons[0]+co.numPresentButtons[1] - 2){
+                if(deadCounter == co.numPresentButtons[0]+co.numPresentButtons[1] - 1){
                     //cout << "i tried to kill everyone" << endl;
                     isGroundDone = true;
                     break;

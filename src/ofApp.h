@@ -12,6 +12,7 @@
 #include "ofxXmlSettings.h"
 #include "ofxSyphonServer.h"
 #include "ButtonData.h"
+#include "ofxAutoReloadedShader.h"
 
 
 class ofApp : public ofBaseApp{
@@ -41,6 +42,8 @@ class ofApp : public ofBaseApp{
     commonObjects co;
     commonFunctions cc;
     
+    ofxAutoReloadedShader trailShader;
+    
     ofxBox2d box2d;
 //    void contactStart(ofxBox2dContactArgs &e);
 //    void contactEnd(ofxBox2dContactArgs &e);
@@ -50,7 +53,7 @@ class ofApp : public ofBaseApp{
     ofxPanel gui;
     ofxPanel guiScenes;
 
-    ofParameterGroup physics,market,gameMechs,gravity,charades,logic;
+    ofParameterGroup physics,market,gameMechs,gravity,charades,logic,design;
     ofParameter<bool>reverseX,reverseY,alertDialog;
     ofParameterGroup scenes;
     

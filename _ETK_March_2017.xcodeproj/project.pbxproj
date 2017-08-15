@@ -23,6 +23,7 @@
 		1FC2864D958F177964A20421 /* b2ChainAndCircleContact.cpp in Sources */ = {isa = PBXBuildFile; fileRef = FD20B1FFE795860DB1C68BF2 /* b2ChainAndCircleContact.cpp */; };
 		21AE24DE1E6EBE1900150433 /* ofxBiquadFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21AE24DA1E6EBE1900150433 /* ofxBiquadFilter.cpp */; };
 		21AE24DF1E6EBE1900150433 /* ofxBiquadFilterInstance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21AE24DC1E6EBE1900150433 /* ofxBiquadFilterInstance.cpp */; };
+		21BAD9591F41DFF4000D0C8B /* ofxAutoReloadedShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21BAD9571F41DFF4000D0C8B /* ofxAutoReloadedShader.cpp */; };
 		21E6CA5B1E6D7C3200E0C55D /* ofxXmlSettings.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21E6CA541E6D7C3200E0C55D /* ofxXmlSettings.cpp */; };
 		21E6CA5C1E6D7C3200E0C55D /* tinyxml.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21E6CA571E6D7C3200E0C55D /* tinyxml.cpp */; };
 		21E6CA5D1E6D7C3200E0C55D /* tinyxmlerror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 21E6CA591E6D7C3200E0C55D /* tinyxmlerror.cpp */; };
@@ -178,6 +179,9 @@
 		21AE24E71E6EEB6D00150433 /* ButtonData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ButtonData.h; sourceTree = "<group>"; };
 		21AE24EA1E6F120A00150433 /* 08_Fences.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 08_Fences.h; sourceTree = "<group>"; };
 		21AE24EC1E6F5B5700150433 /* 10_Factories.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 10_Factories.h; sourceTree = "<group>"; };
+		21BAD9541F41DE04000D0C8B /* trail.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = trail.frag; path = bin/data/trail.frag; sourceTree = SOURCE_ROOT; };
+		21BAD9571F41DFF4000D0C8B /* ofxAutoReloadedShader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxAutoReloadedShader.cpp; sourceTree = "<group>"; };
+		21BAD9581F41DFF4000D0C8B /* ofxAutoReloadedShader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxAutoReloadedShader.h; sourceTree = "<group>"; };
 		21D00CA41E93DEF2009FFBA7 /* sceneNames.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = sceneNames.txt; path = bin/data/sceneNames.txt; sourceTree = SOURCE_ROOT; };
 		21DEC74F1E7AF01F004A5BBA /* 04_Maze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 04_Maze.h; sourceTree = "<group>"; };
 		21DEC7501E7AF257004A5BBA /* 07_AverageMaze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 07_AverageMaze.h; sourceTree = "<group>"; };
@@ -432,6 +436,24 @@
 			);
 			name = src;
 			path = ../../../addons/ofxBiquadFilter/src;
+			sourceTree = "<group>";
+		};
+		21BAD9551F41DFF4000D0C8B /* ofxAutoReloadedShader */ = {
+			isa = PBXGroup;
+			children = (
+				21BAD9561F41DFF4000D0C8B /* src */,
+			);
+			name = ofxAutoReloadedShader;
+			sourceTree = "<group>";
+		};
+		21BAD9561F41DFF4000D0C8B /* src */ = {
+			isa = PBXGroup;
+			children = (
+				21BAD9571F41DFF4000D0C8B /* ofxAutoReloadedShader.cpp */,
+				21BAD9581F41DFF4000D0C8B /* ofxAutoReloadedShader.h */,
+			);
+			name = src;
+			path = ../../../addons/ofxAutoReloadedShader/src;
 			sourceTree = "<group>";
 		};
 		21E6CA521E6D7C3200E0C55D /* ofxXmlSettings */ = {
@@ -857,6 +879,7 @@
 				21E6CA521E6D7C3200E0C55D /* ofxXmlSettings */,
 				21E6CA601E6D81DD00E0C55D /* ofxSvg */,
 				21AE24D81E6EBE1900150433 /* ofxBiquadFilter */,
+				21BAD9551F41DFF4000D0C8B /* ofxAutoReloadedShader */,
 			);
 			name = addons;
 			sourceTree = "<group>";
@@ -948,6 +971,7 @@
 				21E6CA4E1E6D5E0300E0C55D /* Team.h */,
 				21D00CA41E93DEF2009FFBA7 /* sceneNames.txt */,
 				21E6CA721E6DA18000E0C55D /* config.xml */,
+				21BAD9541F41DE04000D0C8B /* trail.frag */,
 				21AE24E71E6EEB6D00150433 /* ButtonData.h */,
 				21E6CA741E6DB38300E0C55D /* scenes */,
 			);
@@ -1168,6 +1192,7 @@
 				21E6CA5D1E6D7C3200E0C55D /* tinyxmlerror.cpp in Sources */,
 				A2E6B252D682A7FB048A1644 /* b2RevoluteJoint.cpp in Sources */,
 				9D0AA091FE805EB564CD05D0 /* b2RopeJoint.cpp in Sources */,
+				21BAD9591F41DFF4000D0C8B /* ofxAutoReloadedShader.cpp in Sources */,
 				21E6CA6D1E6D81DD00E0C55D /* ofxSvg.cpp in Sources */,
 				87C5C3DED336B7BB4A5D06D6 /* b2WeldJoint.cpp in Sources */,
 				684CFB2E4AC045640B3A61F8 /* b2WheelJoint.cpp in Sources */,

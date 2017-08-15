@@ -95,6 +95,7 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
         
+        co->avergaTick.load("img/characters/07_AverageMazeAverageTick.png");
         float addX = teamNumber == 0 ? 0 : 1920;
         
         average = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
@@ -117,6 +118,7 @@ public:
     };
     
     void reset(){
+        co->avergaTick.clear();
         average->destroy();
     }
     

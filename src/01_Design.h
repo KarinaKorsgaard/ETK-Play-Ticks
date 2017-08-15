@@ -9,11 +9,14 @@ public:
     int maxSymbols = 0;
     int maxColors = 0;
     vector<ofColor>colors;
+    vector<bool>drawCircles;
+    double countDown = 5*60;
+    
    
     void setup(commonObjects*_co, vector<Button>*b, string colorFile, int numColors){
         buttons = b;
         co = _co;
-        
+        drawCircles.resize(buttons->size());
         
         ofTexture tex;
         ofPixels pix;
@@ -32,18 +35,24 @@ public:
         }
     };
     
+    
     bool isDone(bool b = false){
+        for(int i = 0; i<drawCircles.size();i++)
+            drawCircles[i]=false;
+        
         bool isDifferent = true;
-        int indx =0;
+        
         for(int i = 0; i<buttons->size();i++){
             if(buttons->at(i).isPlaying){
-                indx++;
-                
-                for(int j = i; j<buttons->size();j++){
-                    if((i!=j) && buttons->at(j).isPlaying ){
+               
+                for(int j = i+1; j<buttons->size();j++){
+                    if( buttons->at(j).isPlaying ){
                         
-                        if((buttons->at(i).symbolInt == buttons->at(j).symbolInt)&&
-                           (buttons->at(i).colorInt == buttons->at(j).colorInt)){
+                        if (buttons->at(i).symbolInt == buttons->at(j).symbolInt &&
+                            buttons->at(i).colorInt == buttons->at(j).colorInt){
+            
+                            drawCircles[i]=true;
+                            drawCircles[j]=true;
                             isDifferent=false;
                             break;
                         }
@@ -51,34 +60,29 @@ public:
                 }
             }
         }
-        if(indx<5)isDifferent=false;
+
+        
+        
+        if(!b)isDifferent=false;
         return isDifferent;
        // return false;
     };
     
     void update(){
+        
+        if(countDown > 0)countDown -= ofGetLastFrameTime();
+        else countDown = 0;
+        
         int c = colors.size();
         int s = co->characterSymbols.size();
 
         int numPlayers = co->numPresentButtons[teamNumber];
-        if(numPlayers != p_numPlayers){
-            
-            maxColors = 0;
-            maxSymbols = 0;
-            
-            if(numPlayers <= c){
-                maxColors = numPlayers;
-                maxSymbols = 1;
-            }else{
-                maxColors = c;
-                
-                maxSymbols = floor(ceil( float(numPlayers) / float(maxColors) ) + 0.1);
-            }
-            p_numPlayers = numPlayers;
-        }
 
+        maxColors = co->lookUp[numPlayers][0];
+        maxSymbols = co->lookUp[numPlayers][1];
         co->numSymbolsPresent[teamNumber] = maxSymbols;
         co->numColorsPresent[teamNumber] = maxColors;
+        
         
         for(int i=0; i<buttons->size(); i++) {
             ofVec3f data = buttons->at(i).getRawData();
@@ -110,6 +114,8 @@ public:
                 ofPushMatrix();
                 ofTranslate(b.getGridPos(   b.table - (b.table%2) * b.teamNumber , b.ID )   );
                 ofTranslate(800,0);
+                ofSetColor(255);
+                if(drawCircles[i] && countDown == 0)ofDrawCircle(0,0,30);
                 b.draw(false, false, true);
                 if(co->debug)
                     co->font_small->drawString(ofToString(b.table+1)+" :"+ofToString(b.ID+1), -10, 20);
@@ -120,6 +126,9 @@ public:
     };
     
     void begin(ofxBox2d * world = nullptr){
+        countDown = 5*60;
+        co->designDone1 = false;
+        co->designDone2 = false;
         
     };
     void reset(){
