@@ -10,6 +10,8 @@ uniform float u_radius1;
 uniform float u_radius2;
 uniform float u_time;
 
+uniform vec2 u_beginLight1,u_beginLight2;
+
 float rand(in float y){
     return fract(sin(y)*10000.0);
 }
@@ -34,8 +36,17 @@ void main (void) {
     
     float c1 = circle(uv, u_mask1/u_resolution.xx, u_radius1 , 0.2);
     float c2 = circle(uv, u_mask2/u_resolution.xx, u_radius2 , 0.2);
-    color *=1.-(c2+c1);
-
+    
+    float c3 = circle(uv, u_beginLight1/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2);
+    float c4 = circle(uv, u_beginLight2/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2);
+    
+    color *=1.-(c1+c2+c3+c4);
+    
+    color.rgba +=c3*0.7;
+    //color.rg += c3;
+    
+    color.rgba +=c4*0.7;
+    //color.rg += c4;
    
     float t = sin(u_time*2.)*0.1 + 0.2;
     float c = circle(uv, u_mask1/u_resolution.xx, u_radius1*0.2,t );
@@ -51,7 +62,7 @@ void main (void) {
     color.r +=0.9* c;
     color.g +=0.6* c;
     
-    color.a -= 0.3;
+   // color.a -= 0.3;
     //color.rga *=vec3(0.8,0.5,0.6) + r;
    // color.r +=0.9* circle(uv, u_mask2/u_resolution.xx, u_radius*0.2,t );
    // color.g +=0.7* circle(uv, u_mask2/u_resolution.xx, u_radius*0.2,t );

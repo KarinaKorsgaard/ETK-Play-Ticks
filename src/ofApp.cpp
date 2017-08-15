@@ -184,7 +184,9 @@ void ofApp::setup(){
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
-    gui.add(startScene.set("START SCENE",false));
+    gui.add(co.startScene.set("START SCENE",false));
+    gui.add(co.startTime.set("START time",false));
+    gui.add(co.startMovement.set("START movement",false));
     
     gui.add(physics);
    // gui.add(gameMechs);
@@ -240,10 +242,16 @@ void ofApp::update(){
     updateOsc();
     handleSceneChange();
     
-    if(startScene){
-        teams[0].update();
-        teams[1].update();
+    if(co.startScene)
+    {
+        co.startMovement = true;
+        co.startTime = true;
     }
+    
+    
+    teams[0].update();
+    teams[1].update();
+    
     
     if(co.sMap[co.sceneNumber] == "GroundGame")
     {
@@ -256,7 +264,8 @@ void ofApp::update(){
     }
     if(co.sMap[co.sceneNumber] == "Fight")
     {
-        fightBall->update();
+        if(co.startMovement)
+            fightBall->update();
     }
     
     
@@ -284,32 +293,39 @@ void ofApp::draw(){
 
     
     fbo.begin();
-    
-    
-    
     ofClear(0);
     
-    ofBackground(200);
-    if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);
-    if(co.sMap[co.sceneNumber] == "Fight")fightBall->draw();
+    ofSetColor(255);
+    if(co.background.isAllocated()){
+        co.background.draw(0 , 0, 1920, 1080);
+        co.background.draw(1920 , 0, 1920, 1080);
+    }
     
-
+    if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);
     if(co.sMap[co.sceneNumber] == "Trail"){
-        Trail * trail = static_cast<Trail *>(teams[0].scenes[co.sMap[co.sceneNumber]]);
+        Trail * trail1 = static_cast<Trail *>(teams[0].scenes[co.sMap[co.sceneNumber]]);
+        Trail * trail2 = static_cast<Trail *>(teams[1].scenes[co.sMap[co.sceneNumber]]);
         
         trailShader.begin();
         trailShader.setUniform2f("u_resolution", 1920*2, 1080);
-        trailShader.setUniform2f("u_mask1", trail->filter.value().x, trail->filter.value().y);
+        trailShader.setUniform2f("u_mask1", trail1->filter.value().x, trail1->filter.value().y);
         
-        trail = static_cast<Trail *>(teams[1].scenes[co.sMap[co.sceneNumber]]);
-        trailShader.setUniform2f("u_mask2", trail->filter.value().x, trail->filter.value().y);
+        
+        trailShader.setUniform2f("u_mask2", trail2->filter.value().x, trail2->filter.value().y);
         trailShader.setUniform1f("u_radius1", co.trailRadius[0]);
         trailShader.setUniform1f("u_radius2", co.trailRadius[1]);
         
+        
+        trailShader.setUniform2f("u_beginLight1", trail1->trailStart.x, trail1->trailStart.y);
+        trailShader.setUniform2f("u_beginLight2", trail2->trailStart.x, trail2->trailStart.y);
+        
         trailShader.setUniform1f("u_time", ofGetElapsedTimef());
-        fbo.draw(0,0);
+        ofSetColor(255);
+        ofFill();
+        ofDrawRectangle(0,0,1920*2 , 1080);
         trailShader.end();
     }
+    if(co.sMap[co.sceneNumber] == "Fight")fightBall->draw();
     
     teams[0].draw();
     teams[1].draw();
@@ -344,7 +360,9 @@ void ofApp::handleSceneChange(){
         }
     }
     if(resent!=-1){
-        startScene = false;
+        co.startScene = false;
+        co.startMovement = false;
+        co.startTime = false;
         for(int i = 0; i<b_scenes.size();i++){
             if(i!=resent){
                 b_scenes[i]=false;
@@ -395,6 +413,7 @@ void ofApp::handleSceneChange(){
         }
         
         p_sceneNumber = co.sceneNumber;
+
     }
 }
 //--------------------------------------------------------------
@@ -444,9 +463,9 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    
+    if(key == 's')co.startScene = true;
     if(key == 'd')co.debug=!co.debug;
-    if(key == 'p')co.lock=!co.lock;
+
 }
 
 //--------------------------------------------------------------
@@ -493,7 +512,7 @@ void ofApp::updateGroundGame(){
             if(isGroundDone)break;
         }
     }
-    if(!isGroundDone)groundVideo.update();
+    if(!isGroundDone && co.startMovement)groundVideo.update();
 }
 
 //--------------------------------------------------------------
@@ -514,7 +533,7 @@ void ofApp::updateOsc(){
             if(!receivingTables[i])if(m.getAddress() == alive[i])receivingTables[i]=true;
         }
         
-        if(!co.lock){
+        if(co.startMovement){
             for(int t = 0; t < 2 ; t++){
                 for(int i = 0; i < teams[t].buttons.size(); i++){
                     

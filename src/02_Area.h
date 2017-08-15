@@ -12,10 +12,9 @@ public:
     Area(){};
     ~Area(){};
     
+    ofImage hole;
 
-    ofxSVG svg;
-    ofPolyline poly;
-
+    vector<bool>isInPlace;
 
     ofVec2f midt;
     
@@ -23,6 +22,7 @@ public:
         buttons = b;
         co = _co;
         midt = ofVec2f(1920 / 2 + (1920 * teamNumber) , 1080 / 2);
+        
     };
     
     bool isDone(bool b = false){
@@ -39,19 +39,12 @@ public:
                               
                 if(dist > bigRadius || dist < smallRadius){
                     isInside=false;
-                    break;
+                    isInPlace[i] = false;
+                }else{
+                    isInPlace[i] = true;
                 }
-//                if(!big.inside(p) || small.inside(p)){
-//                    isInside=false;
-//                    break;
-//                }
             }
-//            if(!buttons->at(i).isDead()){
-//                allAreDead =false;
-//            }
-            
         }
-      //  if(allAreDead)isInside = false;
         return isInside;
     };
     
@@ -65,11 +58,25 @@ public:
 
     void draw(){
         ofSetColor(255);
-      //  donut.draw(0,0);
+        
+        hole.draw(midt,smallRadius,smallRadius);
+        
         for(int i=0; i<buttons->size(); i++) {
-            buttons->at(i).draw();
+            
+            ofPushMatrix();
+            ofTranslate(buttons->at(i).getBiquadPos());
+            ofRotateZ(buttons->at(i).getRotation());
+            
+            if(isInPlace[i]){
+                // halo
+                ofDrawCircle(0,0,30,30);
+            }
+            buttons->at(i).draw(false);
+            
+            ofPopMatrix();
+            
             if(co->debug){
-                buttons->at(i).drawDebug();
+                
                 ofNoFill();
                 ofSetColor(255,0,0);
                 ofDrawCircle(midt, bigRadius);
@@ -77,9 +84,13 @@ public:
                 ofFill();
             }
         }
+        
+        
     };
     
     void begin(ofxBox2d * world = nullptr){
+        
+        hole.load("img/specialAssets/02_AreaHole.png");
         
         int numPlayers = 0;
         int radius = 1;
@@ -90,7 +101,7 @@ public:
                 numPlayers ++;
             }
         }
-        
+        numPlayers = CLAMP(numPlayers + 5, 0, 36);
         float l = numPlayers * radius * 2;
         float d = l / PI;
   
@@ -100,10 +111,12 @@ public:
         
         bigRadius += radius; /// albue rum
         smallRadius = bigRadius - 20;
+        isInPlace.resize(36);
     };
     
     void reset(){
-    
+        isInPlace.clear();
+        hole.clear();
     };
 
 

@@ -22,8 +22,10 @@
 
 class commonObjects{
 public:
-    bool lock;
-    bool start;
+    ofParameter<bool> startMovement;
+    ofParameter<bool>startScene;
+    ofParameter<bool>startTime;
+
     bool debug;
     bool logDone = false;
     
@@ -78,22 +80,18 @@ public:
     ofParameter<bool>refill2;
     ofParameter<float>deadTimer;
 
-    ofParameter<float>jump;
-    ofParameter<float>x_jump;
-    
     ofParameter<bool>playSound;
     
     ofParameter<bool>moveThemOut;
     
-    ofParameter<bool>startFinale;
-    ofParameter<float>deadTimeFinale;
-    
+
     ofxTrueTypeFontUC * font_small;
     ofxTrueTypeFontUC * font_medium;
     
     ofSoundPlayer deathSound;
     vector<ofImage> characterImgs;
     vector<ofImage> characterSymbols;
+    
     
     map< int , string >sMap;
     

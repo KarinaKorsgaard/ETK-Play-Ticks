@@ -135,8 +135,9 @@ public:
             
             
             if(teamId == 0){
-                co->background.clear();
-                co->background.load("img/backgrounds/"+co->sMap[p_sceneNum]+".png");
+               // co->background.clear();
+                co->background.load("img/backgrounds/"+co->sMap[s]+".png");
+                cout<<"img/backgrounds/"+co->sMap[s]+".png"<<endl;
             }
             
             
@@ -215,8 +216,6 @@ public:
     void draw(){
         ofFill();
         int s = co->sceneNumber;
-        if(co->background.isAllocated())
-            co->background.draw(teamId*1920 , 0, 1920, 0);
         scenes[co->sMap[s]]->draw();
         
 
@@ -258,8 +257,10 @@ public:
 
     
     void drainTime(){
-        if(co->sMap[co->sceneNumber]!="Design" && co->sMap[co->sceneNumber]!="Idle")
-            time += ofGetLastFrameTime();
+        if(co->startTime){
+            if(co->sMap[co->sceneNumber]!="Design" && co->sMap[co->sceneNumber]!="Idle")
+                time += ofGetLastFrameTime();
+        }
     }
     
     void drainIndividuals(){

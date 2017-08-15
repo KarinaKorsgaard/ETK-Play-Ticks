@@ -16,6 +16,8 @@ public:
     ofxSVG svg;
     ofImage path;
 
+    ofPoint trailStart;
+    
     bool sendOsc;
     int oscInt;
     
@@ -24,10 +26,33 @@ public:
         co = _co;
 
         
-        start = 300;
-        end = 1920-60;
+        start = 300 + teamNumber * 1920;
+        end = 1920-60 + teamNumber * 1920;
         
         filter.setFc(0.05f);
+        
+        
+        svg.load("svg/03_Trail.svg");
+        maze = getPolyline(svg)[0];
+        
+        int y = 0;
+        ofPoint p = ofPoint (start - 150 , y);
+        int begin = 0;
+        int end = 0;
+        while(!maze.inside(p)){
+            y+=5;
+            p = ofPoint (start - 150 , y);
+            begin = y;
+            cout <<"TRAIL SEACH "<< y << " team "<<teamNumber <<  endl;
+        }
+        while(maze.inside(p)){
+            y+=5;
+            p = ofPoint (start - 150 , y);
+            end = y;
+            cout <<"TRAIL SEACH "<< y << " team "<<teamNumber <<  endl;
+        }
+        trailStart = ofPoint(start - 200, begin + (end - begin)/2 );
+        maze.clear();
         
     };
     
@@ -64,7 +89,8 @@ public:
                 oscInt = 0;
             }
         }
-        if(filter.value().x < start)
+        
+        if(filter.value().x < start && maze.inside(filter.value()))
         {
             if(!go){
                 go=true;
@@ -79,32 +105,38 @@ public:
             else co->trailRadius[teamNumber] = 0.;
         }else {
             if(co->trailRadius[teamNumber] < 0.05)
-                co->trailRadius[teamNumber]*=1.1;
+                co->trailRadius[teamNumber]+=0.002;
             else co->trailRadius[teamNumber] = 0.05;
         }
     };
     
     void draw(){
         
-        ofSetColor(255);
+       // ofSetColor(255, 200);
 
-        for(int i=0; i<buttons->size(); i++) {
-            buttons->at(i).draw();
-            if(co->debug){
-                buttons->at(i).drawDebug();
-                ofSetColor(255,0,0);
-                maze.draw();
-            }
-        }
+       // ofDrawCircle(trailStart,abs( (sin(ofGetElapsedTimef()))+10) * 5.  );
         
-        
-        
+        ofSetColor(255);
         ofPushMatrix();
         ofTranslate(filter.value());
         float rad = co->avergaTick.getWidth()/2;
         co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
-        
         ofPopMatrix();
+        
+        for(int i=0; i<buttons->size(); i++) {
+            buttons->at(i).draw();
+            
+            if(co->debug){
+                buttons->at(i).drawDebug();
+                if(!go) ofSetColor(255,0,0);
+                else ofSetColor(0,255,0);
+                maze.draw();
+                ofDrawLine(300 + 1920*teamNumber,0,300,1080);
+            }
+        }
+        
+        
+
         
         
     };
@@ -112,13 +144,15 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
         if(teamNumber == 0){
-            co->avergaTick.load("img/characters/03_TrailAverageTick.png");
+            co->avergaTick.load("img/specialAssets/03_TrailAverageTick.png");
             
         }
         go = false;
         
         svg.load("svg/03_Trail.svg");
         maze = getPolyline(svg)[0];
+        
+
     };
     
     void reset(){

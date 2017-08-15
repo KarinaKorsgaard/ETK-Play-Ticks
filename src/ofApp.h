@@ -93,6 +93,6 @@ class ofApp : public ofBaseApp{
     shared_ptr<ofxBox2dCircle>fightBall;
     
     ofParameter<bool>restartApp;
-    ofParameter<bool>startScene;
+    
 
 };

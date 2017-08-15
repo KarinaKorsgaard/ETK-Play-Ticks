@@ -121,7 +121,7 @@ public:
                 numPlayers ++;
             }
         }
-        
+        numPlayers = CLAMP(numPlayers + 5, 0, 36);
         float l = numPlayers * radius * 2;
         float d = l / PI;
         d/=2;
@@ -133,7 +133,7 @@ public:
     
         
         // big small win radius
-        l = 6 * radius * 2;
+        l = 10 * radius * 2;
         d = l / PI;
         d/=2;
         bigRadiusWin = d;

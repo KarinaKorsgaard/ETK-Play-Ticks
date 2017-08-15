@@ -67,7 +67,7 @@ public:
         ofPushMatrix();
         ofTranslate(filter.value());
         ofSetColor(255);
-        float rad = average->getRadius() * 2.;
+        float rad = 25 * 2.;
         co->avergaTick.draw(-rad,-rad,rad*2,rad*2);
         ofPopMatrix();
         
@@ -79,7 +79,7 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
         
-        co->avergaTick.load("img/characters/07_AverageMazeAverageTick.png");
+        co->avergaTick.load("img/specialAssets/07_AverageMazeAverageTick.png");
         float addX = teamNumber == 0 ? 0 : 1920;
         
         average = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
