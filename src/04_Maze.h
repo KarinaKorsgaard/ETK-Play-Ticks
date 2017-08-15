@@ -17,15 +17,12 @@ public:
     
     bool isDone(bool b = false){
         bool isInside=true;
-        bool allAreDead = true;
-        
+        int indx = 0;
         for(int i = 0; i<buttons->size();i++){
             Button *b = &buttons->at(i);
-            if(!buttons->at(i).isDead()){
-                allAreDead =false;
-            }
-            if(b->isPlaying /*&& !b->isDead()*/){ // if b is not playing or is dead dont account.
-                
+            
+            if(b->isPlaying ){ // if b is not playing or is dead dont account.
+                indx ++;
                 ofPoint p =b->getBiquadPos();
                 if(p.y<upThres){
                     isInside=false;
@@ -34,6 +31,7 @@ public:
             
         }
     //    if(allAreDead)isInside=false;
+        if(indx<5)isInside = false;
         return isInside;
     };
     

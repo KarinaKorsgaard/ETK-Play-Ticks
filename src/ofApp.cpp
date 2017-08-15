@@ -297,8 +297,8 @@ void ofApp::draw(){
     
     ofSetColor(255);
     if(co.background.isAllocated()){
-        co.background.draw(0 , 0, 1920, 1080);
-        co.background.draw(1920 , 0, 1920, 1080);
+       // co.background.draw(0 , 0, 1920, 1080);
+       // co.background.draw(1920 , 0, 1920, 1080);
     }
     
     if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);

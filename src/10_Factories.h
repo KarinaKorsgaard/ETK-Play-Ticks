@@ -130,6 +130,7 @@ public:
         for(int i = 0; i<baskets.size();i++)
             if(!baskets[i].bucketIsFull)done = false;
         if(b)done = b;
+        if(baskets.size() == 0)done = false;
         return done;
 
     };

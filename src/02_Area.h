@@ -27,12 +27,12 @@ public:
     
     bool isDone(bool b = false){
         bool isInside=true;
-
+        int indx = 0;
         for(int i = 0; i<buttons->size();i++){
 
             if(buttons->at(i).isPlaying){
                 ofPoint p = buttons->at(i).getBiquadPos();
-                
+                indx++;
                 
                 ofVec2f a = p - midt;
                 float dist = a.dot(a);
@@ -45,6 +45,7 @@ public:
                 }
             }
         }
+        if(indx < 5)isInside = false;
         return isInside;
     };
     
