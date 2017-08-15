@@ -97,7 +97,7 @@ public:
             it->second->teamNumber = teamId;
         }
         
-        design.setup(co,&buttons,"colors.png",6);
+        design.setup(co,&buttons,"img/colors"+ofToString(teamId)+".png",6);
         area.setup(co,&buttons);
         representative.setup(co,&buttons);
         logic.setup(co,&buttons);
