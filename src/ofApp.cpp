@@ -295,6 +295,8 @@ void ofApp::draw(){
     fbo.begin();
     ofClear(0);
     
+    ofBackground(200);
+    
     ofSetColor(255);
     if(co.background.isAllocated()){
        // co.background.draw(0 , 0, 1920, 1080);
