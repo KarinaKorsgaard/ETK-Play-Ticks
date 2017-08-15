@@ -199,8 +199,8 @@ public:
                 p.x = multiX + rect.width *x + rect.x;
                 p.y = rect.height*y + rect.y;
                 
-                distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
-                distToOrg /= (1980+1080);
+            //    distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
+            //    distToOrg /= (1980+1080);
                 
                 box2Dcircle->addAttractionPoint( p , attraction  );
                 
@@ -231,8 +231,8 @@ public:
                 p.x = multiX + rect.width *x + rect.x;
                 p.y = 1080;
                 
-                distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
-                distToOrg /= (1980+1080);
+              //  distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
+              //  distToOrg /= (rect.width+1080);
                 
                 box2Dcircle->addAttractionPoint( p , attraction  );
                 box2Dcircle->addForce(ofVec2f(0,1), gravity);

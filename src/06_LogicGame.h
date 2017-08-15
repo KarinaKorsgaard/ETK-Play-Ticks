@@ -110,6 +110,12 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
    
+        for(int i = 0; i < 6 ; i++){
+            circle c = *new circle;
+            c.setup(i, 280, co->targetCircleRot[i]);
+            circles.push_back(c);
+        }
+        
         vector<int> firstOn;
         int count = 0;
         
@@ -138,11 +144,7 @@ public:
            // rotations[i] = ofRandom(360);
         }
         
-        for(int i = 0; i < 6 ; i++){
-            circle c = *new circle;
-            c.setup(i, 280, co->targetCircleRot[i]);
-            circles.push_back(c);
-        }
+
     }
     
     void reset(){
