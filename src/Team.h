@@ -48,7 +48,7 @@ public:
     
     commonObjects *co;
     int p_sceneNum=0;
-    ofVideoPlayer celebration;
+
     
     Design design;
     Area area;
@@ -74,12 +74,9 @@ public:
     void setup(int team, commonObjects *c){
         teamId = team;
         co = c;
-        celebration.load("celebration.mov");
     }
+    
     void setupScenes(){
-        
-
-        
         scenes["Area"]=(&area);
         scenes["Design"]=(&design);
         scenes["Maze"]=(&maze);
@@ -109,12 +106,12 @@ public:
         averageMaze.setup(co,&buttons);
         fences.setup(co,&buttons);
         fight.setup(co,&buttons);
-        factories.setup(co,&buttons,teamId);
+        factories.setup(co,&buttons);
         charades07.setup(co,&buttons);
         idle.setup(co,&buttons);
         ground.setup(co,&buttons);
         
-
+        scenes[co->sMap[co->sceneNumber]]->begin(box2d);
            
     }
     
@@ -124,11 +121,12 @@ public:
         
         if(p_sceneNum != s){
             reset();
-
+            
+            scenes[co->sMap[s]]->begin(box2d);
             if(scenes[co->sMap[s]]->solidPolys.size()>0){
                 createScene(scenes[co->sMap[s]]->solidPolys);
             }
-            scenes[co->sMap[s]]->begin(box2d);
+            
             scenes[co->sMap[p_sceneNum]]->reset();
             
 
@@ -169,8 +167,8 @@ public:
         
         else if (isDone){
  
-            if (!celebration.isPlaying()){
-                celebration.play();
+            if (!co->celebration[teamId].isPlaying()){
+                co->celebration[teamId].play();
                 
                 playAnimation = true;
                 
@@ -183,7 +181,7 @@ public:
             }
             
             else {
-                celebration.update();
+                co->celebration[teamId].update();
                 
                 if(!wonSent){
                     ofxOscMessage m;
@@ -213,8 +211,8 @@ public:
 
         if(playAnimation){
             ofSetColor(255);
-            celebration.draw( (teamId*1920) + ( 1920/2 - celebration.getWidth()/2 ),
-                             1080/2 - celebration.getHeight()/2 );
+            co->celebration[teamId].draw( (teamId*1920) + ( 1920/2 - co->celebration[teamId].getWidth()/2 ),
+                             1080/2 - co->celebration[teamId].getHeight()/2 );
             
             for(int i = 0; i<buttons.size();i++){
                 buttons[i].dy = 0.01;
@@ -249,7 +247,8 @@ public:
 
     
     void drainTime(){
-        if(co->sMap[co->sceneNumber]!="Design")time += ofGetLastFrameTime();
+        if(co->sMap[co->sceneNumber]!="Design" && co->sMap[co->sceneNumber]!="Idle")
+            time += ofGetLastFrameTime();
     }
     
     void drainIndividuals(){
@@ -361,7 +360,7 @@ private:
         
     }
     void reset(){
-        celebration.stop();
+        co->celebration[teamId].stop();
         logDone = false;
         playAnimation = false;
         wonSent = false;

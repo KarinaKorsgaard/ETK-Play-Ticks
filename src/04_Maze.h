@@ -7,24 +7,11 @@ public:
     
 
     float upThres;
-
-    ofxSVG svg;
     bool done = false;
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        //borders.load("img/02_borders_alt.png");
-        
-        svg.load("svg/04_Maze.svg");
-        solidPolys = getPolyline(svg);
-        
-        float max = 0;
-        for(int i = 0; i<solidPolys.size();i++){
-            float x = solidPolys[i].getBoundingBox().y+solidPolys[i].getBoundingBox().height;
-            if(x<1060 && x>max )max = x;
-        }
-        upThres = max;
 
     };
     
@@ -40,18 +27,6 @@ public:
             if(b->isPlaying /*&& !b->isDead()*/){ // if b is not playing or is dead dont account.
                 
                 ofPoint p =b->getBiquadPos();
-//                if(!b->on){
-//                    isInside=false;
-//                    //break;
-//                }
-//                if( small.inside(p) ){
-//                    isInside=false;
-//                    //break;
-//                }
-//                if(!big.inside(p)){
-//                    isInside=false;
-//                    //break;
-//                }
                 if(p.y<upThres){
                     isInside=false;
                 }
@@ -84,8 +59,6 @@ public:
                 ofSetLineWidth(4);
                 ofDrawLine(0,solidPolys[0].getBoundingBox().y,1920,solidPolys[0].getBoundingBox().y);
                 
-                //ofDrawRectangle(big);
-               // ofDrawRectangle(small);
                 ofSetColor(255);
                 ofSetLineWidth(40);
                 for(int i = 0 ; i<solidPolys.size() ; i++)solidPolys[i].draw();
@@ -106,9 +79,21 @@ public:
         }
         done = false;
         
+        ofxSVG svg;
+        svg.load("svg/04_Maze.svg");
+        solidPolys = getPolyline(svg);
+        
+        float max = 0;
+        for(int i = 0; i<solidPolys.size();i++){
+            float x = solidPolys[i].getBoundingBox().y+solidPolys[i].getBoundingBox().height;
+            if(x<1060 && x>max )max = x;
+        }
+        upThres = max;
+        
         
     };
     void reset(){
+        solidPolys.clear();
     };
     
 

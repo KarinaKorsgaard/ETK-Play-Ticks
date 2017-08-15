@@ -23,33 +23,6 @@ public:
         buttons = b;
         co = _co;
         midt = ofVec2f(1920 / 2 + (1920 * teamNumber) , 1080 / 2);
-        
-//        svg.load("svg/01_win_area.svg");
-//        vector<ofPolyline> p = getPolyline(svg);
-//        
-    
-//        float a;
-//        float o;
-//        int indx=0;
-//        int aa, oo;
-//        for(int i = 0; i<p.size();i++){
-//            float w = p[i].getBoundingBox().width;
-//            if(w<1900){
-//                if(indx == 0){a = w;aa = i;}
-//                else{ o = w;oo=i;}
-//                indx++;
-//            }
-//        }
-        
-        
-//        if(a>o){
-//            big = p[aa];
-//            small = p[oo];
-//        }
-//        else{
-//            big = p[oo];
-//            small = p[aa];
-//        }
     };
     
     bool isDone(bool b = false){

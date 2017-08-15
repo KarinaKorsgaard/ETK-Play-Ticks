@@ -21,6 +21,7 @@ public:
         cur_rotation = start;
         p_rotation = start;
         startRot = start;
+        
         p.moveTo(ringNumber * 90 + 80,0);
         p.arc(ofPoint(0,0), ringNumber * 90 + 80, ringNumber * 90 + 80, 0, 350);
         p.setCircleResolution(500);
@@ -77,12 +78,6 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-
-        for(int i = 0; i < 6 ; i++){
-            circle c = *new circle;
-            c.setup(i, 280, co->targetCircleRot[i]);
-            circles.push_back(c);
-        }
 
     }
     
@@ -142,6 +137,12 @@ public:
             }
            // rotations[i] = ofRandom(360);
         }
+        
+        for(int i = 0; i < 6 ; i++){
+            circle c = *new circle;
+            c.setup(i, 280, co->targetCircleRot[i]);
+            circles.push_back(c);
+        }
     }
     
     void reset(){
@@ -155,6 +156,10 @@ public:
             circles[i].p_rotation = circles[i].startRot;
             circles[i].isTarget = false;
         }
+        
+        circles.clear();
+        
+        
     }
     
     

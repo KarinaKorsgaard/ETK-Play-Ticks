@@ -38,6 +38,8 @@ public:
     
     float tennisPoint[2];
     
+    ofVideoPlayer celebration[2];
+    
     
     ofxOscSender oscOut;
     ofxOscReceiver oscIn;
@@ -68,11 +70,9 @@ public:
 
     ofParameter<bool>idleA;
     ofParameter<bool>idleB;
-    
 
     ofParameter<bool>pauseTeam1;
     ofParameter<bool>pauseTeam2;
-
     
     ofParameter<bool>refill1;
     ofParameter<bool>refill2;
@@ -87,11 +87,9 @@ public:
     
     ofParameter<bool>startFinale;
     ofParameter<float>deadTimeFinale;
-
-    ofxTrueTypeFontUC * font_x_small;
+    
     ofxTrueTypeFontUC * font_small;
     ofxTrueTypeFontUC * font_medium;
-    ofxTrueTypeFontUC * font_large;
     
     ofSoundPlayer deathSound;
     vector<ofImage> characterImgs;
@@ -112,7 +110,7 @@ public:
         }
     }
     
-    int numSymbolsPresent[2], numColorsPresent[2];
+    //int numSymbolsPresent[2], numColorsPresent[2];
     
     int lookUp[37][2];
     

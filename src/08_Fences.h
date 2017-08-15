@@ -23,22 +23,11 @@ public:
         co = _co;
         
         ofxSVG svg;
-        
-        svg.load("svg/08_EscalatorMoving.svg");
-        movingPolys = getPolyline(svg);
-
         svg.load("svg/08_EscalatorWinArea.svg");
         winningArea = getPolyline(svg)[0].getBoundingBox();
         
         svg.load("svg/08_EscalatorStartArea.svg");
         start = getPolyline(svg)[0].getBoundingBox();
-        
-        svg.load("svg/08_EscalatorSolids.svg");
-        solidPolys = getPolyline(svg);
-        
-        theWinner=-1;
-        solidHeigth = solidPolys[0].getBoundingBox().height;
-        
     };
     
     bool reached(){
@@ -123,6 +112,17 @@ public:
                 buttons->at(i).getOutOfPolys(solidPolys);
             }
         }
+        
+        ofxSVG svg;
+        
+        svg.load("svg/08_EscalatorMoving.svg");
+        movingPolys = getPolyline(svg);
+        
+        svg.load("svg/08_EscalatorSolids.svg");
+        solidPolys = getPolyline(svg);
+        
+        theWinner=-1;
+        solidHeigth = solidPolys[0].getBoundingBox().height;
     };
     void reset(){
         isDoneCounter=0.;
@@ -130,6 +130,10 @@ public:
             escalators[i]->destroy();
         
         escalators.clear();
+        movingPolys.clear();
+        //start.clear();
+        solidPolys.clear();
+        //winningArea.clear();
     }
     
     

@@ -12,27 +12,13 @@ public:
     vector<bool>drawCircles;
     double countDown = 5*60;
     
-   
-    void setup(commonObjects*_co, vector<Button>*b, string colorFile, int numColors){
+    string colorFile;
+    int numColors;
+    void setup(commonObjects*_co, vector<Button>*b, string _colorFile, int _numColors){
         buttons = b;
         co = _co;
-        drawCircles.resize(buttons->size());
-        
-        ofTexture tex;
-        ofPixels pix;
-        
-        colors.resize(numColors);
-        if(ofLoadImage(tex, colorFile)){
-            
-            tex.readToPixels(pix);
-            
-            int indx = tex.getWidth() / numColors;
-            int c = 0;
-            for(int i = 0; i<numColors;i++){
-                colors[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
-                
-            }
-        }
+        colorFile = _colorFile;
+        numColors = _numColors;
     };
     
     
@@ -80,8 +66,9 @@ public:
 
         maxColors = co->lookUp[numPlayers][0];
         maxSymbols = co->lookUp[numPlayers][1];
-        co->numSymbolsPresent[teamNumber] = maxSymbols;
-        co->numColorsPresent[teamNumber] = maxColors;
+        
+        //co->numSymbolsPresent[teamNumber] = maxSymbols;
+        //co->numColorsPresent[teamNumber] = maxColors;
         
         
         for(int i=0; i<buttons->size(); i++) {
@@ -130,9 +117,30 @@ public:
         co->designDone1 = false;
         co->designDone2 = false;
         
-    };
-    void reset(){
         
+        drawCircles.resize(buttons->size());
+        
+        ofTexture tex;
+        ofPixels pix;
+        
+        
+        colors.resize(numColors);
+        if(ofLoadImage(tex, colorFile)){
+            
+            tex.readToPixels(pix);
+            
+            int indx = tex.getWidth() / numColors;
+            int c = 0;
+            for(int i = 0; i<numColors;i++){
+                colors[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
+                
+            }
+        }
+    };
+    
+    void reset(){
+        drawCircles.clear();
+        colors.clear();
     };
     
 

@@ -112,72 +112,18 @@ public:
 class Factories : public Scene{
     
 public:
-    
-    
-
-    float timeGained;
-    map <int,ofVec3f> buttonInfo;
-    double countDown;
-    double static_countDown;
-    bool recDone = false;
-    bool stopGivingPoints = false;
     vector<Basket>baskets;
-    ofxSVG svg;
-    ofImage winImg;
+
     vector<ofPolyline> polysOutline;
     vector<ofPolyline> solidPolysFull;
     
     bool done = false;
-    int team;
-    int basketEfficency = 0;
+
     
-    ofRectangle win;
-    
-    bool doneResult;
-    
-    void setup(commonObjects*_co, vector<Button>*b, int _team){
+    void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        svg.load("svg/10_FactorySolids.svg");
-        solidPolysFull = getPolyline(svg);
-        team = _team;
-        
-        ofxSVG svg2;
-        svg2.load("svg/10_FactoryAreas.svg");
-        polysOutline = getPolyline(svg2);
-        
-        //cout << polysOutline.size() << " num baskets" << endl;
-        
-        /*
-         X people present
-         F amount factories
-         Fs factory slots
-         FnS factroy number n amount of slots
-         
-         F = max(lookup[X-1][0],lookup[X-1][1])
-         FsTotal = X-1
-         FsMax = min(lookup[X-1][0],lookup[X-1][1])
-         
-         count = 0;
-         if(count < FSTotal)
-         FnS1 = FsMax;
-         cont += FnS1;
-         else
-         FnS1 = FSTotal - count;
-         
-         */
-
-        
-        
-//        ofxSVG svg3;
-//        svg3.load("svg/10_FactoryButton.svg");
-//        win = getPolyline(svg3)[0].getBoundingBox();
-//        win.x += 1920 * teamNumber;
-//        winImg.load("img/06_win.png");
-        
     };
-    
-   
     
     bool isDone(bool b = false){
         done = true;
@@ -185,39 +131,10 @@ public:
             if(!baskets[i].bucketIsFull)done = false;
         if(b)done = b;
         return done;
-//        if(b) {
-//            done = true;
-//            return true;
-//        }
-//        
-//        else{
-//            recDone = false;
-//            
-//            for(int i = 0 ; i<buttons->size();i++){
-//                if(buttons->at(i).on && !buttons->at(i).isDead()){
-//                    
-//                    ofVec2f a = ofVec2f(win.getCenter())-buttons->at(i).getBiquadPos();
-//                    float dist = a.dot(a);
-//                    
-//                    if( dist < win.width/2 ){
-//                        recDone = true;
-//                    }
-//                }
-//            }
-//            
-//            if(recDone){
-//                countDown+=ofGetLastFrameTime();
-//            }else countDown = 0.;
-//            
-//            done = countDown > 6.;
-//            return countDown > 6.;
-//        }
+
     };
     
     void update(){
-//        if (done) {
-//            givePoints();
-//        }
         if(!done) {
             updateBaskets();
             for(int i=0; i<buttons->size(); i++) {
@@ -240,46 +157,13 @@ public:
             }
             
             baskets[i].setEfficiency();
-            //baskets[i].calculateOutput();
-            
-//            if(baskets[i].p_efficiency != baskets[i].getEfficiency()){
-//                ofxOscMessage m;
-//                m.setAddress("/factory"+ofToString(i)+"team"+ofToString(team));
-//                m.addIntArg(baskets[i].getEfficiency());
-//                co->oscOut.sendMessage(m);
-//                baskets[i].p_efficiency = baskets[i].getEfficiency();
-//            }
+
         }
     }
 
-    
-//    void givePoints(){
-//        if(!stopGivingPoints){
-//            stopGivingPoints = true;
-//            basketEfficency = 0;
-//            
-//            for(int i = 0; i<baskets.size();i++){
-//                basketEfficency += baskets[i].getEfficiency();
-//                //cout << "take from team time"<< endl;
-//                
-//                for(int j=0; j<buttons->size(); j++){ // ??
-//                    if(baskets[i].isIn(buttons->at(j).getBiquadPos())){
-//                        buttons->at(j).multValue(baskets[i].getEfficiency()*co->marketReward);
-//                    }
-//                }
-//            }
-//            cout << basketEfficency << endl;
-//        }
-//    }
-    
-    
+
     void draw(){
 
-        //int red = CLAMP(int(ofMap(countDown,3,0,0,255)),50,200);
-        
-        //ofSetColor(red,255-red,50);
-        //winImg.draw(win);
-        
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
         }
@@ -289,19 +173,21 @@ public:
             ofFill();
             baskets[i].drawDots();
 
-//            if(co->debug){
-//                ofPushMatrix();
-//                ofTranslate(baskets[i].center);
-//             //   ofSetColor(0);
-//             //   co->font_small->drawString(ofToString(baskets[i].getEfficiency())+","+ofToString(baskets[i].buttons.size()) ,0,0);
-//                ofPopMatrix();
-//            }
         }
         
     };
     
     
     void begin(ofxBox2d * world = nullptr){
+        ofxSVG svg;
+        svg.load("svg/10_FactorySolids.svg");
+        solidPolysFull = getPolyline(svg);
+        
+        ofxSVG svg2;
+        svg2.load("svg/10_FactoryAreas.svg");
+        polysOutline = getPolyline(svg2);
+        
+        
         int X = co->numPresentButtons[teamNumber];
         int F = max(co->lookUp[X][0],co->lookUp[X][1]);
         int FsTotal = X-1;
@@ -330,12 +216,13 @@ public:
         
         solidPolys = solidPolysFull;
         solidPolys.resize(F);
-        //for(int i = 0; i<baskets.size();i++)
-        //    baskets[i].setColandSymbol(co->numSymbolsPresent[teamNumber],co->numColorsPresent[teamNumber]);
+
         
     };
     
     void reset(){
+        solidPolysFull.clear();
+        polysOutline.clear();
         baskets.clear();
     };
     

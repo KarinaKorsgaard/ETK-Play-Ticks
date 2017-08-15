@@ -13,21 +13,16 @@ public:
     ofxBiquadFilter2f filter;
     ofPoint average;
     
-
     ofxSVG svg;
     ofImage path;
-    vector<ofPolyline> polys;
-    
+
     bool sendOsc;
     int oscInt;
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        svg.load("svg/03_Trail.svg");
-     //   path.load("img/03_EasyMaze.png");
-        polys = getPolyline(svg);
-        maze = polys[0];
+
         
         start = 300;
         end = 1920-60;
@@ -121,11 +116,16 @@ public:
             co->background.load("img/backgrounds/03_trail.png");
         }
         go = false;
+        
+        svg.load("svg/03_Trail.svg");
+        maze = getPolyline(svg)[0];
     };
     
     void reset(){
         if(teamNumber == 0)
             co->background.clear();
+        
+        maze.clear();
     };
 
 

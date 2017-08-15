@@ -8,12 +8,7 @@ public:
     float upThres;
     shared_ptr<ofxBox2dCircle> average;
     ofxBiquadFilter2f filter;
-    
 
-    ofxSVG svg;
-    
-    
-    
     ofVec2f averagePos = ofVec2f(1920/2.f,1080.f);
     ofxBiquadFilter2f filterLowPass;
     float fc;
@@ -23,17 +18,6 @@ public:
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
-        svg.load("svg/07_AverageMaze.svg");
-        solidPolys = getPolyline(svg);
-        
-        float min = 1080;
-        for(int i = 0; i<solidPolys.size();i++){
-            float x = solidPolys[i].getBoundingBox().y;
-            if(x>10 && x<min )min = x;
-        }
-        
-        upThres = min;
-        filter.setFc(0.05f);
         
     };
     
@@ -115,11 +99,25 @@ public:
                                                 addX,1080 - 100);
             }
         }
+        
+        ofxSVG svg;
+        svg.load("svg/07_AverageMaze.svg");
+        solidPolys = getPolyline(svg);
+        
+        float min = 1080;
+        for(int i = 0; i<solidPolys.size();i++){
+            float x = solidPolys[i].getBoundingBox().y;
+            if(x>10 && x<min )min = x;
+        }
+        
+        upThres = min;
+        filter.setFc(0.05f);
     };
     
     void reset(){
         co->avergaTick.clear();
         average->destroy();
+        solidPolys.clear();
     }
     
 

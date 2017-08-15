@@ -24,7 +24,7 @@ class ofApp : public ofBaseApp{
 
 		void keyPressed(int key);
 
-    
+    void restart();
     void exit();
     void updateOsc();
     void handleSceneChange();
@@ -47,7 +47,7 @@ class ofApp : public ofBaseApp{
     ofxBox2d box2d;
 //    void contactStart(ofxBox2dContactArgs &e);
 //    void contactEnd(ofxBox2dContactArgs &e);
-    
+
     ofSoundPlayer  sound[N_SOUNDS];
     
     ofxPanel gui;
@@ -66,12 +66,11 @@ class ofApp : public ofBaseApp{
     int teamSize=-1;
     int alertCounter;
     
-    ofxTrueTypeFontUC font_x_small;
+
     ofxTrueTypeFontUC font_small;
     ofxTrueTypeFontUC font_medium;
-    ofxTrueTypeFontUC font_large;
-    
-    
+
+
     bool toggleRefill = false;
     float easeRefill1 = 0.;
     float easeRefill2 = 0.;
@@ -92,6 +91,7 @@ class ofApp : public ofBaseApp{
     
     
     shared_ptr<ofxBox2dCircle>fightBall;
-   // vector<Button>giantButtonMap;
+    
+    ofParameter<bool>restartApp;
 
 };

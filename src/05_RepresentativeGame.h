@@ -6,8 +6,7 @@
 class Representative : public Scene{
     
 public:
-    
-    //ofPolyline winArea;
+
     int bigRadius,smallRadius;
     
     int bigRadiusWin,smallRadiusWin;
@@ -16,8 +15,7 @@ public:
     ~Representative(){};
     
     ofVec2f midt;
-   
-    ofPolyline poly;
+
     bool done = false;
     
     
@@ -26,13 +24,7 @@ public:
         co = _co;
         
         midt = ofVec2f(1920 / 2 + (1920 * teamNumber) , 1080 / 2);
-        
-//        ofxSVG svg;
-//        svg.load("svg/05_Representative.svg");
-//        winArea = getPolyline(svg)[0];
-//        
-//        if(winArea.getBoundingBox().width>1000)
-//            winArea = getPolyline(svg)[1];
+
     };
     
     bool isDone(bool b = false){

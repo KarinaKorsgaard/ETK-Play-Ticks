@@ -14,12 +14,10 @@ void ofApp::setup(){
     font_medium.load("fonts/GT.ttf", 65);
 
     co.fillLookUp();
-    
-    //set common objects to point at fonts and button map
+
     co.font_small = &font_small;
     co.font_medium = &font_medium;
-    //co.font_large = &font_large;
-    
+
     co.characterImgs.resize(2);
     co.characterImgs[0].load("img/characters/body.png");
     co.characterImgs[1].load("img/characters/dead.png");
@@ -28,7 +26,10 @@ void ofApp::setup(){
     co.legs[0].load("img/characters/arms/arm1.png");
     co.legs[1].load("img/characters/arms/arm2.png");
     
-    co.sceneNumber = 0;
+    co.celebration[0].load("videos/celebration.mov");
+    co.celebration[1].load("videos/celebration.mov");
+    
+    co.sceneNumber = 12;
     co.numPresentButtons[0] = 0;
     co.numPresentButtons[1] = 0;
     
@@ -183,7 +184,7 @@ void ofApp::setup(){
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
-
+    gui.add(restartApp.set("RESTART",false));
     gui.add(physics);
    // gui.add(gameMechs);
     gui.add(design);
@@ -326,8 +327,6 @@ void ofApp::draw(){
         ofSetColor(red, 200-red , 0);
         ofDrawRectangle(gui.getWidth()*2 + 40, i*20+20, 18, 18);
     }
-
-
 }
 //--------------------------------------------------------------
 void ofApp::handleSceneChange(){
@@ -578,6 +577,18 @@ string ofApp:: getAdress(int _firstSecond, int _tabel, int _button){
     }
    // ofLog() << result <<endl;
     return result;
+}
+
+void ofApp:: restart(){
+    
+//    create a doc that records all;
+//    button colors, and symbols
+//    button is player
+//    scene number
+//    team time
+//    winners
+//
+    //for()
 }
 
 //--------------------------------------------------------------
