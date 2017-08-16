@@ -132,6 +132,10 @@ public:
                     int up = i * 2 - 1;
                     up*=-1;
                     doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up);
+                    
+                    ofxOscMessage m;
+                    m.setAddress("/doorsOpening"+ofToString(teamNumber+1));
+                    co->oscOut.sendMessage(m);
                 }
             }
             else if(abs(doors[i]->getPosition().y - originalPoints[i].y )>6){
@@ -154,6 +158,7 @@ public:
     void draw(){
         ofSetColor(255);
 
+        
         for(int i = 0; i<spots.size();i++){
             if(spots[i].isTaken)
                 ofSetColor(250,60,60);
@@ -161,7 +166,7 @@ public:
             
             ofDrawCircle(spots[i].pos,35);
         }
-        
+        ofSetColor(255);
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             

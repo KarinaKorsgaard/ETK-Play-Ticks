@@ -50,6 +50,8 @@ public:
     ofParameter<bool>sendAverageData;
     ofParameter<int> attraction;
     ofParameter<float>fc;
+    
+    ofParameter<float>escalatorSpeed;
     ofParameter<float>refillTime;
     ofParameter<float>drainCoefficient1;
     ofParameter<float>drainCoefficient2;

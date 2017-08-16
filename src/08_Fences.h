@@ -15,6 +15,8 @@ public:
     ofImage escalatorImg[3];
     
     vector<shared_ptr<ofxBox2dRect>>escalators;
+    
+    shared_ptr<ofxBox2dRect>pitHole;
     vector<ofPolyline>movingPolys;
     ofRectangle start;
     bool moveEscalators;
@@ -59,13 +61,20 @@ public:
             moveEscalators = false;
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
+                
+                
                 buttons->at(i).updateFences(co->attraction, co->gravity);
                 
                 if(!moveEscalators){
                     if (start.inside(buttons->at(i).getPos()))
                         count++;
-                    if (count>3)
+                    if (count>3){
                         moveEscalators = true;
+                        if(pitHole!=nullptr && co->startScene){
+                            pitHole->destroy();
+                            cout << "PIT DESTROY"<<endl;
+                        }
+                    }
                 }
             }
         }else{
@@ -73,17 +82,20 @@ public:
         }
         if(moveEscalators){
             for(int i = 0; i<escalators.size();i++){
-                escalators[i]->setPosition(escalators[i]->getPosition() + ofVec2f(0,upDown[i]));
+                escalators[i]->setPosition(escalators[i]->getPosition() + ofVec2f(0,upDown[i] * co->escalatorSpeed));
                 if(escalators[i]->getPosition().y > 1080 - solidHeigth + 50 )upDown[i]=-1;
-                if(escalators[i]->getPosition().y < 0 )upDown[i]=1;
+                if(escalators[i]->getPosition().y < 0 )upDown[i] = 1;
             }
         }
     }
     
     void draw(){
         
+        ofSetColor(0);
+        
+        if(pitHole!=nullptr)pitHole->draw();
+        
         ofSetColor(255);
-
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             if(co->debug){
@@ -138,6 +150,26 @@ public:
         escalatorImg[0].load("img/specialAssets/07_escalatorPads-01.png");
         escalatorImg[1].load("img/specialAssets/07_escalatorPads-02.png");
         escalatorImg[2].load("img/specialAssets/07_escalatorPads-03.png");
+        
+        
+        svg.load("svg/08_EscalatorLid.svg");
+        vector<ofPolyline> tempPoly = getPolyline(svg);
+        cout << "loaded"<<endl;
+        if(tempPoly.size()>0){
+            cout << "PIT"<<endl;
+            ofPolyline lid = getPolyline(svg)[0];
+            ofRectangle rect = lid.getBoundingBox();
+            
+            rect.x += rect.width/2;
+            
+            if(rect.width<1900 && rect.height < 1070){
+                cout << "PIT IS MADE"<<endl;
+                shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+                r->setPhysics(0., 0., 0.);
+                r->setup(world->getWorld(), rect);
+                pitHole = r;
+            }
+        }
 
     };
     void reset(){

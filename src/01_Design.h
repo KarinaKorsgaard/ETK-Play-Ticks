@@ -76,7 +76,7 @@ public:
 
         maxColors = co->lookUp[numPlayers][0];
         maxSymbols = co->lookUp[numPlayers][1];
-        
+        cout << maxColors << " " <<maxSymbols<<endl;
         //co->numSymbolsPresent[teamNumber] = maxSymbols;
         //co->numColorsPresent[teamNumber] = maxColors;
         
@@ -109,6 +109,7 @@ public:
         int leftSide = (1920 - 6 * vSpace )/2 + vSpace/2;
         int topSide  = (1080 - 6 * hSpace )/2 + hSpace/2 + 10;
         leftSide+=teamNumber * 1920;
+        ofPushStyle();
         for(int i = 0 ; i<buttons->size();i++) {
             
             Button b = buttons->at(i);
@@ -116,26 +117,41 @@ public:
                 ofPushMatrix();
                 
                 
-                 int table =ceil( (b.table+1 + (teamNumber*-1 + 1))/ 2)+0.1 - 1;
+                int table =ceil( (b.table+1 + (teamNumber*-1 + 1))/ 2)+0.1 - 1;
                 
                 ofTranslate( (table * hSpace) + leftSide, b.ID * vSpace + topSide );
                 
                 
                 ofSetColor(255);
-                if(drawCircles[i] && countDown == 0)ofDrawCircle(0,0,30);
-                b.draw(false);
+                if(drawCircles[i])ofDrawCircle(0,0,30);
+                
+                ofSetColor(b.color[0]);
+                
+                int w = 132 ;
+                int h = 128 ;
+                b.legs[0]->draw(-w/2,-h/2 , w,h);
+                
+                b.img->at(0).draw(-25,-25,25*2,25*2);
+                
+                ofSetColor(b.color[1]);
+                b.symbol->draw(-25,-25,25*2,25*2);
+                
+                
                 if(co->debug)
                     co->font_small->drawString(ofToString(b.table+1)+" :"+ofToString(b.ID+1), -10, 20);
                 ofPopMatrix();
             }
         }
-        forGround.draw(teamNumber * 1920 , 0 , 1920 , 1080);
+        ofSetColor(255);
+        if(forGround.isAllocated())forGround.draw(teamNumber * 1920 , 0 , 1920 , 1080);
+        
         for(int i = 0; i<6; i++)
             co->font_small->drawString(letters[i], leftSide - 125*2, topSide + i*vSpace +10);
         
         for(int i = 0; i<6; i++)
             co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide + hSpace*i - 10, topSide - 100);
         
+        ofPopStyle();
     };
     
     void begin(ofxBox2d * world = nullptr){
@@ -181,6 +197,7 @@ public:
     void reset(){
         drawCircles.clear();
         colors.clear();
+        colors2.clear();
     };
     
 

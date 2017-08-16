@@ -71,7 +71,8 @@ public:
             if(buttons->at(i).isPlaying){
                 float addX = teamNumber == 0 ? 0 : 1920;
                 
-                if(buttons->at(i).getPosRaw().x>0)buttons->at(i).setPosition(buttons->at(i).getPosRaw().x + addX, 50);
+                if(buttons->at(i).getPosRaw().x>0)
+                    buttons->at(i).setPosition(buttons->at(i).getPosRaw().x + addX, 50);
                 else buttons->at(i).setPosition(ofRandom(100,1920-100)+ addX, 50);
             }
         }

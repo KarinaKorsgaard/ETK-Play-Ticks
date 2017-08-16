@@ -9,15 +9,14 @@ public:
    // ofPath p;
     float targetRotation;
     bool isTarget = false;
-    int ringNumber;
+ 
     float p_rotation;
     float cur_rotation;
     float startRot;
     ofImage ring;
     
-    void setup(int _ringNumber, float start, float target){
-        
-        ringNumber = _ringNumber;
+    void setup(float start, float target){
+ 
         targetRotation = target;
         cur_rotation = start;
         p_rotation = start;
@@ -43,9 +42,9 @@ public:
        // cout<<"z rotation " << z << endl;
        // cout <<"dr " << dr<<endl;
         
-        if(abs(dr) < 5)cur_rotation += dr ;
-        if(cur_rotation > 360)cur_rotation = 0;
-        if(cur_rotation < 0)cur_rotation = 360;
+        if(abs(dr) < 355)cur_rotation += dr ;
+        if(cur_rotation > 360.f)cur_rotation = 0.f;
+        if(cur_rotation < 0.f)cur_rotation = 360.f;
         
         p_rotation = ofRadToDeg(z);
     }
@@ -89,7 +88,7 @@ public:
         
         for(int i = 0; i < 6 ; i++){
             circle c = *new circle;
-            c.setup(i, 280, co->targetCircleRot[i]);
+            c.setup(280, co->targetCircleRot[i]);
             circles.push_back(c);
             circles.back().ring.load("img/specialAssets/rings/ring-0"+ofToString(i+1)+".png");
         }

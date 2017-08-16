@@ -51,10 +51,7 @@ public:
     
     bool on = false;
     bool prev_on = false;
-    
-    float size_break=50.;
-    float size_lim=50.;
-    
+
     float dy_jump, dx_jump;
     bool isJumping;
     
@@ -68,7 +65,6 @@ public:
     
     ofVec2f lastPosForPolys;
     
-    float beginningRad;
     vector<ofImage> *img;
     ofImage *symbol;
     vector<ofColor> color;
@@ -88,15 +84,14 @@ public:
         isPlaying = false;
         value = val;
         beginningValue = val;
-        beginningRad = size;
-        
+        radius = size;
         
         box2Dcircle = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
         //virtual void setPhysics(float density, float bounce, float friction);
         box2Dcircle.get()->setPhysics(1., .0, 0.0);
-        box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), beginningRad);
+        box2Dcircle.get()->setup(world->getWorld(), ofRandom(200,500), ofRandom(200,500), radius);
         box2Dcircle.get()->alive = false;
-        box2Dcircle.get()->setRadius(beginningRad);
+        box2Dcircle.get()->setRadius(radius);
   //      box2Dcircle.get()->setMassFromShape = false;
         
         lastPos = ofVec2f(ofRandom(200,500),ofRandom(200,500));
@@ -135,7 +130,7 @@ public:
     }
     
     void draw(bool transform = true, float scale = 1.f){
-        float radiusUsed = scale * radius;
+        float radiusUsed = radius;
         ofPushStyle();
         if(isPlaying ){
             
@@ -148,9 +143,8 @@ public:
             
             ofSetColor(color[0]);
             
-        
             if(!isDead()){
-                armSwapper+=(dx+dy)*10.;
+                armSwapper+=getSpeed()*4.;
                 if(armSwapper>0.8)armSwapper=0.;
                 
                 int aInd = 0;
@@ -211,23 +205,16 @@ public:
                 
  
                 ofRectangle r = ofRectangle(multiX + rect.x , rect.y , rect.width, rect.height);
-                
-            //    distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
-            //    distToOrg /= (1980+1080);
-                
+            
                 box2Dcircle->addAttractionPoint( p , attraction  );
                 
                 setDirection(filterLowPass.value(), lastPos);
-                //setDirection(filterLowPass.value(), getPos());
-                
-                
+
                 lastPos = filterLowPass.value();
-               // moveBackToBoard(r);
- 
-         //   }
+
         }
         filterLowPass.update(getPos());
-        updateRadius();
+
     }
 
     
@@ -242,7 +229,7 @@ public:
                 
                 int multiX = doubleSize ? teamNumber * 1920 : 0;
                 p.x = multiX + (rect.width * x) + rect.x;
-                p.y = 1080;
+                p.y = MAX(getPos().y - gravity, 1080);
                 
                 ofRectangle r = ofRectangle(multiX + rect.x , rect.y , rect.width, rect.height);
                 
@@ -250,7 +237,7 @@ public:
                 //distToOrg /= (rect.width+1080);
                 
                 box2Dcircle->addAttractionPoint( p , attraction  );
-                box2Dcircle->addForce(ofVec2f(0,1), gravity);
+                //box2Dcircle->addForce(ofVec2f(0,1), gravity);
                 
                 setDirection(filterLowPass.value(), lastPos);
                 //setDirection(filterLowPass.value(), getPos());
@@ -264,7 +251,7 @@ public:
           //  }
         }
         filterLowPass.update(getPos());
-        updateRadius();
+        
     }
 
     
@@ -347,15 +334,7 @@ public:
         }
     }
     
-    void updateRadius(){
-        if(on && !isDead() && isPlaying){
-            radius = beginningRad;
-            box2Dcircle->alive = true;
-        }
-        else{
-            box2Dcircle->alive = false;
-        }
-    }
+
     
     void drain(float f){
         if(value > 0){

@@ -93,6 +93,7 @@ public:
         ofRotateZ(factoryRotation);
         
         ofFill();
+        ofSetColor(255,0,0);
         for(int i = 0; i< slots * 2 ;i++){
             ofPushMatrix();
             if(i+1>amountOfDots)
@@ -192,6 +193,7 @@ public:
             baskets[i].drawDots(co->factoryRotation[i]);
 
         }
+        ofSetColor(255);
         overlay.draw(teamNumber * 1920, 0,1920, 1080);
         
     };
@@ -211,6 +213,7 @@ public:
         int X = co->numPresentButtons[teamNumber];
         int F = max(co->lookUp[X][0],co->lookUp[X][1]);
         int FsTotal = X-1;
+        cout << FsTotal << endl;
         int FsMax = min(co->lookUp[X][0],co->lookUp[X][1]);
         
         int count = 0;

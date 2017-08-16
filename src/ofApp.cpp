@@ -91,8 +91,6 @@ void ofApp::setup(){
             Button b = * new Button;
             b.setup(j,i,teamNum, getAdress(0, i, j), getAdress(1, i, j), startVal, startRad, &box2d);
             
-            b.size_lim = co.size_lim;
-            b.size_break= co.size_break;
             b.img = &co.characterImgs;
             b.legs[0] = &co.legs[0];
             b.legs[1] = &co.legs[1];
@@ -169,11 +167,12 @@ void ofApp::setup(){
     
     gravity.setName("escalator and trail");
     gravity.add(co.gravity.set("gravity",1,0,50));
+    gravity.add(co.escalatorSpeed.set("escalator speed",1.,0.,10.));
     gravity.add(co.maxTrailRadius.set("maxTrailRadius", 0.001, 0., 0.05));
     //gravity.add(co.trailRadius[1].set("trailRadius2", 0.1, 0., 1.));
     
     logic.setName("logic");
-    logic.add(co.logicPrecision.set("logic precision", 0.1, 0.01, 2.f));
+    logic.add(co.logicPrecision.set("logic precision", 20., 0.01, 100.f));
     for(int i = 0 ; i<6; i++){
         ofParameter<float>t;
         co.targetCircleRot.push_back(t);
@@ -278,7 +277,7 @@ void ofApp::update(){
     if(co.sMap[co.sceneNumber] == "Fight")
     {
         if(co.startMovement){
-            fightBall->setVelocity(fightBall->getVelocity().x * 1.01, fightBall->getVelocity().y * 0.999);
+            fightBall->setVelocity(fightBall->getVelocity().x * 1.01, fightBall->getVelocity().y * 0.9);
             fightBall->update();
         }
     }
@@ -467,9 +466,7 @@ void ofApp::refill(int team, float timef){
             
             float newValue = oldValue + co.refillCoef;
             b->setValue(CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue));
-            b->updateRadius();
-            
-            
+
             ofPushMatrix();
             ofTranslate(b->getGridPos( b->table - b->table%2*team , b->ID));
             ofTranslate(1920 * team,0);

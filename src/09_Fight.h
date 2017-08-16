@@ -46,16 +46,21 @@ public:
             if(ballx < 880){
                 co->tennisPoint[teamNumber] ++;
                 
+                ofxOscMessage m;
+                m.setAddress("/tennisPoint");
+                co->oscOut.sendMessage(m);
+                
                 ball->setPosition(1920, 1080/2);
-                int xvel = teamNumber == 1 ? -5 : 5;
+                int xvel = teamNumber == 1 ? 5 : -5;
                 ball->setVelocity(xvel, 5);
             }
             
             
-            buttons->at(winButton).update(co->attraction, false , tennisCourt);
+            int front = teamNumber == 0 ? -1 : 1;
+            pad->setPosition(buttons->at(winButton).getBiquadPos().x + 200*front, buttons->at(winButton).getPos().y);
             
-            int front = teamNumber == 0 ? 1 : -1;
-            pad->setPosition(buttons->at(winButton).getBiquadPos().x + 50 * front , buttons->at(winButton).getBiquadPos().y);
+            buttons->at(winButton).update(co->attraction, false , tennisCourt);
+        
 
         }
         
@@ -67,13 +72,13 @@ public:
         
 
         buttons->at(winButton).draw();
-
+        pad->draw();
         ofPushMatrix();
         
-            int x = pad->getPosition().x;
-            int y = pad->getPosition().y;
-            int w = pad->getWidth();
-            int h = pad->getHeight();
+        int x = pad->getPosition().x;
+        int y = pad->getPosition().y;
+        int w = pad->getWidth();
+        int h = pad->getHeight();
         
         ofTranslate(x,y);
         ofRotateZ(teamNumber * 180);

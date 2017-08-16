@@ -27,7 +27,7 @@ public:
 
         
         start = 300 + teamNumber * 1920;
-        end = 1920-60 + teamNumber * 1920;
+        end = 1920-100 + teamNumber * 1920;
         
         filter.setFc(0.05f);
         
@@ -38,20 +38,20 @@ public:
         int y = 0;
         ofPoint p = ofPoint (start - 150 , y);
         int begin = 0;
-        int end = 0;
+        int endBegin = 0;
         while(!maze.inside(p)){
             y+=5;
             p = ofPoint (start - 150 , y);
-            begin = y;
+            endBegin = y;
             
         }
         while(maze.inside(p)){
             y+=5;
             p = ofPoint (start - 150 , y);
-            end = y;
+            endBegin = y;
             
         }
-        trailStart = ofPoint(start - 200, begin + (end - begin)/2 );
+        trailStart = ofPoint(start - 200, begin + (endBegin - begin)/2 );
         maze.clear();
         
     };
