@@ -118,7 +118,7 @@ public:
     vector<ofPolyline> solidPolysFull;
     
     bool done = false;
-
+    
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
@@ -147,12 +147,16 @@ public:
     void updateBaskets(){
         for(int i = 0; i< baskets.size();i++){
             baskets[i].buttons.clear();
+            
             for(int b=0; b<buttons->size(); b++) {
-                if(!buttons->at(b).on || !buttons->at(b).isPlaying || buttons->at(b).isDead())continue;
+                if(!buttons->at(b).on || !buttons->at(b).isPlaying || buttons->at(b).isDead())
+                    continue;
                 
                 if(buttons->at(b).on && !done){
                     if(baskets[i].isIn(buttons->at(b).getBiquadPos())){
                         baskets[i].buttons.push_back(buttons->at(b));
+                    }else{
+                        co->isUnemployed[teamNumber] = ofPoint( buttons->at(b).table , buttons->at(b).ID );
                     }
                 }
             }

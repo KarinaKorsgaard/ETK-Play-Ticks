@@ -5,6 +5,7 @@
   },
   "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
     "903165F9FDCB952EAE50578862E56DA722F43224" : 0,
+    "BB48781AAC70C89AED1A649A93F25300AFE948DD" : 0,
     "FE2788B56F806857CE5C34BD85FBA84F95B6F063" : 0,
     "6E85F585BA7940AD33F8E74F0EE05D55511194B6" : 0,
     "3FD0A6B0728805B39B1EC65C31D9BA97C2D2ABC7" : 0
@@ -12,6 +13,7 @@
   "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "771C9B0E-1515-4A83-8A28-85E1AE1A0600",
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "903165F9FDCB952EAE50578862E56DA722F43224" : "..\/..\/addons\/ofxBox2d",
+    "BB48781AAC70C89AED1A649A93F25300AFE948DD" : "..\/..\/addons\/ofxWatchdog",
     "FE2788B56F806857CE5C34BD85FBA84F95B6F063" : "_ETK_March_2017\/",
     "6E85F585BA7940AD33F8E74F0EE05D55511194B6" : "..\/..\/addons\/ofxTrueTypeFontUC",
     "3FD0A6B0728805B39B1EC65C31D9BA97C2D2ABC7" : "..\/..\/addons\/ofxBiquadFilter"
@@ -34,6 +36,11 @@
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/vanderlin\/ofxBox2d.git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "903165F9FDCB952EAE50578862E56DA722F43224"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/toolbits\/ofxWatchdog.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BB48781AAC70C89AED1A649A93F25300AFE948DD"
     },
     {
       "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/KarinaKorsgaard\/etk_games.git",

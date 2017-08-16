@@ -41,7 +41,7 @@ public:
     float tennisPoint[2];
     
     ofVideoPlayer celebration[2];
-    
+    vector<int>teamIsDone;
     
     ofxOscSender oscOut;
     ofxOscReceiver oscIn;
@@ -93,7 +93,7 @@ public:
     ofSoundPlayer deathSound;
     vector<ofImage> characterImgs;
     vector<ofImage> characterSymbols;
-    
+    ofPoint isUnemployed[2];
     
     map< int , string >sMap;
     

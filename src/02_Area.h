@@ -34,9 +34,7 @@ public:
                 ofPoint p = buttons->at(i).getBiquadPos();
                 indx++;
                 
-                ofVec2f a = p - midt;
-                float dist = a.dot(a);
-                              
+                float dist = p.distance(midt);
                 if(dist > bigRadius || dist < smallRadius){
                     isInside=false;
                     isInPlace[i] = false;
@@ -60,30 +58,27 @@ public:
     void draw(){
         ofSetColor(255);
         
-        hole.draw(midt,smallRadius,smallRadius);
+        hole.draw(midt.x - smallRadius/2, midt.y - smallRadius/2,smallRadius,smallRadius);
         
         for(int i=0; i<buttons->size(); i++) {
             
-            ofPushMatrix();
-            ofTranslate(buttons->at(i).getBiquadPos());
-            ofRotateZ(buttons->at(i).getRotation());
-            
+
             if(isInPlace[i]){
                 // halo
-                ofDrawCircle(0,0,30,30);
+                ofDrawCircle(buttons->at(i).getBiquadPos(),30);
             }
-            buttons->at(i).draw(false);
+            buttons->at(i).draw();
             
-            ofPopMatrix();
             
-            if(co->debug){
-                
-                ofNoFill();
-                ofSetColor(255,0,0);
-                ofDrawCircle(midt, bigRadius);
-                ofDrawCircle(midt, smallRadius);
-                ofFill();
-            }
+            
+        }
+        if(co->debug){
+            
+            ofNoFill();
+            ofSetColor(255,0,0);
+            ofDrawCircle(midt, bigRadius);
+            ofDrawCircle(midt, smallRadius);
+            ofFill();
         }
         
         
@@ -102,7 +97,8 @@ public:
                 numPlayers ++;
             }
         }
-        numPlayers = CLAMP(numPlayers + 5, 0, 36);
+        numPlayers = MIN(numPlayers,16);
+        numPlayers+=5;
         float l = numPlayers * radius * 2;
         float d = l / PI;
   
@@ -111,8 +107,10 @@ public:
         bigRadius = d == 0 ? 286 : d;
         
         bigRadius += radius; /// albue rum
-        smallRadius = bigRadius - 20;
+        smallRadius = MAX(bigRadius - 20, 0);
         isInPlace.resize(36);
+        
+        cout << smallRadius<< endl;
     };
     
     void reset(){

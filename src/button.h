@@ -144,7 +144,8 @@ public:
             }
             
             float scale = rad / 25.0f;
-            ofSetColor(255);
+            ofSetColor(color[0]);
+            
         
             if(!isDead()){
                 armSwapper+=(dx+dy)*10.;
@@ -156,9 +157,8 @@ public:
             int charImg = isDead()?1:0;
             img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
 
-            ofSetColor(color[0]);
-            symbol->draw(-rad*0.85/2,-rad*0.85/2,rad*0.85,rad*0.85);
-            //ofDrawRectangle(-4*scale, -15*scale, 8*scale, 35*scale);
+            ofSetColor(0);
+            symbol->draw(-rad,-rad,rad*2,rad*2);
             ofFill();
             
             if(transform)ofPopMatrix();
@@ -190,14 +190,14 @@ public:
         if(isPlaying && !isDead()){
             
             if(on){
-                
-                
-                
+
                 ofVec2f p;
                 
                 int multiX = doubleSize ? teamNumber * 1920 : 0;
-                p.x = multiX + rect.width *x + rect.x;
+                p.x = multiX + (rect.width*x)+ rect.x;
                 p.y = rect.height*y + rect.y;
+                
+                ofRectangle r = ofRectangle(multiX, p.y, rect.width, rect.height);
                 
             //    distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
             //    distToOrg /= (1980+1080);
@@ -209,7 +209,7 @@ public:
                 
                 
                 lastPos = filterLowPass.value();
-                moveBackToBoard();
+                moveBackToBoard(r);
  
             }
         }
@@ -228,11 +228,13 @@ public:
                 ofVec2f p;
                 
                 int multiX = doubleSize ? teamNumber * 1920 : 0;
-                p.x = multiX + rect.width *x + rect.x;
+                p.x = multiX + (rect.width * x) + rect.x;
                 p.y = 1080;
                 
-              //  distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
-              //  distToOrg /= (rect.width+1080);
+                ofRectangle r = ofRectangle(multiX, 0, rect.width, 1080);
+                
+                //distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
+                //distToOrg /= (rect.width+1080);
                 
                 box2Dcircle->addAttractionPoint( p , attraction  );
                 box2Dcircle->addForce(ofVec2f(0,1), gravity);
@@ -242,7 +244,7 @@ public:
                 lastPos = filterLowPass.value();
                 
                 
-                moveBackToBoard();
+                moveBackToBoard(r);
                 //if(!freezeUpdate){
                 
                 
@@ -253,9 +255,12 @@ public:
     }
 
     
-    void moveBackToBoard(){
-        if(getPos().x<0)setPosition(radius, getPos().y);
-        if(getPos().x>1920*2)setPosition(1920*2 - radius, getPos().y);
+    void moveBackToBoard(ofRectangle r){
+        
+
+        // needs to get ticks back on their own side.. 
+        if(getPos().x<r.x)setPosition(r.x + radius, getPos().y);
+        if(getPos().x>(r.width+r.x))setPosition((r.width+r.x) - radius, getPos().y);
         
         if(getPos().y<0)setPosition(getPos().x, radius);
         if(getPos().y>1080)setPosition(getPos().x, 1080-radius);

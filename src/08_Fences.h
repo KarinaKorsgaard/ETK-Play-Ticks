@@ -72,7 +72,7 @@ public:
         if(moveEscalators){
             for(int i = 0; i<escalators.size();i++){
                 escalators[i]->setPosition(escalators[i]->getPosition() + ofVec2f(0,upDown[i]));
-                if(escalators[i]->getPosition().y > 1080 - solidHeigth - escalators[i]->getHeight())upDown[i]=-1;
+                if(escalators[i]->getPosition().y > 1080 - solidHeigth + 50 )upDown[i]=-1;
                 if(escalators[i]->getPosition().y < 0 )upDown[i]=1;
             }
         }
@@ -94,13 +94,25 @@ public:
         
         for(int i = 0; i< escalators.size();i++)
             escalators[i]->draw();
-        
+        ofNoFill();
         ofDrawRectangle(start);
+        ofFill();
     };
     
     void begin(ofxBox2d * world = nullptr){
         
         float addX = teamNumber == 0 ? 0 : 1920;
+        
+        ofxSVG svg;
+        
+        svg.load("svg/08_EscalatorMoving.svg");
+        movingPolys = getPolyline(svg);
+        
+        svg.load("svg/08_EscalatorSolids.svg");
+        solidPolys = getPolyline(svg);
+        
+        theWinner=-1;
+        solidHeigth = solidPolys[0].getBoundingBox().height;
         
         //world->setGravity(0,co->gravity);
         createScene(world,movingPolys);
@@ -113,16 +125,7 @@ public:
             }
         }
         
-        ofxSVG svg;
-        
-        svg.load("svg/08_EscalatorMoving.svg");
-        movingPolys = getPolyline(svg);
-        
-        svg.load("svg/08_EscalatorSolids.svg");
-        solidPolys = getPolyline(svg);
-        
-        theWinner=-1;
-        solidHeigth = solidPolys[0].getBoundingBox().height;
+
     };
     void reset(){
         isDoneCounter=0.;
@@ -131,9 +134,7 @@ public:
         
         escalators.clear();
         movingPolys.clear();
-        //start.clear();
         solidPolys.clear();
-        //winningArea.clear();
     }
     
     

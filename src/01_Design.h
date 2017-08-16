@@ -12,6 +12,8 @@ public:
     vector<bool>drawCircles;
     double countDown = 5*60;
     
+    
+    
     string colorFile;
     int numColors;
     void setup(commonObjects*_co, vector<Button>*b, string _colorFile, int _numColors){
@@ -50,6 +52,8 @@ public:
         
         
         if(!b)isDifferent=false;
+        
+        if(isDifferent)countDown = 0.;
         return isDifferent;
        // return false;
     };
@@ -83,7 +87,7 @@ public:
             
         //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
             buttons->at(i).color[0]=colors[x];
-            buttons->at(i).symbol=&co->characterSymbols[y];
+            buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size() )];
            
             buttons->at(i).colorInt = x;
             buttons->at(i).symbolInt = y;

@@ -38,11 +38,9 @@ public:
     
     ofxBox2d * box2d;
     double time;
-    float distance;
-    float deadTime = 0;
     bool isDone;
-    bool logDone = false;
-    bool playAnimation = false;
+    bool playAnimation;
+    bool addedToWinnerlist = false;
     vector<Button>buttons;
     int teamId;
     
@@ -81,7 +79,7 @@ public:
         scenes["Design"]=(&design);
         scenes["Maze"]=(&maze);
         scenes["Representative"]=(&representative);
-        scenes["Logic"]=(&logic);
+        scenes["LogicGame"]=(&logic);
         scenes["Trail"]=(&trail);
         scenes["AverageMaze"]=(&averageMaze);
         scenes["Fences"]=(&fences);
@@ -114,6 +112,7 @@ public:
         scenes["Design"]->begin(box2d);
         scenes["Design"]->update();
         scenes["Design"]->reset();
+        scenes[co->sMap[co->sceneNumber]]->reset();
         scenes[co->sMap[co->sceneNumber]]->begin(box2d);
         
            
@@ -122,32 +121,44 @@ public:
     void update(){
         
         int s = co->sceneNumber;
-        
+        co->log("scene is "+co->sMap[s]);
         if(p_sceneNum != s){
+            co->log("scene is "+co->sMap[s]);
+            co->log("previos scene is "+co->sMap[p_sceneNum]);
             reset();
             
             scenes[co->sMap[s]]->begin(box2d);
-            if(scenes[co->sMap[s]]->solidPolys.size()>0){
-                createScene(scenes[co->sMap[s]]->solidPolys);
+            if(co->sMap[s] != "Idle" &&
+               co->sMap[s] != "GroundGame" &&
+               co->sMap[s] != "Fight"
+
+               ){
+                createWall();
             }
+            if(scenes[co->sMap[s]]->solidPolys.size()>0)
+                createScene(scenes[co->sMap[s]]->solidPolys);
             
             scenes[co->sMap[p_sceneNum]]->reset();
             
             
             if(teamId == 0){
-               // co->background.clear();
+
                 co->background.load("img/backgrounds/"+co->sMap[s]+".png");
-                cout<<"img/backgrounds/"+co->sMap[s]+".png"<<endl;
+
+                string file1 = "videos/celebrations/"+co->sMap[s]+"Winner"+".mov";
+                string file2 = "videos/celebrations/"+co->sMap[s]+"Looser"+".mov";
+                if (!ofFile::doesFileExist(file1)){
+                    file1 = "videos/celebrationDefaultWinner.mov";
+                }
+                if (!ofFile::doesFileExist(file2)){
+                    file2 = "videos/celebrationDefaultLooser.mov";
+                }
+                co->celebration[0].load(file1);
+                co->celebration[1].load(file2);
+                
             }
-            
-            
-            //--------------------------------------------------------------
-//            if(co->sMap[s]=="Fences")
-//                box2d->setGravity(0,co->gravity);
-//            if(co->sMap[p_sceneNum]=="Fences")
-//                box2d->setGravity(0,0);
-            //--------------------------------------------------------------
-            
+            co->teamIsDone.clear();
+            addedToWinnerlist = false;
             p_sceneNum = s;
         }
         
@@ -177,9 +188,13 @@ public:
         }
         
         else if (isDone){
- 
-            if (!co->celebration[teamId].isPlaying()){
-                co->celebration[teamId].play();
+            
+            if(!addedToWinnerlist){
+                addedToWinnerlist=true;
+                co->teamIsDone.push_back(teamId);
+            }
+            if (!co->celebration[co->teamIsDone[teamId]].isPlaying()){
+                co->celebration[co->teamIsDone[teamId]].play();
                 
                 playAnimation = true;
                 
@@ -192,7 +207,7 @@ public:
             }
             
             else {
-                co->celebration[teamId].update();
+                co->celebration[co->teamIsDone[teamId]].update();
                 
                 if(!wonSent){
                     ofxOscMessage m;
@@ -221,8 +236,8 @@ public:
 
         if(playAnimation){
             ofSetColor(255);
-            co->celebration[teamId].draw( (teamId*1920) + ( 1920/2 - co->celebration[teamId].getWidth()/2 ),
-                             1080/2 - co->celebration[teamId].getHeight()/2 );
+            co->celebration[co->teamIsDone[teamId]].draw( (teamId*1920) + ( 1920/2 - co->celebration[co->teamIsDone[teamId]].getWidth()/2 ),
+                             1080/2 - co->celebration[co->teamIsDone[teamId]].getHeight()/2 );
             
             for(int i = 0; i<buttons.size();i++){
                 buttons[i].dy = 0.01;
@@ -357,8 +372,31 @@ private:
                 }
             }
         }
-      
-        cout << ofToString(polyShapes.size())+ " polyshapes size in " + co->sMap[co->sceneNumber]<< endl;
+        
+      cout << ofToString(polyShapes.size())+ " polyshapes size in " + co->sMap[co->sceneNumber]<< endl;
+    }
+    
+    void createWall(){
+        if(teamId == 0){
+            shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
+            
+            vector<ofPoint>verts;
+            
+            verts.push_back(ofPoint(1920-1,0));
+            verts.push_back(ofPoint(1920+1,0));
+            verts.push_back(ofPoint(1920+1,1080));
+            verts.push_back(ofPoint(1920-1,1080));
+            verts.push_back(ofPoint(1920-1,0));
+            
+            poly->addVertices(verts);
+            poly->setPhysics(0,0,0);
+            poly->triangulatePoly();
+            
+            poly->create(box2d->getWorld());
+            polyShapes.push_back(poly);
+            
+        }
+
     }
 
 
@@ -373,7 +411,7 @@ private:
     }
     void reset(){
         co->celebration[teamId].stop();
-        logDone = false;
+        
         playAnimation = false;
         wonSent = false;
         destroyMaze();

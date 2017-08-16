@@ -2,6 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    
+    
+    co.sceneNumber = 12;
     trailShader.load("trail");
     
     box2d.init();
@@ -26,16 +29,16 @@ void ofApp::setup(){
     co.legs[0].load("img/characters/arms/arm1.png");
     co.legs[1].load("img/characters/arms/arm2.png");
     
-    co.celebration[0].load("videos/celebration.mov");
-    co.celebration[1].load("videos/celebration.mov");
+    co.celebration[0].load("videos/celebrationDefaultWinner.mov");
+    co.celebration[1].load("videos/celebrationDefaultLooser.mov");
     
-    co.sceneNumber = 12;
+    
     co.numPresentButtons[0] = 0;
     co.numPresentButtons[1] = 0;
     
-    co.characterSymbols.resize(6);
-    for(int i = 0 ; i< 6 ; i++)
-        co.characterSymbols[i].load("img/symbols/marker_000"+ofToString(i)+".png");
+    co.characterSymbols.resize(12);
+    for(int i = 0 ; i< 12 ; i++)
+        co.characterSymbols[i].load("img/symbols/marker-"+ofToString(i+1, 2, '0')+".png");
     
     
     
@@ -128,6 +131,7 @@ void ofApp::setup(){
             scenes.add(p);
             b_scenes.push_back(p);
             co.sMap[i]=ofSplitString(name, "-")[1];
+            cout << co.sMap[i] << endl;
           
         }else{
             break;
@@ -146,7 +150,7 @@ void ofApp::setup(){
     physics.add(co.attraction.set("attraction",1,0,2500));
     physics.add(co.fc.set("fc position",0.05,0.01,0.4));
     physics.add(co.moveThemOut.set("move ticks out of walls", false));
-    
+    physics.add(co.logReport.set("logreport", false));
     //physics.setName("game controls");
     physics.add(co.deadTimer.set("dead time",5,1,30));
     physics.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
@@ -227,7 +231,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+ 
     ofSetWindowTitle(ofToString(ofGetFrameRate()));
     
     // make tabels red by interval
@@ -285,6 +289,8 @@ void ofApp::update(){
     }
     
     box2d.update();
+    
+    
 
 }
 
@@ -295,15 +301,21 @@ void ofApp::draw(){
     fbo.begin();
     ofClear(0);
     
-    ofBackground(200);
+    //ofBackground(200);
+    
     
     ofSetColor(255);
-    if(co.background.isAllocated()){
-       // co.background.draw(0 , 0, 1920, 1080);
-       // co.background.draw(1920 , 0, 1920, 1080);
+    int w = 1920;
+    if(co.sMap[co.sceneNumber] == "Idle" || co.sMap[co.sceneNumber] == "Fight")
+        w = 1920 * 2;
+    
+    if(co.background.isAllocated() && !co.debug){
+        co.background.draw(0 , 0, w, 1080);
+        if(w == 1920)co.background.draw(1920 , 0, 1920, 1080);
     }
     
     if(co.sMap[co.sceneNumber] == "GroundGame")groundVideo.draw(0, 0, 1920, 1080);
+    
     if(co.sMap[co.sceneNumber] == "Trail"){
         Trail * trail1 = static_cast<Trail *>(teams[0].scenes[co.sMap[co.sceneNumber]]);
         Trail * trail2 = static_cast<Trail *>(teams[1].scenes[co.sMap[co.sceneNumber]]);
@@ -334,8 +346,9 @@ void ofApp::draw(){
     
     fbo.end();
     
-
-    
+    ofDrawBitmapString(unemployedMessage, 10, gui.getHeight() + 30);
+    ofDrawBitmapString(unemployedMessage1, 10, gui.getHeight() + 45);
+    ofDrawBitmapString(unemployedMessage2, 10, gui.getHeight() + 60);
     syphon.publishTexture(&fbo.getTexture());
     
     
@@ -348,10 +361,13 @@ void ofApp::draw(){
         ofSetColor(red, 200-red , 0);
         ofDrawRectangle(gui.getWidth()*2 + 40, i*20+20, 18, 18);
     }
+    
+    
 }
 //--------------------------------------------------------------
 void ofApp::handleSceneChange(){
 
+    
     // toggle scenechanges
     int resent = -1;
     for(int i = 0; i<b_scenes.size();i++){
@@ -361,6 +377,7 @@ void ofApp::handleSceneChange(){
             co.sceneNumber = i;
         }
     }
+    
     if(resent!=-1){
         co.startScene = false;
         co.startMovement = false;
@@ -393,7 +410,7 @@ void ofApp::handleSceneChange(){
         
         if(co.sMap[co.sceneNumber] == "GroundGame"){
             if(!groundVideo.isLoaded()){
-                groundVideo.load("ground.mov");
+                groundVideo.load("videos/ground.mov");
                 groundPixels.allocate(groundVideo.getWidth(), groundVideo.getHeight(), GL_RGB);
             }
             
@@ -412,6 +429,14 @@ void ofApp::handleSceneChange(){
             
         }else if(co.sMap[p_sceneNumber] == "GroundGame"){
             groundVideo.stop();
+        }
+        
+        if(co.sMap[p_sceneNumber] == "Factories" ){
+            string abc = "A-B-C-D-E-F";
+            vector<string>letters = ofSplitString(abc,"-");
+            unemployedMessage = "unemplyed ticks:";
+            unemployedMessage1 = ("team 1 : table "+ofToString(co.isUnemployed[0].x + 1) +" id: "+letters[co.isUnemployed[0].y]);
+            unemployedMessage2 = ("team 2 : table "+ofToString(co.isUnemployed[1].x + 1) +" id: "+letters[co.isUnemployed[1].y]);
         }
         
         p_sceneNumber = co.sceneNumber;
@@ -480,14 +505,14 @@ void ofApp::updateGroundGame(){
     if(groundVideo.isFrameNew())
         groundPixels = groundVideo.getPixels();
     
-    if(groundPixels.isAllocated()){
-        
-        for(int t = 0; t < 2 ; t++){
-            for(int i = 0; i < teams[t].buttons.size(); i++){
-                
-                Button *b = &teams[t].buttons[i];
-                b->update(co.attraction, false);
-                
+    
+    
+    for(int t = 0; t < 2 ; t++){
+        for(int i = 0; i < teams[t].buttons.size(); i++){
+            
+            Button *b = &teams[t].buttons[i];
+            b->update(co.attraction, false);
+            if(groundPixels.isAllocated()){
                 
                 // kill
                 if(!b->isDead() && b->isPlaying && !isGroundDone){

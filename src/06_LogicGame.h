@@ -5,14 +5,15 @@
 class circle{
 public:
     
-    Button * b;
-    ofPath p;
+   // Button * b;
+   // ofPath p;
     float targetRotation;
     bool isTarget = false;
     int ringNumber;
     float p_rotation;
     float cur_rotation;
     float startRot;
+    ofImage ring;
     
     void setup(int _ringNumber, float start, float target){
         
@@ -21,48 +22,54 @@ public:
         cur_rotation = start;
         p_rotation = start;
         startRot = start;
+//        
+//        p.moveTo(ringNumber * 90 + 80,0);
+//        p.arc(ofPoint(0,0), ringNumber * 90 + 80, ringNumber * 90 + 80, 0, 350);
+//        p.setCircleResolution(500);
+//        p.setFilled(false);
+//        p.setStrokeWidth(5);
         
-        p.moveTo(ringNumber * 90 + 80,0);
-        p.arc(ofPoint(0,0), ringNumber * 90 + 80, ringNumber * 90 + 80, 0, 350);
-        p.setCircleResolution(500);
-        p.setFilled(false);
-        p.setStrokeWidth(5);
     }
     void setTarget(float t){
         targetRotation = t;
     }
     
-    void update(float precision, float attraction){
-        b->update(attraction);
+    void update(float precision, float attraction, float z){
+        //if (b != nullptr)b->update(2000);
         isTarget = abs(cur_rotation-targetRotation) < precision;
-        float dr = ofRadToDeg(b->getRawData().z) - p_rotation;
+        //float
+       
+        float dr = ofRadToDeg(z) - p_rotation;
+       // cout<<"z rotation " << z << endl;
+       // cout <<"dr " << dr<<endl;
         
         if(abs(dr) < 5)cur_rotation += dr*0.5f ;
         if(cur_rotation > 360)cur_rotation = 0;
         if(cur_rotation < 0)cur_rotation = 360;
         
-        p_rotation = ofRadToDeg(b->getRawData().z);
+        p_rotation = ofRadToDeg(z);
     }
     
     void draw(ofVec2f midt){
         ofPushMatrix();
         ofTranslate(midt);
         ofRotate(cur_rotation);
-        p.draw();
+        int s = ring.getWidth();
+        ring.draw(-s/2,-s/2,s,s);
+        //p.draw();
         ofPopMatrix();
-        b->draw();
+        
+        //if (b != nullptr) b->draw();
     }
     void drawTargets(ofVec2f midt){
-        p.setStrokeWidth(35);
-        p.setColor(ofColor::blue);
+
         ofPushMatrix();
         ofTranslate(midt);
         ofRotate(targetRotation);
-        p.draw();
+        int s = ring.getWidth();
+        ring.draw(-s/2,-s/2,s,s);
         ofPopMatrix();
-        b->draw();
-        p.setColor(ofColor::white);
-        p.setStrokeWidth(5);
+
     }
 };
 
@@ -74,10 +81,18 @@ public:
     ~Logic(){};
 
     vector<circle> circles;
+    vector<int>winnerButtons;
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
+        
+        for(int i = 0; i < 6 ; i++){
+            circle c = *new circle;
+            c.setup(i, 280, co->targetCircleRot[i]);
+            circles.push_back(c);
+            circles.back().ring.load("img/specialAssets/rings/ring-0"+ofToString(i+1)+".png");
+        }
 
     }
     
@@ -91,12 +106,19 @@ public:
     }
     
     void update(){
-        for(int i = 0; i<circles.size();i++){
+        for(int i=0; i<winnerButtons.size(); i++) {
+            buttons->at(winnerButtons[i]).update(co->attraction);
+        }
+        
+        for(int i = 0; i<winnerButtons.size();i++){
+           // cout << buttons->at(winnerButtons[i]).getRawData().z << endl;
             if(!isDone())
-                circles[i].update(co->logicPrecision, co->attraction);
+                circles[i].update(co->logicPrecision, co->attraction, buttons->at(winnerButtons[i]).getRawData().z);
             if(co->showLogicTargets)
                 circles[i].setTarget(co->targetCircleRot[i]);
         }
+        
+        
     }
     
     void draw(){
@@ -106,16 +128,14 @@ public:
             circles[i].draw(m);
             if(co->showLogicTargets)circles[i].drawTargets(m);
         }
+        for(int i=0; i<winnerButtons.size(); i++) {
+            buttons->at(winnerButtons[i]).draw();
+        }
     }
     
     void begin(ofxBox2d * world = nullptr){
-   
-        for(int i = 0; i < 6 ; i++){
-            circle c = *new circle;
-            c.setup(i, 280, co->targetCircleRot[i]);
-            circles.push_back(c);
-        }
-        
+
+
         vector<int> firstOn;
         int count = 0;
         
@@ -125,46 +145,40 @@ public:
             //cout << firstOn.back() << endl;
             
             if (buttons->at(b).isWinner && count < 6){
-                circles[count].b = &buttons->at(b);
+                //circles[count].b = &buttons->at(b);
+                winnerButtons.push_back(b);
                 cout << "winbutton: "<<count <<" is " << b << endl;
                 count++;
             }
         }
         
         for(int i = 0; i<6 ; i++){
-            if (circles[i].b == nullptr){
+            if (winnerButtons.size()<6){
                 int setTo = i;
                 
                 if(firstOn.size()>i)
                     setTo = firstOn[i];
-                circles[i].b = &buttons->at(setTo);
-                
+                winnerButtons.push_back(setTo);
                 cout << "winbutton "<< i <<" was not found and is set to " << setTo << endl;
             }
-           // rotations[i] = ofRandom(360);
         }
-        
-
-    }
+            }
     
     void reset(){
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
         }
-        for(int i = 0; i<circles.size();i++){
-            circles[i].b = nullptr;
-            
+        
+        for(int i = 0; i < 6 ; i++){
+            circles[i].isTarget = false;
+
             circles[i].cur_rotation = circles[i].startRot;
             circles[i].p_rotation = circles[i].startRot;
-            circles[i].isTarget = false;
+            circles[i].startRot = circles[i].startRot;
+            
         }
-        
-        circles.clear();
-        
-        
+    
     }
-    
-    
     
 };
 

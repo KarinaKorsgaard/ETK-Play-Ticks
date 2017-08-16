@@ -81,7 +81,7 @@ class ofApp : public ofBaseApp{
     bool isGroundDone;
     void updateGroundGame();
     ofPixels groundPixels;
-
+    string unemployedMessage,unemployedMessage1,unemployedMessage2;
     
     float ease(float t, float b, float c, float d) {
         c -=b;

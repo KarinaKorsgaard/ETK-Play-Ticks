@@ -14,9 +14,8 @@ public:
     
     ofPolyline poly;
     
-    Button * winButton;
+    int winButton;
     shared_ptr<ofxBox2dRect>pad;
-    
     shared_ptr<ofxBox2dCircle>ball;
     
     int point ;
@@ -43,23 +42,23 @@ public:
 
             if(ballx < ball->getRadius() * 2){
                 co->tennisPoint[teamNumber] ++;
-                cout <<"teamnumber "<< teamNumber << " got "<<co->tennisPoint[teamNumber] << " points" << endl;
+                
                 ball->setPosition(1920, 1080/2);
                 int xvel = teamNumber == 1 ? -20 : 20;
                 ball->setVelocity(xvel, 20);
             }
             
-            winButton->update(co->attraction);
+            buttons->at(winButton).update(co->attraction);
         }
         pad->setVelocity(0,0);
-        pad->addAttractionPoint(winButton->getPos(),100);
-        pad->setRotation(winButton->getRawData().z + PI/2);
+        pad->addAttractionPoint(buttons->at(winButton).getBiquadPos(),100);
+        pad->setRotation(buttons->at(winButton).getRawData().z + PI/2);
         
     }
     
     void draw(){
         ofSetColor(255);
-        winButton->draw();
+        buttons->at(winButton).draw();
         pad->draw();
         
         //lifebar
@@ -71,7 +70,7 @@ public:
         ofDrawRectangle(20 + 1920*teamNumber , 1080-40 , left * ( 1880  / gameOverPoint ) , 20);
         
         if(co->debug)
-            winButton->drawDebug();
+            buttons->at(winButton).drawDebug();
     }
     
     void begin(ofxBox2d * world = nullptr){
@@ -84,13 +83,13 @@ public:
             if(buttons->at(i).isPlaying && firstOn == -1)
                 firstOn = i;
             if(buttons->at(i).isWinner){
-                winButton = &buttons->at(i);
+                winButton = i;
                 isSet = true;
             }
         }
         if(!isSet){
             firstOn = firstOn == -1 ? 0 : firstOn;
-            winButton = &buttons->at(firstOn);
+            winButton = firstOn;
             cout << "winbutton " << firstOn << endl;
         }
         
@@ -105,6 +104,6 @@ public:
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
         }
-        winButton = nullptr;
+        
     }    
 };

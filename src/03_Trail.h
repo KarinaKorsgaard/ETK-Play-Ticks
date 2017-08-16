@@ -43,13 +43,13 @@ public:
             y+=5;
             p = ofPoint (start - 150 , y);
             begin = y;
-            cout <<"TRAIL SEACH "<< y << " team "<<teamNumber <<  endl;
+            
         }
         while(maze.inside(p)){
             y+=5;
             p = ofPoint (start - 150 , y);
             end = y;
-            cout <<"TRAIL SEACH "<< y << " team "<<teamNumber <<  endl;
+            
         }
         trailStart = ofPoint(start - 200, begin + (end - begin)/2 );
         maze.clear();

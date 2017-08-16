@@ -1,29 +1,44 @@
 #include "ofMain.h"
 #include "Scene.h"
 
-
+struct Spot{
+    ofVec2f pos;
+    bool isTaken;
+    int buttonInt;
+};
 
 class Representative : public Scene{
     
 public:
 
-    int bigRadius,smallRadius;
+    int frontHall, doorLimit;
+    vector<shared_ptr<ofxBox2dRect>>doors;
+    vector<ofPolyline>movingPolys;
     
-    int bigRadiusWin,smallRadiusWin;
-    
+    vector<Spot>spots;
+    vector<ofPoint>originalPoints;
+    vector<ofPoint>midtPoints;
     Representative(){};
     ~Representative(){};
     
     ofVec2f midt;
 
+    bool doneFormation = false;
+    bool breakFormation = false;
     bool done = false;
     
+    float getDist(ofVec2f v, ofVec2f o){
+        ofVec2f a = o - v;
+        return a.dot(a);
+    }
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
         
         midt = ofVec2f(1920 / 2 + (1920 * teamNumber) , 1080 / 2);
+        frontHall = 500 + teamNumber * 1920;
+        doorLimit = frontHall + 1000;
 
     };
     
@@ -33,58 +48,105 @@ public:
     
     void updateIsDone(){
         
-        bool isInside = true;
-        int ousideCount = 0;
-        vector<int> checkThisOne;
-        vector<int> checkThisOneDist;
-        
-        for(int i = 0; i<buttons->size();i++){
+        if(!doneFormation){
+            vector<int> buttonsOutside;
+            for(int b = 0; b<buttons->size();b++){
+                if(buttons->at(b).isPlaying){
+                    if(buttons->at(b).getBiquadPos().x > frontHall){
+                        buttonsOutside.push_back(b);
+                        
+                    }
+                }
+            }
             
-            if(buttons->at(i).isPlaying){
-                ofPoint p = buttons->at(i).getBiquadPos();
-                
-                ofVec2f a = p - midt;
-                float dist = a.dot(a);
-                
-                if(dist > bigRadius || dist < smallRadius){
-                    checkThisOne.push_back(i);
-                    checkThisOneDist.push_back(dist);
-                    ousideCount ++;
+            doneFormation = buttonsOutside.size() == spots.size() ? true : false;
+            
+            for(int i = 0; i<spots.size();i++){
+                spots[i].isTaken = false;
+                spots[i].buttonInt = -1;
+            }
+            
+            if(doneFormation){
+               
+                for(int i = 0; i<buttonsOutside.size();i++){
+                    for(int s = 0; s<spots.size();s++){
+                        
+                        if(!spots[s].isTaken && getDist(spots[s].pos, buttons->at(buttonsOutside[i]).getBiquadPos())<200){
+                            spots[s].isTaken = true;
+                            spots[s].buttonInt = buttonsOutside[i];
+                        }
+                    }
+                    
                 }
-                
-                
-                if(ousideCount > 6){
-                    isInside = false;
-                    done = false;
-                    break;
+                for(int s = 0; s<spots.size();s++){
+                    if(!spots[s].isTaken)doneFormation=false;
                 }
             }
+            
         }
         
-        done = checkThisOne.size() == 6;
-        // << checkThisOne.size() << endl;
-        if(done){
-            for(int i = 0; i<checkThisOne.size();i++){
-                if(isInside){
-                    float dist = checkThisOneDist[i];
-                    
-                    if(dist < bigRadiusWin && dist > smallRadiusWin){
-                        buttons->at(checkThisOne[i]).isWinner = true;
-                    }else
-                        done = false;
+        breakFormation = false;
+
+        if(doneFormation){
+            int count = 0;
+            for(int b = 0; b<buttons->size();b++){
+                if(buttons->at(b).isPlaying && buttons->at(b).getBiquadPos().x > frontHall &&
+                   buttons->at(b).getBiquadPos().x<doorLimit){
+                    count++;
                 }
             }
+            breakFormation = count > spots.size() ? true : false;
+            
+            
+            for(int b = 0; b<buttons->size();b++){
+                ofVec2f bpos = buttons->at(b).getBiquadPos();
+                if(bpos.x > doorLimit && !buttons->at(b).isWinner){
+                    
+                    buttons->at(b).isWinner = true;
+                    
+                    for(int i = 0; i<spots.size();i++){
+                        
+                        if(spots[i].buttonInt == b){
+                            spots.erase (spots.begin()+i);
+                            break;
+                        }
+                    }
+                
+                }
+                
+            }
         }
+        done = spots.size() == 0 ? true : false;
+        
     };
     
     void update(){
         updateIsDone();
         
-        if(!done){
-            for(int i=0; i<buttons->size(); i++) {
-                buttons->at(i).update(co->attraction);
+        
+        for (int i = 0; i<doors.size();i++){
+            if(doneFormation && !breakFormation && abs(doors[i]->getPosition().y - originalPoints[i].y)>2){
+                
+                int up = i * 2 - 1;
+                doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up);
             }
+            else if(abs(doors[i]->getPosition().y - 1080 / 2 )>12){
+                
+                int up = i * 2 - 1;
+                up*=-1;
+                doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up*10.);
+            }
+           // doors[i]->setRotation(0);
+            doors[i]->update();
+            
         }
+        
+        if(!done)
+            for(int i=0; i<buttons->size(); i++){
+                 buttons->at(i).update(co->attraction);
+                //if(buttons->at(i).getPos().x > doorLimit && !doneFormation)
+                //    buttons->at(i).setPosition(doorLimit-400, buttons->at(i).getPos().y);
+            }
     }
     
     void draw(){
@@ -95,57 +157,250 @@ public:
             
             if(co->debug){
                 buttons->at(i).drawDebug();
-                
-                ofSetColor(255,0,0);
-                ofNoFill();
-                //winArea.draw();
-                ofDrawCircle(midt, bigRadius);
-                ofDrawCircle(midt, smallRadius);
-                
-                ofDrawCircle(midt, bigRadiusWin);
-                ofDrawCircle(midt, smallRadiusWin);
-                ofFill();
             }
         }
+        for(int i = 0; i<spots.size();i++){
+            if(spots[i].isTaken)
+                ofSetColor(255,0,0);
+            else ofSetColor(0,255,0);
+            
+            ofDrawCircle(spots[i].pos,20);
+        }
+        ofDrawLine(frontHall, 0, frontHall, 1080);
+        
+        for(int i = 0; i<doors.size();i++)
+            doors[i]->draw();
+
     };
     
     void begin(ofxBox2d * world = nullptr){
-        int radius = 1;
-        int numPlayers = 0;
+       
+        ofxSVG svg;
         
+        float addX = teamNumber == 0 ? 0 : 1920;
+        svg.load("svg/05_RepresentativeMoving.svg");
+        movingPolys = getPolyline(svg);
+        
+        svg.load("svg/05_Representative.svg");
+        solidPolys = getPolyline(svg);
+        
+        createScene(world,movingPolys);
+        
+        doorLimit = doors[0]->getPosition().x ;
+        
+        for(int i = 0; i<6;i++){
+            Spot s = *new Spot;
+            s.pos = ofVec2f(doorLimit - 400, 150 + i * 100 );
+            s.isTaken = false;
+            spots.push_back(s);
+        }
+            
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
-            
-            if(buttons->at(i).isPlaying){
-                radius = buttons->at(i).beginningRad;
-                numPlayers ++;
-            }
+                buttons->at(i).setPosition(frontHall ,buttons->at(i).getPos().y);
         }
-        numPlayers = CLAMP(numPlayers + 5, 0, 36);
-        float l = numPlayers * radius * 2;
-        float d = l / PI;
-        d/=2;
-        cout << d << endl;
-        bigRadius = d == 0 ? 286 : d;
         
-        bigRadius += radius;
-        smallRadius = bigRadius - 20;
-    
         
-        // big small win radius
-        l = 10 * radius * 2;
-        d = l / PI;
-        d/=2;
-        bigRadiusWin = d;
-        bigRadiusWin += radius;
-        smallRadiusWin = bigRadiusWin-20;
         
     };
     
     void reset(){
         done = false;
-    };
+        doneFormation = false;
+        breakFormation = false;
+        done = false;
+        spots.clear();
+        for(int i = 0; i< doors.size();i++)
+            doors[i]->destroy();
+        
+        doors.clear();
+        movingPolys.clear();
+        solidPolys.clear();
+        midtPoints.clear();
+        originalPoints.clear();
+    }
+    
+    void createScene(ofxBox2d * world ,vector<ofPolyline>polys){
+        
+        
+        for(int i = 0 ;i <polys.size();i++){
+            ofRectangle rect = polys[i].getBoundingBox();
+            
+            rect.x += rect.width/2;
+            rect.y += rect.height/2;
+            
+            if(polys[i].getVertices().size()>3 && (rect.width<1900 && rect.height < 1070)){
+                
+                shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+                r->setPhysics(0., 0., 0.);
+                r->setup(world->getWorld(), rect);
+                
+                doors.push_back(r);
+                originalPoints.push_back(doors.back()->getPosition());
+                
+            }
+        }
+        midtPoints.resize(originalPoints.size());
+   
+        int top = originalPoints[0].y + doors[0]->getHeight()/2;
+        int bot = originalPoints[1].y - doors[1]->getHeight()/2;
+        midtPoints[0].y = originalPoints[0].y + (bot-top)/2;
+        midtPoints[1].y = originalPoints[0].y - (bot-top)/2;
+        
+       
+        
+    }
 
-    
-    
 };
+/*
+ #include "ofMain.h"
+ #include "Scene.h"
+ 
+ 
+ 
+ class Representative : public Scene{
+ 
+ public:
+ 
+ int bigRadius,smallRadius;
+ int bigRadiusWin,smallRadiusWin;
+ 
+ Representative(){};
+ ~Representative(){};
+ 
+ ofVec2f midt;
+ 
+ bool done = false;
+ 
+ 
+ void setup(commonObjects*_co, vector<Button>*b){
+ buttons = b;
+ co = _co;
+ 
+ midt = ofVec2f(1920 / 2 + (1920 * teamNumber) , 1080 / 2);
+ 
+ };
+ 
+ bool isDone(bool b = false){
+ return done;
+ }
+ 
+ void updateIsDone(){
+ 
+ bool isInside = true;
+ int ousideCount = 0;
+ vector<int> checkThisOne;
+ vector<int> checkThisOneDist;
+ 
+ for(int i = 0; i<buttons->size();i++){
+ 
+ if(buttons->at(i).isPlaying){
+ ofPoint p = buttons->at(i).getBiquadPos();
+ 
+ ofVec2f a = p - midt;
+ float dist = a.dot(a);
+ 
+ if(dist > bigRadius || dist < smallRadius){
+ checkThisOne.push_back(i);
+ checkThisOneDist.push_back(dist);
+ ousideCount ++;
+ }
+ 
+ 
+ if(ousideCount > 6){
+ isInside = false;
+ done = false;
+ break;
+ }
+ }
+ }
+ 
+ done = checkThisOne.size() == 6;
+ // << checkThisOne.size() << endl;
+ if(done){
+ for(int i = 0; i<checkThisOne.size();i++){
+ if(isInside){
+ float dist = checkThisOneDist[i];
+ 
+ if(dist < bigRadiusWin && dist > smallRadiusWin){
+ buttons->at(checkThisOne[i]).isWinner = true;
+ }else
+ done = false;
+ }
+ }
+ }
+ };
+ 
+ void update(){
+ updateIsDone();
+ 
+ if(!done){
+ for(int i=0; i<buttons->size(); i++) {
+ buttons->at(i).update(co->attraction);
+ }
+ }
+ }
+ 
+ void draw(){
+ ofSetColor(255);
+ 
+ for(int i=0; i<buttons->size(); i++) {
+ buttons->at(i).draw();
+ 
+ if(co->debug){
+ buttons->at(i).drawDebug();
+ 
+ ofSetColor(255,0,0);
+ ofNoFill();
+ //winArea.draw();
+ ofDrawCircle(midt, bigRadius);
+ ofDrawCircle(midt, smallRadius);
+ 
+ ofDrawCircle(midt, bigRadiusWin);
+ ofDrawCircle(midt, smallRadiusWin);
+ ofFill();
+ }
+ }
+ };
+ 
+ void begin(ofxBox2d * world = nullptr){
+ int radius = 1;
+ int numPlayers = 0;
+ 
+ for(int i=0; i<buttons->size(); i++) {
+ buttons->at(i).isWinner = false;
+ 
+ if(buttons->at(i).isPlaying){
+ radius = buttons->at(i).beginningRad;
+ numPlayers ++;
+ }
+ }
+ numPlayers = CLAMP(numPlayers + 5, 0, 36);
+ float l = numPlayers * radius * 2;
+ float d = l / PI;
+ d/=2;
+ cout << d << endl;
+ bigRadius = d == 0 ? 286 : d;
+ 
+ bigRadius += radius;
+ smallRadius = bigRadius - 20;
+ 
+ 
+ // big small win radius
+ l = 10 * radius * 2;
+ d = l / PI;
+ d/=2;
+ bigRadiusWin = d;
+ bigRadiusWin += radius;
+ smallRadiusWin = bigRadiusWin-20;
+ 
+ };
+ 
+ void reset(){
+ done = false;
+ };
+ 
+ 
+ 
+ };
+*/
