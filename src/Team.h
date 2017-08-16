@@ -43,6 +43,7 @@ public:
     bool addedToWinnerlist = false;
     vector<Button>buttons;
     int teamId;
+    int fenceAttraction;
     
     commonObjects *co;
     int p_sceneNum=0;
@@ -95,7 +96,7 @@ public:
             it->second->teamNumber = teamId;
         }
         
-        design.setup(co,&buttons,"img/colors"+ofToString(teamId)+".png",6);
+        design.setup(co,&buttons,"img/colors"+ofToString(teamId)+".png","img/symbolColors"+ofToString(teamId)+".png",6);
         area.setup(co,&buttons);
         representative.setup(co,&buttons);
         logic.setup(co,&buttons);
@@ -121,28 +122,27 @@ public:
     void update(){
         
         int s = co->sceneNumber;
-        co->log("scene is "+co->sMap[s]);
         if(p_sceneNum != s){
-            co->log("scene is "+co->sMap[s]);
-            co->log("previos scene is "+co->sMap[p_sceneNum]);
-            reset();
-            
-            scenes[co->sMap[s]]->begin(box2d);
-            if(co->sMap[s] != "Idle" &&
-               co->sMap[s] != "GroundGame" &&
-               co->sMap[s] != "Fight"
 
-               ){
-                createWall();
-            }
+            reset();
+
+            scenes[co->sMap[s]]->begin(box2d);
+            
             if(scenes[co->sMap[s]]->solidPolys.size()>0)
                 createScene(scenes[co->sMap[s]]->solidPolys);
             
-            scenes[co->sMap[p_sceneNum]]->reset();
-            
-            
-            if(teamId == 0){
+//            
+//            if(co->sMap[s] != "Idle" &&
+//               co->sMap[s] != "GroundGame" &&
+//               co->sMap[s] != "Fight"
+//               
+//               ){
+//                createWall();
+//            }
 
+            scenes[co->sMap[p_sceneNum]]->reset();
+ 
+            if(teamId == 0){
                 co->background.load("img/backgrounds/"+co->sMap[s]+".png");
 
                 string file1 = "videos/celebrations/"+co->sMap[s]+"Winner"+".mov";
@@ -155,8 +155,8 @@ public:
                 }
                 co->celebration[0].load(file1);
                 co->celebration[1].load(file2);
-                
             }
+            
             co->teamIsDone.clear();
             addedToWinnerlist = false;
             p_sceneNum = s;
@@ -170,6 +170,7 @@ public:
         
         //--------------------------------------------------------------
         bool forceDone = false;
+
         
         if(co->sMap[s] == "Factories")
             forceDone = teamId == 0 ? co->marketDone1 : co->marketDone2;
@@ -352,7 +353,6 @@ private:
     void createScene(vector<ofPolyline>polys, float d = 0.,float f = 0.,float b = 0.){
         
         if(polyShapes.size()==0){
-            
             for(int i = 0 ;i <polys.size();i++){
                 ofRectangle r = polys[i].getBoundingBox();
                 if(polys[i].getVertices().size()>3 && (r.width<1900 && r.height < 1070)){
@@ -372,7 +372,6 @@ private:
                 }
             }
         }
-        
       cout << ofToString(polyShapes.size())+ " polyshapes size in " + co->sMap[co->sceneNumber]<< endl;
     }
     

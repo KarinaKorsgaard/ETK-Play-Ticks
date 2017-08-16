@@ -21,6 +21,8 @@ public:
     Representative(){};
     ~Representative(){};
     
+    
+    ofImage doorImg[2];
     ofVec2f midt;
 
     bool doneFormation = false;
@@ -29,7 +31,7 @@ public:
     
     float getDist(ofVec2f v, ofVec2f o){
         ofVec2f a = o - v;
-        return a.dot(a);
+        return a.dot(a) ;
     }
     
     void setup(commonObjects*_co, vector<Button>*b){
@@ -37,7 +39,7 @@ public:
         co = _co;
         
         midt = ofVec2f(1920 / 2 + (1920 * teamNumber) , 1080 / 2);
-        frontHall = 500 + teamNumber * 1920;
+        frontHall = 480 + teamNumber * 1920;
         doorLimit = frontHall + 1000;
 
     };
@@ -125,15 +127,15 @@ public:
         
         
         for (int i = 0; i<doors.size();i++){
-            if(doneFormation && !breakFormation && abs(doors[i]->getPosition().y - originalPoints[i].y)>2){
-                
-                int up = i * 2 - 1;
-                doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up);
+            if(doneFormation && !breakFormation ){
+                if(abs(doors[i]->getPosition().y - originalPoints[i].y)<100){
+                    int up = i * 2 - 1;
+                    up*=-1;
+                    doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up);
+                }
             }
-            else if(abs(doors[i]->getPosition().y - 1080 / 2 )>12){
-                
+            else if(abs(doors[i]->getPosition().y - originalPoints[i].y )>6){
                 int up = i * 2 - 1;
-                up*=-1;
                 doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up*10.);
             }
            // doors[i]->setRotation(0);
@@ -152,6 +154,14 @@ public:
     void draw(){
         ofSetColor(255);
 
+        for(int i = 0; i<spots.size();i++){
+            if(spots[i].isTaken)
+                ofSetColor(250,60,60);
+            else ofSetColor(60,250,60);
+            
+            ofDrawCircle(spots[i].pos,35);
+        }
+        
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
             
@@ -159,17 +169,19 @@ public:
                 buttons->at(i).drawDebug();
             }
         }
-        for(int i = 0; i<spots.size();i++){
-            if(spots[i].isTaken)
-                ofSetColor(255,0,0);
-            else ofSetColor(0,255,0);
-            
-            ofDrawCircle(spots[i].pos,20);
-        }
+        
         ofDrawLine(frontHall, 0, frontHall, 1080);
         
-        for(int i = 0; i<doors.size();i++)
-            doors[i]->draw();
+        for(int i = 0; i<doors.size();i++){
+            int x = doors[i]->getPosition().x;
+            int y = doors[i]->getPosition().y;
+            int w = doors[i]->getWidth();
+            int h = doors[i]->getHeight();
+            x -= w/2;
+            y -= h/2;
+            doorImg[i].draw(x,y,w,h);
+            //doors[i]->draw();
+        }
 
     };
     
@@ -180,17 +192,17 @@ public:
         float addX = teamNumber == 0 ? 0 : 1920;
         svg.load("svg/05_RepresentativeMoving.svg");
         movingPolys = getPolyline(svg);
-        
-        svg.load("svg/05_Representative.svg");
-        solidPolys = getPolyline(svg);
-        
         createScene(world,movingPolys);
         
-        doorLimit = doors[0]->getPosition().x ;
+        doorLimit = doors[0]->getPosition().x + doors[0]->getWidth();
         
-        for(int i = 0; i<6;i++){
+        vector<ofPolyline>spotPos;
+        svg.load("svg/05_RepresentativePositions.svg");
+        spotPos=getPolyline(svg);
+        
+        for(int i = 0; i<spotPos.size();i++){
             Spot s = *new Spot;
-            s.pos = ofVec2f(doorLimit - 400, 150 + i * 100 );
+            s.pos = ofVec2f( spotPos[i].getCentroid2D() );
             s.isTaken = false;
             spots.push_back(s);
         }
@@ -200,7 +212,8 @@ public:
                 buttons->at(i).setPosition(frontHall ,buttons->at(i).getPos().y);
         }
         
-        
+        doorImg[0].load("img/specialAssets/05_Door-01.png");
+        doorImg[1].load("img/specialAssets/05_Door-02.png");
         
     };
     
@@ -218,6 +231,9 @@ public:
         solidPolys.clear();
         midtPoints.clear();
         originalPoints.clear();
+        
+        doorImg[0].clear();
+        doorImg[1].clear();
     }
     
     void createScene(ofxBox2d * world ,vector<ofPolyline>polys){

@@ -16,17 +16,21 @@ public:
     
     int p_efficiency;
     ofPoint center;
+    int factoryWidth;
     int slots;
     bool bucketIsFull;
     int amountOfDots = 0;
     vector<Button>buttons;
     int numSymbolsPresent, numColorsPresent;
     
+    
+    
     void setup(ofPolyline p, int _slots){
         poly = p;
         slots = _slots;
-        
+  
         center = poly.getCentroid2D();
+        factoryWidth = poly.getBoundingBox().width;
         top = poly.getBoundingBox().y;
         
 
@@ -42,15 +46,7 @@ public:
     }
     
     void setEfficiency(){
-        // spaces taken. if space is taken you minus, if not you add.
-      
-        //s[0].x = white, star
-        //s[1].x = red, square
-        //s[2].x = blue, triangle
-        
 
-        
-        
         vector<int>colorsTaken;
         vector<int>symbolsTaken;
         amountOfDots = 0;
@@ -88,18 +84,25 @@ public:
         bucketIsFull = amountOfDots == slots * 2;
     }
 
-    void drawDots( ){
+    void drawDots(float factoryRotation){
+        int spacing = 10;
         ofPushMatrix();
         ofPushStyle();
-        ofTranslate(center.x-(30.f*float(slots*2))/2.f,top - 70);
-
+        ofTranslate(center);
+       // ofRotateZ(360 - slots*spacing );
+        ofRotateZ(factoryRotation);
+        
         ofFill();
         for(int i = 0; i< slots * 2 ;i++){
+            ofPushMatrix();
             if(i+1>amountOfDots)
                 ofNoFill();
             int y = (i/slots)*30;
             
-            ofDrawCircle(i*30 - (int((i/slots))*slots*30) ,y,10);
+            if(i%2 == 0) ofRotateZ( spacing * i/2);
+            else ofRotateZ(360 - spacing * (i-1)/2 - 100);
+            ofDrawCircle(factoryWidth / 2 + 10, 0, 10);
+            ofPopMatrix();
             
         }
         ofPopStyle();
@@ -117,8 +120,10 @@ public:
     vector<ofPolyline> polysOutline;
     vector<ofPolyline> solidPolysFull;
     
-    bool done = false;
+    vector<bool>empolyedTicks;
     
+    bool done = false;
+    ofImage overlay;
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
@@ -137,6 +142,9 @@ public:
     
     void update(){
         if(!done) {
+            for(int i = 0; i<empolyedTicks.size();i++)
+                empolyedTicks[i] = false;
+            
             updateBaskets();
             for(int i=0; i<buttons->size(); i++) {
                 buttons->at(i).update(co->attraction);
@@ -148,37 +156,43 @@ public:
         for(int i = 0; i< baskets.size();i++){
             baskets[i].buttons.clear();
             
-            for(int b=0; b<buttons->size(); b++) {
-                if(!buttons->at(b).on || !buttons->at(b).isPlaying || buttons->at(b).isDead())
-                    continue;
+            for(int b = 0; b<buttons->size(); b++) {
                 
-                if(buttons->at(b).on && !done){
+                if( buttons->at(b).isPlaying ){
                     if(baskets[i].isIn(buttons->at(b).getBiquadPos())){
                         baskets[i].buttons.push_back(buttons->at(b));
-                    }else{
-                        co->isUnemployed[teamNumber] = ofPoint( buttons->at(b).table , buttons->at(b).ID );
+                        
+                        empolyedTicks[b] = true;
+
                     }
                 }
             }
-            
             baskets[i].setEfficiency();
 
+        }
+        for(int i = 0; i<empolyedTicks.size();i++){
+            if (!empolyedTicks[i] && buttons->at(i).isPlaying ){
+                co->isUnemployed[teamNumber] = ofPoint( buttons->at(i).table , buttons->at(i).ID );
+                
+            }
         }
     }
 
 
     void draw(){
 
+       
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
         }
 
-        
+        ofSetColor(255,0,0);
         for(int i = 0; i<baskets.size();i++){
             ofFill();
-            baskets[i].drawDots();
+            baskets[i].drawDots(co->factoryRotation[i]);
 
         }
+        overlay.draw(teamNumber * 1920, 0,1920, 1080);
         
     };
     
@@ -192,6 +206,7 @@ public:
         svg2.load("svg/10_FactoryAreas.svg");
         polysOutline = getPolyline(svg2);
         
+        overlay.load("img/specialAssets/09_FactoriesOverlay.png");
         
         int X = co->numPresentButtons[teamNumber];
         int F = max(co->lookUp[X][0],co->lookUp[X][1]);
@@ -219,16 +234,20 @@ public:
         co->marketDone1=false;
         co->marketDone2=false;
         
-        solidPolys = solidPolysFull;
-        solidPolys.resize(F);
-
+        empolyedTicks.resize(36);
         
+        for(int i = 0; i<F;i++)
+            solidPolys.push_back(solidPolysFull[i]);
+                    
     };
     
     void reset(){
+        empolyedTicks.clear();
         solidPolysFull.clear();
         polysOutline.clear();
         baskets.clear();
+        solidPolys.clear();
+        overlay.clear();
     };
     
 

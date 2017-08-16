@@ -74,7 +74,7 @@ public:
     vector<ofColor> color;
     int symbolInt,colorInt;
     
-    ofImage * legs[2];
+    ofImage * legs[4];
     
     bool isWinner = false;
     
@@ -134,33 +134,42 @@ public:
         ofPopStyle();
     }
     
-    void draw(bool transform = true, bool sizeMatters = false, bool allon = false){
-       // if(on || allon){
+    void draw(bool transform = true, float scale = 1.f){
+        float radiusUsed = scale * radius;
         ofPushStyle();
         if(isPlaying ){
-            float rad = sizeMatters ? box2Dcircle->getRadius() : beginningRad ;
+            
             if(transform){
                 ofPushMatrix();
                 ofTranslate(getBiquadPos());
                 ofRotateZ(r);
             }
             
-            float scale = rad / 25.0f;
+            
             ofSetColor(color[0]);
             
         
             if(!isDead()){
                 armSwapper+=(dx+dy)*10.;
                 if(armSwapper>0.8)armSwapper=0.;
-                int aInd = armSwapper>.4 ? 0:1;
-                int w = rad*3.8;
-                legs[aInd]->draw(-w/2,-w/2 + rad*0.23 ,w,w);
+                
+                int aInd = 0;
+                if (armSwapper > 0.4)
+                    aInd = int(floor (ofMap(armSwapper,0.4,0.8, 4,0)));
+                else
+                    aInd = int(floor (ofMap(armSwapper,0.,0.4, 0,4)));
+                aInd = std::min(aInd,3);
+                aInd = std::max(aInd,0);
+                
+                int w = 132 * scale;
+                int h = 128 * scale;
+                legs[aInd]->draw(-w/2,-h/2 , w,h);
             }
             int charImg = isDead()?1:0;
-            img->at(charImg).draw(-rad,-rad,rad*2,rad*2);
+            img->at(charImg).draw(-radiusUsed,-radiusUsed,radiusUsed*2,radiusUsed*2);
 
-            ofSetColor(0);
-            symbol->draw(-rad,-rad,rad*2,rad*2);
+            ofSetColor(color[1]);
+            symbol->draw(-radiusUsed,-radiusUsed,radiusUsed*2,radiusUsed*2);
             ofFill();
             
             if(transform)ofPopMatrix();
@@ -191,15 +200,17 @@ public:
         
         if(isPlaying && !isDead()){
             
-            if(on){
+           // if(on){
 
                 ofVec2f p;
                 
                 int multiX = doubleSize ? teamNumber * 1920 : 0;
+                
                 p.x = multiX + (rect.width*x)+ rect.x;
                 p.y = rect.height*y + rect.y;
                 
-                ofRectangle r = ofRectangle(multiX, p.y, rect.width, rect.height);
+ 
+                ofRectangle r = ofRectangle(multiX + rect.x , rect.y , rect.width, rect.height);
                 
             //    distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
             //    distToOrg /= (1980+1080);
@@ -211,9 +222,9 @@ public:
                 
                 
                 lastPos = filterLowPass.value();
-                moveBackToBoard(r);
+               // moveBackToBoard(r);
  
-            }
+         //   }
         }
         filterLowPass.update(getPos());
         updateRadius();
@@ -225,7 +236,7 @@ public:
         
         if(isPlaying && !isDead()){
             
-            if(on){
+            //if(on){
                 
                 ofVec2f p;
                 
@@ -233,7 +244,7 @@ public:
                 p.x = multiX + (rect.width * x) + rect.x;
                 p.y = 1080;
                 
-                ofRectangle r = ofRectangle(multiX, 0, rect.width, 1080);
+                ofRectangle r = ofRectangle(multiX + rect.x , rect.y , rect.width, rect.height);
                 
                 //distToOrg = abs(p.x - getPos().x) + abs(p.y - getPos().y);
                 //distToOrg /= (rect.width+1080);
@@ -250,7 +261,7 @@ public:
                 //if(!freezeUpdate){
                 
                 
-            }
+          //  }
         }
         filterLowPass.update(getPos());
         updateRadius();

@@ -12,6 +12,8 @@ public:
     double isDoneCounter;
     float solidHeigth;
 
+    ofImage escalatorImg[3];
+    
     vector<shared_ptr<ofxBox2dRect>>escalators;
     vector<ofPolyline>movingPolys;
     ofRectangle start;
@@ -92,8 +94,17 @@ public:
             }
         }
         
-        for(int i = 0; i< escalators.size();i++)
-            escalators[i]->draw();
+        for(int i = 0; i< MIN(3 , escalators.size());i++){
+
+            int x = escalators[i]->getPosition().x;
+            int y = escalators[i]->getPosition().y;
+            int w = escalators[i]->getWidth();
+            int h = escalators[i]->getHeight();
+            x -= w/2;
+            y -= h/2;
+            escalatorImg[i].draw(x,y,w,h);
+    
+        }
         ofNoFill();
         ofDrawRectangle(start);
         ofFill();
@@ -124,7 +135,9 @@ public:
                 buttons->at(i).getOutOfPolys(solidPolys);
             }
         }
-        
+        escalatorImg[0].load("img/specialAssets/07_escalatorPads-01.png");
+        escalatorImg[1].load("img/specialAssets/07_escalatorPads-02.png");
+        escalatorImg[2].load("img/specialAssets/07_escalatorPads-03.png");
 
     };
     void reset(){
@@ -135,6 +148,10 @@ public:
         escalators.clear();
         movingPolys.clear();
         solidPolys.clear();
+        
+        escalatorImg[0].clear();
+        escalatorImg[1].clear();
+        escalatorImg[2].clear();
     }
     
     

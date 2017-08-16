@@ -9,18 +9,24 @@ public:
     int maxSymbols = 0;
     int maxColors = 0;
     vector<ofColor>colors;
+    vector<ofColor>colors2;
     vector<bool>drawCircles;
     double countDown = 5*60;
-    
-    
+    ofImage forGround;
+    vector<string>letters;
     
     string colorFile;
+    string colorFile2;
     int numColors;
-    void setup(commonObjects*_co, vector<Button>*b, string _colorFile, int _numColors){
+    void setup(commonObjects*_co, vector<Button>*b, string _colorFile, string _colorFile2, int _numColors){
         buttons = b;
         co = _co;
         colorFile = _colorFile;
+        colorFile2 = _colorFile2;
         numColors = _numColors;
+        
+        string abc = "A-B-C-D-E-F";
+        letters = ofSplitString(abc,"-");
     };
     
     
@@ -64,7 +70,7 @@ public:
         else countDown = 0;
         
         int c = colors.size();
-        int s = co->characterSymbols.size();
+        int c2 = colors2.size();
 
         int numPlayers = co->numPresentButtons[teamNumber];
 
@@ -83,11 +89,12 @@ public:
             int y = ofMap (data.y,0,1,0,maxSymbols); // symbol
             
             x = CLAMP (x,0,c-1);
-            y = CLAMP (y,0,s-1);
+            y = CLAMP (y,0,c2-1);
             
         //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
             buttons->at(i).color[0]=colors[x];
-            buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size() )];
+            buttons->at(i).color[1]=colors2[y];
+            // buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size() )];
            
             buttons->at(i).colorInt = x;
             buttons->at(i).symbolInt = y;
@@ -97,22 +104,37 @@ public:
     }
     
     void draw(){
-        
+        int hSpace = 125;
+        int vSpace = 125;
+        int leftSide = (1920 - 6 * vSpace )/2 + vSpace/2;
+        int topSide  = (1080 - 6 * hSpace )/2 + hSpace/2 + 10;
+        leftSide+=teamNumber * 1920;
         for(int i = 0 ; i<buttons->size();i++) {
             
             Button b = buttons->at(i);
             if(b.isPlaying){
                 ofPushMatrix();
-                ofTranslate(b.getGridPos(   b.table - (b.table%2) * b.teamNumber , b.ID )   );
-                ofTranslate(800,0);
+                
+                
+                 int table =ceil( (b.table+1 + (teamNumber*-1 + 1))/ 2)+0.1 - 1;
+                
+                ofTranslate( (table * hSpace) + leftSide, b.ID * vSpace + topSide );
+                
+                
                 ofSetColor(255);
                 if(drawCircles[i] && countDown == 0)ofDrawCircle(0,0,30);
-                b.draw(false, false, true);
+                b.draw(false);
                 if(co->debug)
                     co->font_small->drawString(ofToString(b.table+1)+" :"+ofToString(b.ID+1), -10, 20);
                 ofPopMatrix();
             }
         }
+        forGround.draw(teamNumber * 1920 , 0 , 1920 , 1080);
+        for(int i = 0; i<6; i++)
+            co->font_small->drawString(letters[i], leftSide - 125*2, topSide + i*vSpace +10);
+        
+        for(int i = 0; i<6; i++)
+            co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide + hSpace*i - 10, topSide - 100);
         
     };
     
@@ -126,8 +148,6 @@ public:
         
         ofTexture tex;
         ofPixels pix;
-        
-        
         colors.resize(numColors);
         if(ofLoadImage(tex, colorFile)){
             
@@ -140,6 +160,22 @@ public:
                 
             }
         }
+        tex.clear();
+        pix.clear();
+        colors2.resize(numColors);
+        cout << colorFile2 << endl;
+        if(ofLoadImage(tex, colorFile2)){
+            
+            tex.readToPixels(pix);
+            
+            int indx = tex.getWidth() / numColors;
+            int c = 0;
+            for(int i = 0; i<numColors;i++){
+                colors2[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
+                
+            }
+        }
+        forGround.load("img/specialAssets/01_DesignForeground.png");
     };
     
     void reset(){

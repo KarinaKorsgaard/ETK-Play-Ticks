@@ -57,8 +57,8 @@ public:
 
     void draw(){
         ofSetColor(255);
-        
-        hole.draw(midt.x - smallRadius/2, midt.y - smallRadius/2,smallRadius,smallRadius);
+        float holesize =2 * smallRadius * 1.193 - 25;
+        hole.draw(midt.x - holesize/2, midt.y - holesize/2 ,holesize,holesize);
         
         for(int i=0; i<buttons->size(); i++) {
             

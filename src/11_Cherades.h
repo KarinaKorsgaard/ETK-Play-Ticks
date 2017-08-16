@@ -9,11 +9,15 @@ public:
     bool isDouble = true;
     ofRectangle rect;
     
+    ofImage overlay;
+    bool isCherades;
+    
     void setup(commonObjects*_co, vector<Button>*b, bool _isDouble = true, ofRectangle _r =ofRectangle(0,0, 1920,1080)){
         buttons = b;
         co = _co;
         rect = _r;
         isDouble = _isDouble;
+        isCherades = _isDouble;
     };
     
 
@@ -40,14 +44,17 @@ public:
                 buttons->at(i).drawDebug();
             }
         }
+        if (isCherades)overlay.draw(teamNumber * 1920 , 0, 1920, 1080);
     }
     
     
     void begin(ofxBox2d * world = nullptr){
         done = false;
+        if (isCherades)overlay.load("img/specialAssets/11_cheradesOverlay.png");
     }
     
     
     void reset(){
+        if (isCherades)overlay.clear();
     }
 };

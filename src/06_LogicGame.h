@@ -43,7 +43,7 @@ public:
        // cout<<"z rotation " << z << endl;
        // cout <<"dr " << dr<<endl;
         
-        if(abs(dr) < 5)cur_rotation += dr*0.5f ;
+        if(abs(dr) < 5)cur_rotation += dr ;
         if(cur_rotation > 360)cur_rotation = 0;
         if(cur_rotation < 0)cur_rotation = 360;
         
@@ -129,7 +129,18 @@ public:
             if(co->showLogicTargets)circles[i].drawTargets(m);
         }
         for(int i=0; i<winnerButtons.size(); i++) {
-            buttons->at(winnerButtons[i]).draw();
+            ofPushMatrix();
+
+            if(i>2)ofTranslate(1920 + teamNumber *1920 - 340, 324 + (i-3) *216 );
+            else ofTranslate( teamNumber *1920 + 340, 324 + i *216 );
+            ofRotateZ(ofRadToDeg(buttons->at(winnerButtons[i]).getRawData().z));
+            buttons->at(winnerButtons[i]).draw(false, 2.2);
+            if(co->debug)
+                co->font_small->drawString(ofToString(
+                                                      buttons->at(winnerButtons[i]).table) +" "
+                                                      +ofToString(buttons->at(winnerButtons[i]).ID),0,0);
+            
+            ofPopMatrix();
         }
     }
     

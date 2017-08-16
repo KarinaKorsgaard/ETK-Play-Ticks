@@ -144,7 +144,7 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
         if(teamNumber == 0){
-            co->avergaTick.load("img/specialAssets/03_TrailAverageTick.png");
+            co->avergaTick.load("img/specialAssets/03_Lantern.png");
             
         }
         go = false;

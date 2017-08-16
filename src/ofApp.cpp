@@ -13,8 +13,8 @@ void ofApp::setup(){
 
     //set common objects to point at fonts and button map
     syphon.setName("tick games");
-    font_small.load("fonts/GT.ttf", 30);
-    font_medium.load("fonts/GT.ttf", 65);
+    font_small.load("fonts/font.ttf", 30);
+    font_medium.load("fonts/font.ttf", 65);
 
     co.fillLookUp();
 
@@ -28,6 +28,8 @@ void ofApp::setup(){
     
     co.legs[0].load("img/characters/arms/arm1.png");
     co.legs[1].load("img/characters/arms/arm2.png");
+    co.legs[2].load("img/characters/arms/arm3.png");
+    co.legs[3].load("img/characters/arms/arm4.png");
     
     co.celebration[0].load("videos/celebrationDefaultWinner.mov");
     co.celebration[1].load("videos/celebrationDefaultLooser.mov");
@@ -37,7 +39,7 @@ void ofApp::setup(){
     co.numPresentButtons[1] = 0;
     
     co.characterSymbols.resize(12);
-    for(int i = 0 ; i< 12 ; i++)
+    for(int i = 0 ; i< 2 ; i++)
         co.characterSymbols[i].load("img/symbols/marker-"+ofToString(i+1, 2, '0')+".png");
     
     
@@ -94,6 +96,9 @@ void ofApp::setup(){
             b.img = &co.characterImgs;
             b.legs[0] = &co.legs[0];
             b.legs[1] = &co.legs[1];
+            b.legs[2] = &co.legs[2];
+            b.legs[3] = &co.legs[3];
+            b.symbol = &co.characterSymbols[teamNum];
             
             b.box2Dcircle.get()->setData(new ButtonData());
             ButtonData * sd = (ButtonData*)b.box2Dcircle.get()->getData();
@@ -173,6 +178,10 @@ void ofApp::setup(){
         ofParameter<float>t;
         co.targetCircleRot.push_back(t);
         logic.add(co.targetCircleRot.back().set("circle"+ofToString(i+1),0,0,360));
+        
+        ofParameter<float>f;
+        co.factoryRotation.push_back(f);
+        market.add(co.factoryRotation.back().set("factory"+ofToString(i+1),0,0,360));
     }
     logic.add(co.showLogicTargets.set(false));
 
@@ -268,8 +277,10 @@ void ofApp::update(){
     }
     if(co.sMap[co.sceneNumber] == "Fight")
     {
-        if(co.startMovement)
+        if(co.startMovement){
+            fightBall->setVelocity(fightBall->getVelocity().x * 1.01, fightBall->getVelocity().y * 0.999);
             fightBall->update();
+        }
     }
     
     
@@ -339,7 +350,8 @@ void ofApp::draw(){
         ofDrawRectangle(0,0,1920*2 , 1080);
         trailShader.end();
     }
-    if(co.sMap[co.sceneNumber] == "Fight")fightBall->draw();
+    if(co.sMap[co.sceneNumber] == "Fight" && co.teamIsDone.size() == 0 && co.startScene)
+        fightBall->draw();
     
     teams[0].draw();
     teams[1].draw();
@@ -391,11 +403,11 @@ void ofApp::handleSceneChange(){
 
         if(co.sMap[co.sceneNumber] == "Fight"){
             fightBall = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-            fightBall.get()->setPhysics(1., 1.0, 0.0);
+            fightBall.get()->setPhysics(10., 5., 10.0);
             fightBall.get()->setup(box2d.getWorld(), 1920,1080/2 , 40);
             fightBall.get()->alive = true;
             
-            fightBall.get()->setVelocity(10, 5);
+            fightBall.get()->setVelocity(5, 5);
             
             Fight * f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
             Fight * f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);
@@ -462,7 +474,7 @@ void ofApp::refill(int team, float timef){
             ofTranslate(b->getGridPos( b->table - b->table%2*team , b->ID));
             ofTranslate(1920 * team,0);
             ofTranslate(800,0);
-            b->draw(false, true, true);
+            b->draw(false);
             ofPopMatrix();
            
         }

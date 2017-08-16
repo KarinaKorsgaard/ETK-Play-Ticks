@@ -61,6 +61,7 @@ public:
     
     ofParameter<float>logicPrecision;
     vector<ofParameter<float>>targetCircleRot;
+    vector<ofParameter<float>>factoryRotation;
     ofParameter<bool>showLogicTargets;
     
     ofParameter<int>gravity;
@@ -97,7 +98,7 @@ public:
     
     map< int , string >sMap;
     
-    ofImage legs[2];
+    ofImage legs[4];
     
     int NUM_TABLES;
     int BUTTONS_PR_TABLE;
