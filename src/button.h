@@ -110,9 +110,9 @@ public:
     }
     
     
-    void drawDebug(ofRectangle rect = ofRectangle(0,0, 1920,1080)){
+    void drawDebug( ofRectangle rect = ofRectangle(0,0, 1920,1080)){
         ofPushStyle();
-        if(on && !isDead() && isPlaying){
+        if( isPlaying){
             ofVec2f p;
             
             p.x = rect.width * x + rect.x;
@@ -125,6 +125,8 @@ public:
             if(on)ofSetColor(ofColor::royalBlue , 100);
             else ofSetColor(ofColor::orangeRed , 20);
             ofDrawCircle(0, 0, 25);
+            ofSetColor(255);
+            ofDrawBitmapString(ofToString(table+1)+" :"+ofToString(ID+1), -10, 20);
             ofPopMatrix();
             
             if(on)ofDrawLine(getPos(),p);
