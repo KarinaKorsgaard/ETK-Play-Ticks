@@ -245,7 +245,7 @@ public:
             ofRectangle rect = polys.getBoundingBox();
             
             rect.x += rect.width/2;
-            rect.y += rect.height/2;
+            rect.y += 5;
             rect.height = 10;
         
             if(polys.getVertices().size()>3 && (rect.width<1900 && rect.height < 1070)){

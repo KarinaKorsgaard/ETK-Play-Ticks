@@ -614,7 +614,15 @@ void ofApp::updateOsc(){
                             // prevent them getting stuck on edges
                             x = CLAMP(x, 0.1, 0.9);
                             y = CLAMP(y, 0.1, 0.9);
-                            b->setPosition(x * 1920 + b->teamNumber*1920, y*1080);
+                            ofVec2f p = ofVec2f(x * 1920 + b->teamNumber*1920, y*1080);
+                            
+                            if (co.sMap[co.sceneNumber]=="Fences" || co.sMap[co.sceneNumber]=="AverageMaze")p.y = 1000;
+                            if (co.sMap[co.sceneNumber]=="Maze")p.y = 60;
+                            if (co.sMap[co.sceneNumber]=="Representative")p.x = 100;
+                            if (co.sMap[co.sceneNumber]=="Factories")
+                                p = ofVec2f(1920/2+b->teamNumber*1920, 1080/2);
+                            
+                            b->setPosition(p);
                             co.numPresentButtons[b->teamNumber]++;
                         }
                         
