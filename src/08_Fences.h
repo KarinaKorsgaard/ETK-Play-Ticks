@@ -238,7 +238,9 @@ public:
             ofRectangle rect = polys.getBoundingBox();
             
             rect.x += rect.width/2;
-            
+            rect.y += rect.height/2;
+            rect.height = 10;
+        
             if(polys.getVertices().size()>3 && (rect.width<1900 && rect.height < 1070)){
                 
                 shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
