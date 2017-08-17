@@ -67,7 +67,13 @@ public:
             int front = teamNumber == 0 ? -1 : 1;
             pad->setPosition( tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y);
             
-            buttons->at(winButton).update(co->attraction, false , tennisCourt);
+            buttons->at(winButton).box2Dcircle->setPosition(
+                                               buttons->at(winButton).getRawData().x*tennisCourt.width + tennisCourt.x,
+                                               buttons->at(winButton).getRawData().y * tennisCourt.height + tennisCourt.y);
+            buttons->at(winButton).filterLowPass.update(buttons->at(winButton).getPos());
+            buttons->at(winButton).setDirection(buttons->at(winButton).filterLowPass.value(), buttons->at(winButton).lastPos);
+            buttons->at(winButton).lastPos = buttons->at(winButton).filterLowPass.value();
+            //update(co->attraction, false , tennisCourt);
         
 
         }

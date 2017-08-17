@@ -249,7 +249,7 @@ public:
         
         empolyedTicks.resize(36);
         
-        for(int i = 0; i<F;i++)
+        for(int i = 0; i<solidPolysFull.size();i++)
             solidPolys.push_back(solidPolysFull[i]);
                     
     };

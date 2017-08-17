@@ -97,9 +97,9 @@ public:
                 numPlayers ++;
             }
         }
-        numPlayers = MAX(numPlayers ,16);
+        numPlayers = MAX(numPlayers, 16);
         numPlayers+=8;
-        float l = numPlayers * radius * 2;
+        float l = numPlayers * radius * 3;
         float d = l / PI;
   
         d/=2;

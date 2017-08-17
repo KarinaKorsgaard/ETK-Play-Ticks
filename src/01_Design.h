@@ -66,34 +66,45 @@ public:
     
     void update(){
         
-        if(countDown > 0)countDown -= ofGetLastFrameTime();
+        if(countDown > 0 && co->startScene)countDown -= ofGetLastFrameTime();
         else countDown = 0;
         
         int c = colors.size();
         int c2 = colors2.size();
-        int S = co->characterSymbols.size();
+        int s = co->characterSymbols.size();
+        
         int numPlayers = co->numPresentButtons[teamNumber];
 
         maxColors = co->lookUp[numPlayers][0];
         maxSymbols = co->lookUp[numPlayers][1];
-        cout << maxColors << " " <<maxSymbols<<endl;
+        int minColors = MIN(maxColors,maxSymbols);
+        minColors=MAX(minColors,1);
+        int howManyGetsMore = numPlayers % minColors;
+        
+        //cout <<"how many gets more"<< howManyGetsMore << " " <<maxSymbols<<endl;
         //co->numSymbolsPresent[teamNumber] = maxSymbols;
         //co->numColorsPresent[teamNumber] = maxColors;
         
-        
+        int count = 0;
         for(int i=0; i<buttons->size(); i++) {
             ofVec3f data = buttons->at(i).getRawData();
             float normX = data.x > 1 ? data.x - 1. : data.x;
-       
-            int x = ofMap (normX,0,1,0,maxColors);
+            int x = ofMap (normX,0,1,0,minColors);
             int y = ofMap (data.y,0,1,0,maxSymbols); // symbol
-            
+            if(count < howManyGetsMore){
+                
+                
+                x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
+                cout << i << " has more choise!"<<endl;
+
+                
+            }
+            if(buttons->at(i).isPlaying)count++;
             x = CLAMP (x,0,c-1);
-            y = CLAMP (y,0,c2-1);
-            
+            y = CLAMP (y,0,s-1);
         //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
             buttons->at(i).color[0]=colors[x];
-            buttons->at(i).color[1]=colors2[y];
+            //buttons->at(i).color[1]=colors2[y];
             //buttons->at(i).symbol =
             buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size() )];
            

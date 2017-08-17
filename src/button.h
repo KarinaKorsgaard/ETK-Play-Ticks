@@ -177,7 +177,7 @@ public:
     void setPosition(ofVec2f v){
         box2Dcircle->setPosition(v);
         filterLowPass.clear(v);
-        lastPos = v;
+        //lastPos = v;
     }
     float getSpeed(){
         return dx+dy;
