@@ -106,7 +106,7 @@ public:
             buttons->at(i).color[0]=colors[x];
             //buttons->at(i).color[1]=colors2[y];
             //buttons->at(i).symbol =
-            buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size() )];
+            buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
            
             buttons->at(i).colorInt = x;
             buttons->at(i).symbolInt = y;
@@ -145,7 +145,7 @@ public:
                 
                 b.img->at(0).draw(-25,-25,25*2,25*2);
                 
-                ofSetColor(b.color[1]);
+                //ofSetColor(b.color[1]);
                 b.symbol->draw(-25,-25,25*2,25*2);
                 
                 
