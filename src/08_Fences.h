@@ -26,6 +26,8 @@ public:
     bool moveEscalators;
     bool p_moveEscalators;
     
+    ofImage overlay;
+    
     vector<int> buttonsInPits;
 
     vector<int>upDown;
@@ -170,6 +172,8 @@ public:
         ofNoFill();
         ofDrawRectangle(start);
         ofFill();
+        
+        overlay.draw(teamNumber * 1920, 0, 1920, 1080);
     };
     
     void begin(ofxBox2d * world = nullptr){
@@ -177,6 +181,8 @@ public:
         moveEscalators = false;
         p_moveEscalators = false;
         thisWorld = world;
+        
+        overlay.load("img/specialAssets/08_EscalatorOverlay.png");
         
         float addX = teamNumber == 0 ? 0 : 1920;
         
@@ -215,6 +221,7 @@ public:
 
     };
     void reset(){
+        overlay.clear();
         isDoneCounter=0.;
         for(int i = 0; i< escalators.size();i++)
             escalators[i]->destroy();
