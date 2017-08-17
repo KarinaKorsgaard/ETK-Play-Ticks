@@ -13,6 +13,8 @@ public:
     float solidHeigth;
     vector<ofPolyline>dispensorPoly;
     ofxBox2d * thisWorld;
+    
+    vector<ofImage>dispensorImages;
 
     ofImage escalatorImg[3];
 
@@ -105,6 +107,7 @@ public:
                             dispensors[0]->destroy();
                             dispensors.erase(dispensors.begin());
                             dispensorPoly.erase(dispensorPoly.begin());
+                            dispensorImages.erase(dispensorImages.begin());
                         }
                     }
                 }
@@ -128,6 +131,8 @@ public:
                         dispensors[0]->destroy();
                         dispensors.erase(dispensors.begin());
                         dispensorPoly.erase(dispensorPoly.begin());
+                        dispensorImages.erase(dispensorImages.begin());
+                        
                     }
                         
                 }
@@ -174,8 +179,8 @@ public:
                     ofDrawCircle(buttons->at(theWinner).getBiquadPos(),20);
             }
         }
-        for(int i = 0 ;i<dispensorPoly.size();i++)
-            dispensorPoly[i].draw();
+        for(int i = 0 ;i<dispensorImages.size();i++)
+            dispensorImages[i].draw(dispensorPoly[i].getBoundingBox());
         
         for(int i = 0; i< MIN(3 , escalators.size());i++){
 
@@ -259,10 +264,16 @@ public:
                 if(count > 20)d = dispensorPoly[2].getBoundingBox();
             }
         }
+        for(int i = 0;i<dispensorPoly.size();i++){
+            ofImage im;
+            im.load("img/specialAssets/08_EscalatorDispensor-0"+ofToString(i+1)+".png");
+            dispensorImages.push_back(im);
+        }
         
 
     };
     void reset(){
+        dispensorImages.clear();
         dispensorPoly.clear();
         overlay.clear();
         isDoneCounter=0.;
