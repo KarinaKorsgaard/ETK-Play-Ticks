@@ -9,11 +9,17 @@
 #ifndef ButtonData_h
 #define ButtonData_h
 
-class ButtonData {
+struct ButtonData {
 public:
     int  buttonID;
     int  teamID;
     bool bHit;
+    bool isPlaying;
+    float contactStart;
+};
+struct RacketData {
+public:
+    int  teamID;
 };
 
 #endif /* ButtonData_h */

@@ -27,7 +27,7 @@ public:
 
         
         start = 300 + teamNumber * 1920;
-        end = 1920-100 + teamNumber * 1920;
+        end = 1920-120 + teamNumber * 1920;
         
         filter.setFc(0.05f);
         
@@ -42,7 +42,7 @@ public:
         while(!maze.inside(p)){
             y+=5;
             p = ofPoint (start - 150 , y);
-            endBegin = y;
+            begin = y;
             
         }
         while(maze.inside(p)){
@@ -107,6 +107,15 @@ public:
             if(co->trailRadius[teamNumber] < co->maxTrailRadius)
                 co->trailRadius[teamNumber]+=0.002;
             else co->trailRadius[teamNumber] = co->maxTrailRadius;
+        }
+        
+        if(sendOsc){
+            sendOsc = false;
+            ofxOscMessage m;
+            string  s = oscInt == 1 ? "On" : "Off";
+            m.setAddress("/lantern"+s+ofToString(teamNumber+1));
+            co->oscOut.sendMessage(m);
+            
         }
     };
     

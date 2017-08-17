@@ -45,8 +45,8 @@ class ofApp : public ofBaseApp{
     ofxAutoReloadedShader trailShader;
     
     ofxBox2d box2d;
-//    void contactStart(ofxBox2dContactArgs &e);
-//    void contactEnd(ofxBox2dContactArgs &e);
+    void contactStart(ofxBox2dContactArgs &e);
+    void contactEnd(ofxBox2dContactArgs &e);
 
     ofSoundPlayer  sound[N_SOUNDS];
     

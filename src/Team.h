@@ -259,22 +259,32 @@ public:
     
     
     void drawResult(){
+        
         float t = time;
         int s = co->sceneNumber;
         if(co->sMap[s]=="Design"){
         Design * d = static_cast<Design *>(scenes[co->sMap[s]]);
             t = d->countDown;
         }
+        string timeString = timeToString(t);
+        int x = 50 + (teamId * 1920);
+        if(co->sMap[s]=="Fight"){
+            timeString = ofToString(co->tennisPoint[teamId]+1);
+            if (teamId == 1){
+                int w = co->font_medium->getStringBoundingBox(timeString,0,0).width + 50;
+                x = 1920*2 - w;
+            }
+        }
  
         ofSetColor(ofColor::royalBlue);
-        co->font_medium->drawString( timeToString(t) , 50 + (teamId * 1920), 120);
-        ofRectangle r = co->font_medium->getStringBoundingBox("00:00",0,0);
+        co->font_medium->drawString( timeString , x , 120);
+        
     }
 
     
     void drainTime(){
         if(co->startTime){
-            if(co->sMap[co->sceneNumber]!="Design" && co->sMap[co->sceneNumber]!="Idle")
+            if(co->sMap[co->sceneNumber]!="Design" && co->sMap[co->sceneNumber]!="Idle" && co->sMap[co->sceneNumber]!="Fight")
                 time += ofGetLastFrameTime();
         }
     }
@@ -355,7 +365,7 @@ private:
         if(polyShapes.size()==0){
             for(int i = 0 ;i <polys.size();i++){
                 ofRectangle r = polys[i].getBoundingBox();
-                if(polys[i].getVertices().size()>3 && (r.width<1900 && r.height < 1070)){
+                if(polys[i].getVertices().size()>3 && (r.width<1900 || r.height < 1070)){
                     
                     shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
                     

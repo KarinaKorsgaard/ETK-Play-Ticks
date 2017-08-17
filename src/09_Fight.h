@@ -21,7 +21,9 @@ public:
     ofImage padImg;
     
     int point ;
-    int gameOverPoint = 20;
+    int gameOverPoint = 5;
+    bool ballTimerSet = true;
+    float ballTimer = 0;
     
     ofRectangle tennisCourt;
     
@@ -43,21 +45,27 @@ public:
             int ballx = ball->getPosition().x;
             ballx = teamNumber == 0 ? ballx : ofMap(ballx , 1920, 1920*2 , 1920, 0);
 
-            if(ballx < 880){
+            if(ballx < 100){
                 co->tennisPoint[teamNumber] ++;
                 
                 ofxOscMessage m;
-                m.setAddress("/tennisPoint");
+                m.setAddress("/tennisPoint"+ofToString(teamNumber*-1+2));
                 co->oscOut.sendMessage(m);
                 
                 ball->setPosition(1920, 1080/2);
-                int xvel = teamNumber == 1 ? 5 : -5;
-                ball->setVelocity(xvel, 5);
+                ball->setVelocity(0, 0);
+                ballTimer = ofGetElapsedTimef();
+                ballTimerSet = false;
+            }
+            if(!ballTimerSet && ofGetElapsedTimef() - ballTimer > 3 ){
+                int xvel = teamNumber == 1 ? 3 : -3;
+                ball->setVelocity(xvel, 2);
+                ballTimerSet=true;
             }
             
             
             int front = teamNumber == 0 ? -1 : 1;
-            pad->setPosition(buttons->at(winButton).getBiquadPos().x + 200*front, buttons->at(winButton).getPos().y);
+            pad->setPosition( tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y);
             
             buttons->at(winButton).update(co->attraction, false , tennisCourt);
         
@@ -72,7 +80,7 @@ public:
         
 
         buttons->at(winButton).draw();
-        pad->draw();
+        
         ofPushMatrix();
         
         int x = pad->getPosition().x;
@@ -94,8 +102,10 @@ public:
         
         ofDrawRectangle(20 + 1920*teamNumber , 1080-40 ,MAX( left * ( 1880  / gameOverPoint ) , 0), 20);
         
-        if(co->debug)
+        if(co->debug){
+            pad->draw();
             buttons->at(winButton).drawDebug();
+        }
     }
     
     void begin(ofxBox2d * world = nullptr){
@@ -131,13 +141,28 @@ public:
         
         buttons->at(winButton).setPosition(tennisCourt.getCenter());
         int front = teamNumber == 0 ? 1 : -1;
-        pad->setPosition(buttons->at(winButton).getBiquadPos().x + 50 * front , buttons->at(winButton).getBiquadPos().y);
+        //pad->setPosition(buttons->at(winButton).getBiquadPos().x + 50 * front , buttons->at(winButton).getBiquadPos().y);
+        pad->setPosition( tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y);
+        pad.get()->setData(new RacketData());
+        RacketData * sd = (RacketData*)pad.get()->getData();
+        sd->teamID = teamNumber;
+
+        if(teamNumber == 1){
+            ofxSVG svg;
+            svg.load("svg/09_Fight.svg");
+            solidPolys = getPolyline(svg);
+            cout << "FIGHT POLYS"<<solidPolys.size()<<endl;
+        }
         
     }
     
     void reset(){
-        pad->destroy();
+        ballTimerSet = true;
+        ballTimer = 0;
+
         
+        pad->destroy();
+        solidPolys.clear();
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
         }

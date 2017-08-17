@@ -169,6 +169,12 @@ public:
                 }
             }
             baskets[i].setEfficiency();
+            
+            ofxOscMessage m;
+            m.setAddress("/Factory"+ofToString(i+1)+"Team"+ofToString(teamNumber+1));
+            m.addIntArg(baskets[i].amountOfDots);
+            co->oscOut.sendMessage(m);
+            
 
         }
         for(int i = 0; i<empolyedTicks.size();i++){
@@ -223,10 +229,14 @@ public:
             if(count < FsTotal-FsMax){
                 slots = FsMax;
                 count += slots;
+                cout << "COUNT: "<<count<<endl;
             }
-            else
+            else{
                 slots = FsTotal - count;
-            
+                count += slots;
+                cout << "REST OF THE SLOTS: "<<count<<endl;
+            }
+            if(count > FsTotal)slots -= count-FsTotal;
             Basket basket;
             baskets.push_back(basket);
             baskets.back().setup(polysOutline[i], slots);

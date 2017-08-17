@@ -18,8 +18,11 @@ public:
     
     shared_ptr<ofxBox2dRect>pitHole;
     vector<ofPolyline>movingPolys;
+    vector<ofPolyline>pitPolys;
+    vector<bool>inPits;
     ofRectangle start;
     bool moveEscalators;
+    bool p_moveEscalators;
 
     vector<int>upDown;
     void setup(commonObjects*_co, vector<Button>*b){
@@ -32,6 +35,8 @@ public:
         
         svg.load("svg/08_EscalatorStartArea.svg");
         start = getPolyline(svg)[0].getBoundingBox();
+        
+        inPits.resize(36);
     };
     
     bool reached(){
@@ -62,8 +67,19 @@ public:
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
                 
+                float attractionDivider = inPits[i] ? 0.001 : 1;
+                buttons->at(i).updateFences(co->attraction * attractionDivider, co->gravity);
                 
-                buttons->at(i).updateFences(co->attraction, co->gravity);
+                bool isButtonInAPit = false;
+                for(int pit = 0; pit < pitPolys.size();pit++){
+                    if (pitPolys[pit].inside(buttons->at(i).getBiquadPos())){
+                        isButtonInAPit = true;
+                        
+                    }
+                }
+                inPits[i] = isButtonInAPit;
+                    
+                
                 
                 if(!moveEscalators){
                     if (start.inside(buttons->at(i).getPos()))
@@ -72,17 +88,27 @@ public:
                         moveEscalators = true;
                         if(pitHole!=nullptr && co->startScene){
                             pitHole->destroy();
-                            cout << "PIT DESTROY"<<endl;
                         }
                     }
                 }
+                if(p_moveEscalators != moveEscalators){
+                    p_moveEscalators = moveEscalators;
+                    ofxOscMessage m;
+                    string  s = moveEscalators ? "On" : "Off";
+                    m.setAddress("/elevator"+s+ofToString(teamNumber+1));
+                    co->oscOut.sendMessage(m);
+                
+                }
+                
             }
+            
+            
         }else{
             buttons->at(theWinner).isWinner = true;
         }
         if(moveEscalators){
             for(int i = 0; i<escalators.size();i++){
-                escalators[i]->setPosition(escalators[i]->getPosition() + ofVec2f(0,upDown[i] * co->escalatorSpeed));
+                escalators[i]->setPosition(escalators[i]->getPosition() + ofVec2f(0,upDown[i] * co->escalatorSpeed *10.f* ofGetLastFrameTime()));
                 if(escalators[i]->getPosition().y > 1080 - solidHeigth + 50 )upDown[i]=-1;
                 if(escalators[i]->getPosition().y < 0 )upDown[i] = 1;
             }
@@ -98,7 +124,13 @@ public:
         ofSetColor(255);
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).draw();
-            if(co->debug){
+            if (inPits[i]) {
+                ofSetColor(0,100);
+                ofDrawCircle(buttons->at(i).getBiquadPos(),25);
+                ofSetColor(255);
+
+            }
+            if (co->debug){
                 buttons->at(i).drawDebug();
                 ofSetColor(255,255,0);
                 if(theWinner!=-1)
@@ -123,6 +155,9 @@ public:
     };
     
     void begin(ofxBox2d * world = nullptr){
+        
+        moveEscalators = false;
+        p_moveEscalators = false;
         
         float addX = teamNumber == 0 ? 0 : 1920;
         
@@ -170,6 +205,12 @@ public:
                 pitHole = r;
             }
         }
+        
+        svg.load("svg/08_EscalatorPits.svg");
+        pitPolys = getPolyline(svg);
+        cout << "PITPOLYS "<< pitPolys.size()<<endl;
+        for(int i = 0; i<36;i++)
+            inPits[i]=false;
 
     };
     void reset(){
@@ -180,6 +221,7 @@ public:
         escalators.clear();
         movingPolys.clear();
         solidPolys.clear();
+        pitPolys.clear();
         
         escalatorImg[0].clear();
         escalatorImg[1].clear();

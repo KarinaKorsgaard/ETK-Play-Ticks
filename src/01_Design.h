@@ -71,7 +71,7 @@ public:
         
         int c = colors.size();
         int c2 = colors2.size();
-
+        int S = co->characterSymbols.size();
         int numPlayers = co->numPresentButtons[teamNumber];
 
         maxColors = co->lookUp[numPlayers][0];
@@ -94,7 +94,8 @@ public:
         //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
             buttons->at(i).color[0]=colors[x];
             buttons->at(i).color[1]=colors2[y];
-            // buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size() )];
+            //buttons->at(i).symbol =
+            buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size() )];
            
             buttons->at(i).colorInt = x;
             buttons->at(i).symbolInt = y;

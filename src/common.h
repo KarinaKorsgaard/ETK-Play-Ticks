@@ -47,6 +47,8 @@ public:
     ofxOscReceiver oscIn;
     
     ofParameter<bool>logReport;
+    ofParameter<bool>moveBall;
+    ofParameter<float>ballSpeed;
     ofParameter<bool>sendAverageData;
     ofParameter<int> attraction;
     ofParameter<float>fc;

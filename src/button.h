@@ -130,7 +130,7 @@ public:
     }
     
     void draw(bool transform = true, float scale = 1.f){
-        float radiusUsed = radius;
+        float radiusUsed = radius * scale;
         ofPushStyle();
         if(isPlaying ){
             

@@ -106,13 +106,17 @@ public:
                     
                     buttons->at(b).isWinner = true;
                     
+                    bool isErased = false;
                     for(int i = 0; i<spots.size();i++){
                         
                         if(spots[i].buttonInt == b){
                             spots.erase (spots.begin()+i);
+                            isErased=true;
                             break;
                         }
                     }
+                    if(!isErased)
+                        spots.erase (spots.begin()+int(ofRandom(spots.size())));
                 
                 }
                 
@@ -140,6 +144,9 @@ public:
             }
             else if(abs(doors[i]->getPosition().y - originalPoints[i].y )>6){
                 int up = i * 2 - 1;
+                ofxOscMessage m;
+                m.setAddress("/doorsClosing"+ofToString(teamNumber+1));
+                co->oscOut.sendMessage(m);
                 doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up*10.);
             }
            // doors[i]->setRotation(0);
@@ -150,8 +157,6 @@ public:
         if(!done)
             for(int i=0; i<buttons->size(); i++){
                  buttons->at(i).update(co->attraction);
-                //if(buttons->at(i).getPos().x > doorLimit && !doneFormation)
-                //    buttons->at(i).setPosition(doorLimit-400, buttons->at(i).getPos().y);
             }
     }
     

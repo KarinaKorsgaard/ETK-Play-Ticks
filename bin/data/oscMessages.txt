@@ -1,0 +1,45 @@
+/averageX1
+/averageY1
+/averageSpeed1
+/averageY2
+/averageX2
+/averageSpeed2
+
+/tennisPoint1
+/tennisPoint2
+
+/won1
+/won2
+
+* door opening/closing is constant while doors are moving!
+/doorsOpening1
+/doorsClosing1
+/doorsOpening2
+/doorsClosing2
+
+/lanternOn1
+/lanternOff1
+/lanternOn2
+/lanternOff2
+
+/elevatorOn1
+/elevatorOff1
+/elevatorOn2
+/elevatorOff2
+
+/Factory1Team1 int
+/Factory2Team1 int
+/Factory3Team1 int
+/Factory4Team1 int
+/Factory5Team1 int
+/Factory6Team1 int
+
+/Factory1Team2 int
+/Factory2Team2 int
+/Factory3Team2 int
+/Factory4Team2 int
+/Factory5Team2 int
+/Factory6Team2 int
+
+/racket1
+/racket2
