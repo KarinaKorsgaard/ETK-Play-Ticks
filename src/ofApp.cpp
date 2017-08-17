@@ -167,9 +167,9 @@ void ofApp::setup(){
     
     gravity.setName("escalator and trail");
     gravity.add(co.moveBall.set("move ball",false));
-     gravity.add(co.ballSpeed.set("ball speeed",1.,0.,50.));
+     gravity.add(co.ballSpeed.set("ball speeed",1.,0.,1.));
     gravity.add(co.gravity.set("gravity",1,0,50));
-    gravity.add(co.escalatorSpeed.set("escalator speed",1.,0.,10.));
+    gravity.add(co.escalatorSpeed.set("escalator speed",1.,0.,1.));
     gravity.add(co.maxTrailRadius.set("maxTrailRadius", 0.001, 0., 0.05));
     //gravity.add(co.trailRadius[1].set("trailRadius2", 0.1, 0., 1.));
     

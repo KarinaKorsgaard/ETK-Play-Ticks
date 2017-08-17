@@ -11,18 +11,22 @@ public:
     int theWinner;
     double isDoneCounter;
     float solidHeigth;
+    ofxBox2d * thisWorld;
 
     ofImage escalatorImg[3];
-    
+
     vector<shared_ptr<ofxBox2dRect>>escalators;
     
-    shared_ptr<ofxBox2dRect>pitHole;
+    vector<shared_ptr<ofxBox2dRect>>pitHole;
     vector<ofPolyline>movingPolys;
     vector<ofPolyline>pitPolys;
     vector<bool>inPits;
     ofRectangle start;
+    double time;
     bool moveEscalators;
     bool p_moveEscalators;
+    
+    vector<int> buttonsInPits;
 
     vector<int>upDown;
     void setup(commonObjects*_co, vector<Button>*b){
@@ -65,6 +69,9 @@ public:
         if(!isDone()){ // freeze when has reached...
             moveEscalators = false;
             int count = 0;
+            for(int i = 0;i<buttonsInPits.size();i++)
+                buttonsInPits[i]=0;
+            
             for(int i=0; i<buttons->size(); i++) {
                 
                 float attractionDivider = inPits[i] ? 0.001 : 1;
@@ -72,9 +79,10 @@ public:
                 
                 bool isButtonInAPit = false;
                 for(int pit = 0; pit < pitPolys.size();pit++){
+                    
                     if (pitPolys[pit].inside(buttons->at(i).getBiquadPos())){
                         isButtonInAPit = true;
-                        
+                        buttonsInPits[pit]++;
                     }
                 }
                 inPits[i] = isButtonInAPit;
@@ -86,13 +94,11 @@ public:
                         count++;
                     if (count>3){
                         moveEscalators = true;
-                        if(pitHole!=nullptr && co->startScene){
-                            pitHole->destroy();
-                        }
                     }
                 }
                 if(p_moveEscalators != moveEscalators){
                     p_moveEscalators = moveEscalators;
+                    
                     ofxOscMessage m;
                     string  s = moveEscalators ? "On" : "Off";
                     m.setAddress("/elevator"+s+ofToString(teamNumber+1));
@@ -102,15 +108,26 @@ public:
                 
             }
             
+            for(int i = 0;i<buttonsInPits.size();i++){
+                if (buttonsInPits[i]==4){
+                    createPit(thisWorld, pitPolys[i]);
+                    pitPolys.erase(pitPolys.begin() + i);
+                }
+            }
+            
+            
             
         }else{
             buttons->at(theWinner).isWinner = true;
         }
         if(moveEscalators){
+            time+= ofGetLastFrameTime();
             for(int i = 0; i<escalators.size();i++){
-                escalators[i]->setPosition(escalators[i]->getPosition() + ofVec2f(0,upDown[i] * co->escalatorSpeed *10.f* ofGetLastFrameTime()));
-                if(escalators[i]->getPosition().y > 1080 - solidHeigth + 50 )upDown[i]=-1;
-                if(escalators[i]->getPosition().y < 0 )upDown[i] = 1;
+                float ypos = abs(sin(time*co->escalatorSpeed)) * (1080 - i*200);
+              //  escalators[i]->setPosition(escalators[i]->getPosition().x + ofVec2f(0,upDown[i] * co->escalatorSpeed *10.f* ofGetLastFrameTime()));
+                escalators[i]->setPosition(escalators[i]->getPosition().x ,ypos);
+            //    if(escalators[i]->getPosition().y > (1080 - i*solidHeight) )upDown[i]=-1;
+            //    if(escalators[i]->getPosition().y < 0 )upDown[i] = 1;
             }
         }
     }
@@ -119,7 +136,8 @@ public:
         
         ofSetColor(0);
         
-        if(pitHole!=nullptr)pitHole->draw();
+        for(int i = 0; i<pitHole.size();i++)
+            pitHole[i]->draw();
         
         ofSetColor(255);
         for(int i=0; i<buttons->size(); i++) {
@@ -155,9 +173,10 @@ public:
     };
     
     void begin(ofxBox2d * world = nullptr){
-        
+        time=0.0;
         moveEscalators = false;
         p_moveEscalators = false;
+        thisWorld = world;
         
         float addX = teamNumber == 0 ? 0 : 1920;
         
@@ -185,32 +204,14 @@ public:
         escalatorImg[0].load("img/specialAssets/07_escalatorPads-01.png");
         escalatorImg[1].load("img/specialAssets/07_escalatorPads-02.png");
         escalatorImg[2].load("img/specialAssets/07_escalatorPads-03.png");
-        
-        
-        svg.load("svg/08_EscalatorLid.svg");
-        vector<ofPolyline> tempPoly = getPolyline(svg);
-        cout << "loaded"<<endl;
-        if(tempPoly.size()>0){
-            cout << "PIT"<<endl;
-            ofPolyline lid = getPolyline(svg)[0];
-            ofRectangle rect = lid.getBoundingBox();
-            
-            rect.x += rect.width/2;
-            
-            if(rect.width<1900 && rect.height < 1070){
-                cout << "PIT IS MADE"<<endl;
-                shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-                r->setPhysics(0., 0., 0.);
-                r->setup(world->getWorld(), rect);
-                pitHole = r;
-            }
-        }
-        
+
         svg.load("svg/08_EscalatorPits.svg");
         pitPolys = getPolyline(svg);
         cout << "PITPOLYS "<< pitPolys.size()<<endl;
         for(int i = 0; i<36;i++)
             inPits[i]=false;
+        
+        buttonsInPits.resize(pitPolys.size());
 
     };
     void reset(){
@@ -226,9 +227,30 @@ public:
         escalatorImg[0].clear();
         escalatorImg[1].clear();
         escalatorImg[2].clear();
+        
+        for(int i = 0; i<pitHole.size();i++)
+            pitHole[i]->destroy();
+        pitHole.clear();
     }
     
-    
+    void createPit(ofxBox2d * world ,ofPolyline polys){
+       
+            ofRectangle rect = polys.getBoundingBox();
+            
+            rect.x += rect.width/2;
+            
+            if(polys.getVertices().size()>3 && (rect.width<1900 && rect.height < 1070)){
+                
+                shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+                r->setPhysics(0., 0., 0.);
+                r->setup(world->getWorld(), rect);
+                
+                pitHole.push_back(r);
+           
+                
+            }
+        
+    }
     
     void createScene(ofxBox2d * world ,vector<ofPolyline>polys){
         
