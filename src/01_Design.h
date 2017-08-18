@@ -9,12 +9,11 @@ public:
     int maxSymbols = 0;
     int maxColors = 0;
     vector<ofColor>colors;
-    vector<ofColor>colors2;
     vector<bool>drawCircles;
     double countDown = 5*60;
     ofImage forGround;
     vector<string>letters;
-    
+    bool done;
     string colorFile;
     string colorFile2;
     int numColors;
@@ -22,11 +21,26 @@ public:
         buttons = b;
         co = _co;
         colorFile = _colorFile;
-        colorFile2 = _colorFile2;
         numColors = _numColors;
         
         string abc = "A-B-C-D-E-F";
         letters = ofSplitString(abc,"-");
+        
+        
+        ofTexture tex;
+        ofPixels pix;
+        colors.resize(numColors);
+        if(ofLoadImage(tex, colorFile)){
+            
+            tex.readToPixels(pix);
+            
+            int indx = tex.getWidth() / numColors;
+            int c = 0;
+            for(int i = 0; i<numColors;i++){
+                colors[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
+                
+            }
+        }
     };
     
     
@@ -59,32 +73,31 @@ public:
         
         if(!b)isDifferent=false;
         
-        if(isDifferent)countDown = 0.;
+       // if(isDifferent)countDown = 0.;
+        done = isDifferent;
         return isDifferent;
        // return false;
     };
     
     void update(){
         
-        if(countDown > 0 && co->startScene)countDown -= ofGetLastFrameTime();
-        else countDown = 0;
+        if(co->startScene){
+            if(countDown > 0 && !done )countDown -= ofGetLastFrameTime();
+            else countDown = 0;
+        }
         
         int c = colors.size();
-        int c2 = colors2.size();
         int s = co->characterSymbols.size();
         
         int numPlayers = co->numPresentButtons[teamNumber];
 
         maxColors = co->lookUp[numPlayers][0];
         maxSymbols = co->lookUp[numPlayers][1];
+        
         int minColors = MIN(maxColors,maxSymbols);
         minColors=MAX(minColors,1);
         int howManyGetsMore = numPlayers % minColors;
-        
-        //cout <<"how many gets more"<< howManyGetsMore << " " <<maxSymbols<<endl;
-        //co->numSymbolsPresent[teamNumber] = maxSymbols;
-        //co->numColorsPresent[teamNumber] = maxColors;
-        
+
         int count = 0;
         for(int i=0; i<buttons->size(); i++) {
             ofVec3f data = buttons->at(i).getRawData();
@@ -92,20 +105,14 @@ public:
             int x = ofMap (normX,0,1,0,minColors);
             int y = ofMap (data.y,0,1,0,maxSymbols); // symbol
             if(count < howManyGetsMore){
-                
-                
+ 
                 x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
-                cout << i << " has more choise!"<<endl;
-
-                
+   
             }
             if(buttons->at(i).isPlaying)count++;
             x = CLAMP (x,0,c-1);
             y = CLAMP (y,0,s-1);
-        //    int z =CLAMP( ofMap(data.z,0,2*PI,0,colors.size()), 0 , colors.size()-1);
-            buttons->at(i).color[0]=colors[x];
-            //buttons->at(i).color[1]=colors2[y];
-            //buttons->at(i).symbol =
+            buttons->at(i).color=colors[x];
             buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
            
             buttons->at(i).colorInt = x;
@@ -137,7 +144,7 @@ public:
                 ofSetColor(255);
                 if(drawCircles[i])ofDrawCircle(0,0,30);
                 
-                ofSetColor(b.color[0]);
+                ofSetColor(b.color);
                 
                 int w = 132 ;
                 int h = 128 ;
@@ -145,7 +152,7 @@ public:
                 
                 b.img->at(0).draw(-25,-25,25*2,25*2);
                 
-                //ofSetColor(b.color[1]);
+                ofSetColor(255);
                 b.symbol->draw(-25,-25,25*2,25*2);
                 
                 
@@ -174,42 +181,15 @@ public:
         
         drawCircles.resize(buttons->size());
         
-        ofTexture tex;
-        ofPixels pix;
-        colors.resize(numColors);
-        if(ofLoadImage(tex, colorFile)){
-            
-            tex.readToPixels(pix);
-            
-            int indx = tex.getWidth() / numColors;
-            int c = 0;
-            for(int i = 0; i<numColors;i++){
-                colors[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
-                
-            }
-        }
-        tex.clear();
-        pix.clear();
-        colors2.resize(numColors);
-        cout << colorFile2 << endl;
-        if(ofLoadImage(tex, colorFile2)){
-            
-            tex.readToPixels(pix);
-            
-            int indx = tex.getWidth() / numColors;
-            int c = 0;
-            for(int i = 0; i<numColors;i++){
-                colors2[i]=pix.getColor(i*indx + indx/2 ,tex.getHeight()/2);
-                
-            }
-        }
+
+        
         forGround.load("img/specialAssets/01_DesignForeground.png");
     };
     
     void reset(){
         drawCircles.clear();
-        colors.clear();
-        colors2.clear();
+    
+     
     };
     
 

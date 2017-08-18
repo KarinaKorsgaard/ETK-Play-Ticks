@@ -21,32 +21,26 @@ public:
         cur_rotation = start;
         p_rotation = start;
         startRot = start;
-//        
-//        p.moveTo(ringNumber * 90 + 80,0);
-//        p.arc(ofPoint(0,0), ringNumber * 90 + 80, ringNumber * 90 + 80, 0, 350);
-//        p.setCircleResolution(500);
-//        p.setFilled(false);
-//        p.setStrokeWidth(5);
         
     }
     void setTarget(float t){
         targetRotation = t;
     }
     
-    void update(float precision, float attraction, float z){
+    float update(float precision, float attraction, float z){
         //if (b != nullptr)b->update(2000);
         isTarget = abs(cur_rotation-targetRotation) < precision;
         //float
        
         float dr = ofRadToDeg(z) - p_rotation;
-       // cout<<"z rotation " << z << endl;
-       // cout <<"dr " << dr<<endl;
-        
+
         if(abs(dr) < 355)cur_rotation += dr ;
         if(cur_rotation > 360.f)cur_rotation = 0.f;
         if(cur_rotation < 0.f)cur_rotation = 360.f;
         
         p_rotation = ofRadToDeg(z);
+        
+        return dr;
     }
     
     void draw(ofVec2f midt){
@@ -81,6 +75,7 @@ public:
 
     vector<circle> circles;
     vector<int>winnerButtons;
+    float collectedRotation = 0.f;
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
@@ -105,19 +100,23 @@ public:
     }
     
     void update(){
-        for(int i=0; i<winnerButtons.size(); i++) {
-            buttons->at(winnerButtons[i]).update(co->attraction);
-        }
+
+        float temp = collectedRotation;
+        collectedRotation = 0.f;
         
         for(int i = 0; i<winnerButtons.size();i++){
-           // cout << buttons->at(winnerButtons[i]).getRawData().z << endl;
+          
             if(!isDone())
-                circles[i].update(co->logicPrecision, co->attraction, buttons->at(winnerButtons[i]).getRawData().z);
+                collectedRotation+=circles[i].update(co->logicPrecision, co->attraction, buttons->at(winnerButtons[i]).getRawData().z);
             if(co->showLogicTargets)
                 circles[i].setTarget(co->targetCircleRot[i]);
         }
-        
-        
+        if(collectedRotation!=temp){
+            ofxOscMessage m;
+            m.setAddress("/collectedRotation"+ofToString(teamNumber+1));
+            m.addFloatArg(collectedRotation);
+            co->oscOut.sendMessage(m);
+        }
     }
     
     void draw(){
@@ -157,22 +156,20 @@ public:
             if (buttons->at(b).isWinner && count < 6){
                 //circles[count].b = &buttons->at(b);
                 winnerButtons.push_back(b);
-                cout << "winbutton: "<<count <<" is " << b << endl;
+                cout << "winbutton: "<< count <<" is " << b << "on team "<< teamNumber+1<< endl;
                 count++;
             }
         }
-        
-        for(int i = 0; i<6 ; i++){
-            if (winnerButtons.size()<6){
-                int setTo = i;
-                
-                if(firstOn.size()>i)
-                    setTo = firstOn[i];
-                winnerButtons.push_back(setTo);
-                cout << "winbutton "<< i <<" was not found and is set to " << setTo << endl;
-            }
+
+        int i = 0;
+        while (winnerButtons.size()< MIN(firstOn.size(), 6)){
+            int setTo = firstOn[i];
+            i++;
+            buttons->at(firstOn[i]).isWinner = true;
+            winnerButtons.push_back(setTo);
+            cout << "winbutton "<< i <<" was not found and is set to " << setTo << "on team "<< teamNumber+1<< endl;
         }
-            }
+    }
     
     void reset(){
         for(int i=0; i<buttons->size(); i++) {
