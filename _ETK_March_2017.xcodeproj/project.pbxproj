@@ -182,6 +182,7 @@
 		21BAD9541F41DE04000D0C8B /* trail.frag */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = trail.frag; path = bin/data/trail.frag; sourceTree = SOURCE_ROOT; };
 		21BAD9571F41DFF4000D0C8B /* ofxAutoReloadedShader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = ofxAutoReloadedShader.cpp; sourceTree = "<group>"; };
 		21BAD9581F41DFF4000D0C8B /* ofxAutoReloadedShader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ofxAutoReloadedShader.h; sourceTree = "<group>"; };
+		21BAD9611F543A9E000D0C8B /* 10a_ReDesign.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 10a_ReDesign.h; sourceTree = "<group>"; };
 		21D00CA41E93DEF2009FFBA7 /* sceneNames.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = sceneNames.txt; path = bin/data/sceneNames.txt; sourceTree = SOURCE_ROOT; };
 		21DEC74F1E7AF01F004A5BBA /* 04_Maze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 04_Maze.h; sourceTree = "<group>"; };
 		21DEC7501E7AF257004A5BBA /* 07_AverageMaze.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 07_AverageMaze.h; sourceTree = "<group>"; };
@@ -549,6 +550,7 @@
 				21AE24EA1E6F120A00150433 /* 08_Fences.h */,
 				2174A7C11F30B2E00022C956 /* 09_Fight.h */,
 				21AE24EC1E6F5B5700150433 /* 10_Factories.h */,
+				21BAD9611F543A9E000D0C8B /* 10a_ReDesign.h */,
 				21A9BC8E1E7694CE005F90E3 /* 11_Cherades.h */,
 				2174A7BC1F305BE40022C956 /* 12_Ground.h */,
 				2174A7BA1F2E1AE20022C956 /* Scene.h */,

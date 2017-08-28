@@ -15,9 +15,9 @@ public:
     vector<string>letters;
     bool done;
     string colorFile;
-    string colorFile2;
+   
     int numColors;
-    void setup(commonObjects*_co, vector<Button>*b, string _colorFile, string _colorFile2, int _numColors){
+    void setup(commonObjects*_co, vector<Button>*b, string _colorFile, int _numColors){
         buttons = b;
         co = _co;
         colorFile = _colorFile;
@@ -94,9 +94,11 @@ public:
         maxColors = co->lookUp[numPlayers][0];
         maxSymbols = co->lookUp[numPlayers][1];
         
-        int minColors = MIN(maxColors,maxSymbols);
+        //int minColors = MIN(maxColors,maxSymbols);
+        int minColors = maxColors == maxSymbols ? maxColors : maxColors-1;
+
         minColors=MAX(minColors,1);
-        int howManyGetsMore = numPlayers % minColors;
+        int howManyGetsMore = numPlayers-(minColors*maxSymbols);
 
         int count = 0;
         for(int i=0; i<buttons->size(); i++) {
@@ -105,7 +107,7 @@ public:
             int x = ofMap (normX,0,1,0,minColors);
             int y = ofMap (data.y,0,1,0,maxSymbols); // symbol
             if(count < howManyGetsMore){
- 
+         
                 x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
    
             }
