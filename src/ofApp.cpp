@@ -198,7 +198,7 @@ void ofApp::setup(){
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
-    gui.add(restartApp.set("Restart",false));
+    gui.add(restartApp.set("record state",false));
     gui.add(resetApp.set("RESET",false));
     gui.add(co.startScene.set("START SCENE",false));
     gui.add(co.startTime.set("START time",false));
@@ -693,7 +693,7 @@ void ofApp:: restart(){
 void ofApp:: reset(){
     resetApp = false;
     ofxXmlSettings xml;
-    xml.addValue("sceneNumber",12);
+    xml.addValue("sceneNumber",0);
     xml.addValue("team0time",0);
     xml.addValue("team1time",0);
     xml.addValue("numpeople0",0);

@@ -163,7 +163,7 @@ public:
         co->designDone1 = false;
         co->designDone2 = false;
 
-        forGround.load("img/specialAssets/01_DesignForeground.png");
+        forGround.load("img/specialAssets/11_ReDesignForeground.png");
     };
     
     void reset(){
