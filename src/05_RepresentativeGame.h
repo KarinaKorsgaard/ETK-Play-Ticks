@@ -93,7 +93,7 @@ public:
             int count = 0;
             for(int b = 0; b<buttons->size();b++){
                 if(buttons->at(b).isPlaying && buttons->at(b).getBiquadPos().x > frontHall &&
-                   buttons->at(b).getBiquadPos().x<doorLimit){
+                   buttons->at(b).getBiquadPos().x<doorLimit && !buttons->at(b).isWinner){
                     count++;
                 }
             }

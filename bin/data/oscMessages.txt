@@ -43,3 +43,6 @@
 
 /racket1
 /racket2
+
+/collectedRotation1 float
+/collectedRotation2 float

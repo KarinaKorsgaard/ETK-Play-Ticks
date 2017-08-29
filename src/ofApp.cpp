@@ -167,7 +167,7 @@ void ofApp::setup(){
     
     gravity.setName("escalator and trail");
     gravity.add(co.moveBall.set("move ball",false));
-     gravity.add(co.ballSpeed.set("ball speeed",1.,0.,1.));
+    gravity.add(co.ballSpeed.set("ball speeed",1.,0.,1.));
     gravity.add(co.gravity.set("gravity",1,0,50));
     gravity.add(co.escalatorSpeed.set("escalator speed",1.,0.,1.));
     gravity.add(co.maxTrailRadius.set("maxTrailRadius", 0.001, 0., 0.05));
@@ -198,12 +198,13 @@ void ofApp::setup(){
     guiScenes.saveToFile("scenes.xml");
     
     gui.setup();
+    gui.add(restartApp.set("record state",false));
+    gui.add(resetApp.set("RESET",false));
     gui.add(co.startScene.set("START SCENE",false));
     gui.add(co.startTime.set("START time",false));
     gui.add(co.startMovement.set("START movement",false));
     
     gui.add(physics);
-   // gui.add(gameMechs);
     gui.add(design);
     gui.add(logic);
     gui.add(gravity);
@@ -237,12 +238,19 @@ void ofApp::setup(){
     
     teams[0].setupScenes();
     teams[1].setupScenes();
+    
+    loadFromRestart();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
  
-    ofSetWindowTitle(ofToString(ofGetFrameRate()));
+    if(restartApp)restart();
+    if(resetApp)reset();
+    
+    int fr = ofGetFrameRate();
+    ofSetWindowTitle(ofToString(fr));
+    
     
     // make tabels red by interval
     alertCounter ++;
@@ -295,21 +303,6 @@ void ofApp::update(){
         }
     }
     
-    
-//    if(co.playSound){
-//        for(int i = 0; i<2; i++){
-//            for(int j = 0 ; j<teams[i].buttons.size();j++){
-//                if(teams[i].buttons[j].isDead()){
-//                    if(teams[i].buttons[j].deadSoundCheck){
-//                        teams[i].buttons[j].deadSoundCheck=false;
-//                        co.deathSound.play();
-//                    }else{
-//                        teams[i].buttons[j].deadSoundCheck=true;
-//                    }
-//                }
-//            }
-//        }
-//    }
     
     box2d.update();
     
@@ -403,6 +396,7 @@ void ofApp::handleSceneChange(){
     }
     
     if(resent!=-1){
+        restart();
         co.startScene = false;
         co.startMovement = false;
         co.startTime = false;
@@ -501,6 +495,8 @@ void ofApp::refill(int team, float timef){
 //--------------------------------------------------------------
 void ofApp::exit(){
 
+    co.oscIn.~ofxOscReceiver();
+    co.oscOut.~ofxOscSender();
     if(co.logReport){
         string path = ofToString("reports/"+ofGetTimestampString("%m-%d_%H-%M")+".txt");
         ofFile newFile(ofToDataPath(path),ofFile::WriteOnly); //file doesn't exist yet
@@ -668,14 +664,108 @@ string ofApp:: getAdress(int _firstSecond, int _tabel, int _button){
 
 void ofApp:: restart(){
     
-//    create a doc that records all;
-//    button colors, and symbols
-//    button is player
-//    scene number
-//    team time
-//    winners
-//
-    //for()
+    
+    ofxXmlSettings xml;
+    xml.addValue("sceneNumber",co.sceneNumber);
+    xml.addValue("team0time",teams[0].time);
+    xml.addValue("team1time",teams[1].time);
+    xml.addValue("numpeople0",co.numPresentButtons[0]);
+    xml.addValue("numpeople1",co.numPresentButtons[1]);
+    
+    for(int u = 0; u<2;u++){
+        for(int i = 0; i<36;i++){
+            string team = "team"+ofToString(u)+"button";
+            Button * b = &teams[u].buttons.at(i);
+            xml.addValue(team+ofToString(i)+"isPlaying",b->isPlaying);
+            xml.addValue(team+ofToString(i)+"symbol",b->symbolInt);
+            xml.addValue(team+ofToString(i)+"color",b->colorInt);
+            xml.addValue(team+ofToString(i)+"winner",b->isWinner);
+            
+            xml.addValue(team+ofToString(i)+"xpos",b->getPos().x);
+            xml.addValue(team+ofToString(i)+"ypos",b->getPos().y);
+            
+        }
+    }
+    xml.save("restart.xml");
+    restartApp = false;
+}
+
+void ofApp:: reset(){
+    resetApp = false;
+    ofxXmlSettings xml;
+    xml.addValue("sceneNumber",0);
+    xml.addValue("team0time",0);
+    xml.addValue("team1time",0);
+    xml.addValue("numpeople0",0);
+    xml.addValue("numpeople1",0);
+    
+    for(int u = 0; u<2;u++){
+        for(int i = 0; i<36;i++){
+            string team = "team"+ofToString(u)+"button";
+            Button * b = &teams[u].buttons.at(i);
+            xml.addValue(team+ofToString(i)+"isPlaying",0);
+            xml.addValue(team+ofToString(i)+"symbol",0);
+            xml.addValue(team+ofToString(i)+"color",0);
+            xml.addValue(team+ofToString(i)+"winner",0);
+            
+            xml.addValue(team+ofToString(i)+"xpos",ofRandom(1920*2));
+            xml.addValue(team+ofToString(i)+"ypos",-300);
+            
+        }
+    }
+    xml.save("restart.xml");
+    loadFromRestart();
+    
+}
+
+void ofApp:: loadFromRestart(){
+    ofxXmlSettings xml;
+    cout << "loading xml"<< endl;
+    if(ofFile::doesFileExist("restart.xml")){
+        xml.load("restart.xml");
+        cout << "RESTARTING"<< endl;
+        
+        teams[0].time = xml.getValue("team0time", 0);
+        teams[1].time = xml.getValue("team1time", 0);
+        cout << teams[0].time << endl;
+        cout << xml.getValue("team0", 0)<< endl;
+      
+        co.numPresentButtons[0] = xml.getValue("numpeople0",0);
+        co.numPresentButtons[1] = xml.getValue("numpeople1",0);
+        
+
+        for(int u = 0; u < 2; u++){
+            for(int i = 0; i<36;i++){
+                Button * b = &teams[u].buttons.at(i);
+                string team = "team"+ofToString(u)+"button";
+                
+                teams[u].buttons.at(i).isPlaying = xml.getValue(team+ofToString(i)+"isPlaying",b->isPlaying);
+                teams[u].buttons.at(i).symbolInt = xml.getValue(team+ofToString(i)+"symbol",0);
+                teams[u].buttons.at(i).colorInt = xml.getValue(team+ofToString(i)+"color",0);
+                teams[u].buttons.at(i).isWinner = xml.getValue(team+ofToString(i)+"winner",0);
+                if(teams[u].buttons.at(i).isPlaying)
+                    cout <<"symbol " << b->symbolInt << " color "<< b->colorInt << endl;
+               
+                float x = xml.getValue(team+ofToString(i)+"xpos",0);
+                float y = xml.getValue(team+ofToString(i)+"ypos",0);
+                
+                cout <<"XX " << x << " YY "<< y << endl;
+                teams[u].buttons.at(i).setPosition(x, y);
+                
+                
+                Design * designColor = static_cast<Design *>(teams[u].scenes["Design"]);
+                teams[u].buttons.at(i).color = designColor->colors[b->colorInt];
+                teams[u].buttons.at(i).symbol = &co.characterSymbols[b->symbolInt];
+            }
+        }
+        
+        co.sceneNumber = xml.getValue("sceneNumber", 0);
+        b_scenes[co.sceneNumber]=true;
+        
+        ofFile::removeFile("restart.xml");
+    
+    }
+
 }
 
 //--------------------------------------------------------------

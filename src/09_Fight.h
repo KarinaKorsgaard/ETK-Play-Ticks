@@ -131,6 +131,7 @@ public:
         if(!isSet){
             firstOn = firstOn == -1 ? 0 : firstOn;
             winButton = firstOn;
+            buttons->at(winButton).isWinner = true;
             cout << "winbutton " << firstOn << endl;
         }
         

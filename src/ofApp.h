@@ -25,6 +25,7 @@ class ofApp : public ofBaseApp{
 		void keyPressed(int key);
 
     void restart();
+    void loadFromRestart();
     void exit();
     void updateOsc();
     void handleSceneChange();
@@ -93,6 +94,8 @@ class ofApp : public ofBaseApp{
     shared_ptr<ofxBox2dCircle>fightBall;
     
     ofParameter<bool>restartApp;
+    ofParameter<bool>resetApp;
+    void reset();
     
 
 };

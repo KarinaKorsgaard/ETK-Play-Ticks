@@ -23,6 +23,7 @@
 #include "08_Fences.h"
 #include "09_Fight.h"
 #include "10_Factories.h"
+#include "10a_ReDesign.h"
 #include "11_Cherades.h"
 #include "12_Ground.h"
 
@@ -50,6 +51,7 @@ public:
 
     
     Design design;
+    ReDesign reDesign;
     Area area;
     Trail trail;
     Maze maze;
@@ -86,6 +88,7 @@ public:
         scenes["Fences"]=(&fences);
         scenes["Fight"]=(&fight);
         scenes["Factories"]=(&factories);
+        scenes["ReDesign"]=(&reDesign);
         scenes["Charades"]=(&charades07);
         scenes["Idle"]=(&idle);
         scenes["GroundGame"]=(&ground);
@@ -96,7 +99,8 @@ public:
             it->second->teamNumber = teamId;
         }
         
-        design.setup(co,&buttons,"img/colors"+ofToString(teamId)+".png","img/symbolColors"+ofToString(teamId)+".png",6);
+        design.setup(co,&buttons,"img/colors"+ofToString(teamId)+".png",6);
+        reDesign.setup(co,&buttons,"img/colors"+ofToString(teamId)+".png",6);
         area.setup(co,&buttons);
         representative.setup(co,&buttons);
         logic.setup(co,&buttons);

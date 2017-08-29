@@ -89,9 +89,8 @@ public:
         ofPushMatrix();
         ofPushStyle();
         ofTranslate(center);
-       // ofRotateZ(360 - slots*spacing );
         ofRotateZ(factoryRotation);
-        
+        ofSetLineWidth(5);
         ofFill();
         ofSetColor(255,0,0);
         for(int i = 0; i< slots * 2 ;i++){
@@ -119,8 +118,7 @@ public:
     vector<Basket>baskets;
 
     vector<ofPolyline> polysOutline;
-    vector<ofPolyline> solidPolysFull;
-    
+
     vector<bool>empolyedTicks;
     
     bool done = false;
@@ -208,7 +206,7 @@ public:
     void begin(ofxBox2d * world = nullptr){
         ofxSVG svg;
         svg.load("svg/10_FactorySolids.svg");
-        solidPolysFull = getPolyline(svg);
+        solidPolys = getPolyline(svg);
         
         ofxSVG svg2;
         svg2.load("svg/10_FactoryAreas.svg");
@@ -249,14 +247,20 @@ public:
         
         empolyedTicks.resize(36);
         
-        for(int i = 0; i<solidPolysFull.size();i++)
-            solidPolys.push_back(solidPolysFull[i]);
-                    
+        for(int i = 0; i<buttons->size();i++){
+            if(buttons->at(i).isPlaying){
+                float addX = teamNumber == 0 ? 0 : 1920;
+                
+                float p = ofRandom(-100,100);
+                buttons->at(i).setPosition(1920/2 + addX + p, 1080/2 + p);
+                
+            }
+        }
     };
     
     void reset(){
         empolyedTicks.clear();
-        solidPolysFull.clear();
+     
         polysOutline.clear();
         baskets.clear();
         solidPolys.clear();

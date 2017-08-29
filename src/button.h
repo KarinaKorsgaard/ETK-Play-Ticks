@@ -41,9 +41,7 @@ public:
     int teamNumber;
     
     bool isPlaying = false;
-    
-    vector<ofColor>colors;
-    
+
     string address;
     string secondAdress;
     
@@ -67,7 +65,7 @@ public:
     
     vector<ofImage> *img;
     ofImage *symbol;
-    vector<ofColor> color;
+    ofColor color;
     int symbolInt,colorInt;
     
     ofImage * legs[4];
@@ -79,7 +77,6 @@ public:
         table = _table;
         address = _address;
         secondAdress = _secondAdress;
-        color.resize(2);
         teamNumber = _teamNum;
         isPlaying = false;
         value = val;
@@ -141,7 +138,7 @@ public:
             }
             
             
-            ofSetColor(color[0]);
+            
             
             if(!isDead()){
                 armSwapper+=getSpeed()*4.;
@@ -159,10 +156,11 @@ public:
                 int h = 128 * scale;
                 legs[aInd]->draw(-w/2,-h/2 , w,h);
             }
+            ofSetColor(color);
             int charImg = isDead()?1:0;
             img->at(charImg).draw(-radiusUsed,-radiusUsed,radiusUsed*2,radiusUsed*2);
 
-            ofSetColor(color[1]);
+           
             symbol->draw(-radiusUsed,-radiusUsed,radiusUsed*2,radiusUsed*2);
             ofFill();
             
@@ -177,7 +175,7 @@ public:
     void setPosition(ofVec2f v){
         box2Dcircle->setPosition(v);
         filterLowPass.clear(v);
-        //lastPos = v;
+        lastPos = v;
     }
     float getSpeed(){
         return dx+dy;

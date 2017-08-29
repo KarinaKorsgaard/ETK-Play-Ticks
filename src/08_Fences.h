@@ -146,7 +146,7 @@ public:
         if(moveEscalators){
             time+= ofGetLastFrameTime();
             for(int i = 0; i<escalators.size();i++){
-                int floor = i == 0 ? 1080 : 725;
+                int floor = movingPolys[i].getBoundingBox().y + movingPolys[i].getBoundingBox().height;
                 float ypos = abs(sin(time*co->escalatorSpeed)) * floor;
               //  escalators[i]->setPosition(escalators[i]->getPosition().x + ofVec2f(0,upDown[i] * co->escalatorSpeed *10.f* ofGetLastFrameTime()));
                 escalators[i]->setPosition(escalators[i]->getPosition().x ,ypos);
@@ -216,6 +216,7 @@ public:
         
         svg.load("svg/08_EscalatorMoving.svg");
         movingPolys = getPolyline(svg);
+        
         
         svg.load("svg/08_EscalatorSolids.svg");
         solidPolys = getPolyline(svg);

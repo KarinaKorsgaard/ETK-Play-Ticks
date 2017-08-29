@@ -99,14 +99,13 @@ public:
         }
         numPlayers = MAX(numPlayers, 16);
         numPlayers+=8;
-        float l = numPlayers * radius * 3;
+        float l = numPlayers * radius * 2.5;
         float d = l / PI;
   
         d/=2;
         
         bigRadius = d == 0 ? 286 : d;
         
-        bigRadius += radius; /// albue rum
         smallRadius = MAX(bigRadius - 20, 0);
         isInPlace.resize(36);
         
