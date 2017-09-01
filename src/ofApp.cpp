@@ -324,7 +324,9 @@ void ofApp::update(){
         if(co.startMovement){
             if (firstServe){
                 firstServe = false;
-                int serve = teams[0].time > teams[1].time ? -1 : 1;
+                int serve = teams[0].time > teams[1].time ? 1 : -1;
+                int x = serve == 1 ? 1920/2 : 1920/2 + 1920;
+                fightBall.get()->setPosition(x, 1080/2);
                 fightBall.get()->setVelocity(5 * serve, 5);
             }
             

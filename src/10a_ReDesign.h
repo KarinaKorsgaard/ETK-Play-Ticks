@@ -73,7 +73,7 @@ public:
         }
         if(diffCount == 0)done = true;
         if(!co->startScene)done = false;
-        cout << diffCount<< "team" << teamNumber << done << endl;
+       // cout << diffCount<< "team" << teamNumber << done << endl;
         return done;
         
     };

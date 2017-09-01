@@ -52,7 +52,7 @@ public:
                 m.setAddress("/tennisPoint"+ofToString(teamNumber*-1+2));
                 co->oscOut.sendMessage(m);
                 
-                ball->setPosition(1920, 1080/2);
+                ball->setPosition(1920/2 + teamNumber * 1920, 1080/2);
                 ball->setVelocity(0, 0);
                 ballTimer = ofGetElapsedTimef();
                 ballTimerSet = false;

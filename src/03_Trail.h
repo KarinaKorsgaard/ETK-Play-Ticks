@@ -101,7 +101,7 @@ public:
 
         if(!go){
             if(co->trailRadius[teamNumber] > 0.0)
-                co->trailRadius[teamNumber]*=0.99;
+                co->trailRadius[teamNumber]*=0.59;
             else co->trailRadius[teamNumber] = 0.;
         }else {
             if(co->trailRadius[teamNumber] < co->maxTrailRadius)

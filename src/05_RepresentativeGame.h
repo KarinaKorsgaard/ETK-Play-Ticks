@@ -31,6 +31,8 @@ public:
     bool breakFormation = false;
     bool done = false;
     
+    vector<bool>tempTaken;
+    
     float getDist(ofVec2f v, ofVec2f o){
         ofVec2f a = o - v;
         return a.dot(a) ;
@@ -52,6 +54,7 @@ public:
     
     void updateIsDone(){
         
+        
         if(!doneFormation){
             vector<int> buttonsOutside;
             for(int b = 0; b<buttons->size();b++){
@@ -64,6 +67,18 @@ public:
             }
             
             doneFormation = buttonsOutside.size() == spots.size() ? true : false;
+            
+            if(!doneFormation)
+            {
+                for(int s = 0; s<spots.size();s++){
+                    tempTaken[s] = false;
+                    for(int i = 0; i<buttonsOutside.size();i++){
+                        if (getDist(spots[s].pos, buttons->at(buttonsOutside[i]).getBiquadPos())<200){
+                            tempTaken[s] = true;
+                        }
+                    }
+                }
+            }
             
             for(int i = 0; i<spots.size();i++){
                 spots[i].isTaken = false;
@@ -82,8 +97,9 @@ public:
                     }
                     
                 }
-                for(int s = 0; s<spots.size();s++){
-                    if(!spots[s].isTaken)doneFormation=false;
+                for (int s = 0; s<spots.size();s++){
+                    if (!spots[s].isTaken)
+                        doneFormation=false;
                 }
             }
             
@@ -167,7 +183,7 @@ public:
 
         
         for(int i = 0; i<spots.size();i++){
-            if(spots[i].isTaken){
+            if(spots[i].isTaken || tempTaken[i]){
                 ofSetColor(255, 200);
                 ofDrawCircle(spots[i].pos,40);
             }
@@ -228,7 +244,7 @@ public:
         doorImg[1].load("img/specialAssets/05_Door-02.png");
         
         overlay.load("img/specialAssets/05_RepresentativeOverlay.png");
-        
+        tempTaken.resize(spots.size());
     };
     
     void reset(){

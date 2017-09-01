@@ -148,8 +148,8 @@ public:
             for(int i=0; i<buttons->size(); i++) {
                 buttons->at(i).update(co->attraction);
             }
-        }else
-            cout << looserId << "is looser team "<< teamNumber << " from factories"<< endl;
+        }
+         //   cout << looserId << "is looser team "<< teamNumber << " from factories"<< endl;
     }
     
     void updateBaskets(){
