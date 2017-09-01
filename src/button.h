@@ -71,6 +71,7 @@ public:
     ofImage * legs[4];
     
     bool isWinner = false;
+    bool isLooser = false;
     
     void setup(int _row, int _table,int _teamNum, string _address, string _secondAdress, float val, float size, ofxBox2d *world){
         ID = _row;

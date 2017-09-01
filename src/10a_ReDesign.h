@@ -9,12 +9,14 @@ public:
     int maxSymbols = 0;
     int maxColors = 0;
     vector<ofColor>colors;
-
+    
+    int looserTick ;
     ofImage forGround;
     vector<string>letters;
     bool done;
     string colorFile;
-
+    
+    
     int numColors;
     
     void setup(commonObjects*_co, vector<Button>*b, string _colorFile, int _numColors){
@@ -45,34 +47,38 @@ public:
     
     
     bool isDone(bool b = false){
-
+        
         int diffCount = 0;
         
-        for(int i = 0; i<buttons->size();i++){
-            if(buttons->at(i).isPlaying){
+        for (int i = 0; i<buttons->size();i++){
+            if (buttons->at(i).isPlaying && i != looserTick){
                 
-                for(int j = i+1; j<buttons->size();j++){
-                    if( buttons->at(j).isPlaying ){
+                for (int j = i+1; j<buttons->size();j++){
+                    if ( buttons->at(j).isPlaying && j != looserTick){
                         
                         if (buttons->at(i).symbolInt != buttons->at(j).symbolInt &&
                             buttons->at(i).colorInt != buttons->at(j).colorInt){
                             diffCount++;
                             
                         }
-                        
+                    }
+                    else if (j == looserTick && i != looserTick){
+                        if (buttons->at(i).symbolInt == buttons->at(j).symbolInt &&
+                            buttons->at(i).colorInt == buttons->at(j).colorInt){
+                            diffCount++;
+                        }
                     }
                 }
             }
         }
-
-        done = diffCount==1;
+        
+        done = diffCount == 0;
+        
         return done;
-
+        
     };
     
     void update(){
-        
-
         
         int c = colors.size();
         int s = co->characterSymbols.size();
@@ -88,26 +94,27 @@ public:
         int howManyGetsMore = numPlayers-(minColors*maxSymbols);
         int count = 0;
         for(int i=0; i<buttons->size(); i++) {
-            ofVec3f data = buttons->at(i).getRawData();
-            float normX = data.x > 1 ? data.x - 1. : data.x;
-            
-            int x = ofMap (normX,0,1,0,minColors);
-            int y = ofMap (data.z,0,2*PI,0,maxSymbols); // symbol
-            
-            if(count < howManyGetsMore){
-                x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
+            if (i != looserTick){
+                
+                ofVec3f data = buttons->at(i).getRawData();
+                float normX = data.x > 1 ? data.x - 1. : data.x;
+                
+                int x = ofMap (normX,0,1,0,minColors);
+                int y = ofMap (data.z,0,2*PI,0,maxSymbols); // symbol
+                
+                if(count < howManyGetsMore){
+                    x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
+                }
+                if(buttons->at(i).isPlaying)count++;
+                
+                x = CLAMP (x,0,c-1);
+                y = CLAMP (y,0,s-1);
+                buttons->at(i).color=colors[x];
+                buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
+                
+                buttons->at(i).colorInt = x;
+                buttons->at(i).symbolInt = y;
             }
-            if(buttons->at(i).isPlaying)count++;
-            
-            x = CLAMP (x,0,c-1);
-            y = CLAMP (y,0,s-1);
-            buttons->at(i).color=colors[x];
-            buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
-            
-            buttons->at(i).colorInt = x;
-            buttons->at(i).symbolInt = y;
-            
-            
         }
     }
     
@@ -127,8 +134,7 @@ public:
                 
                 int table =ceil( (b.table+1 + (teamNumber*-1 + 1))/ 2)+0.1 - 1;
                 
-                ofTranslate( (table * hSpace) + leftSide, b.ID * vSpace + topSide );
-                
+                ofTranslate( (b.ID * hSpace) + leftSide, table * vSpace + topSide );
                 
                 ofSetColor(b.color);
                 
@@ -143,7 +149,7 @@ public:
                 
                 
                 if(co->debug)
-                    co->font_small->drawString(ofToString(b.table+1)+" :"+ofToString(b.ID+1), -10, 20);
+                    co->font_small->drawString(ofToString(b.ID+1)+" :"+ofToString(b.table+1), -10, 20);
                 ofPopMatrix();
             }
         }
@@ -151,10 +157,10 @@ public:
         if(forGround.isAllocated())forGround.draw(teamNumber * 1920 , 0 , 1920 , 1080);
         
         for(int i = 0; i<6; i++)
-            co->font_small->drawString(letters[i], leftSide - 125*2, topSide + i*vSpace +10);
+            co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide - 125*2, topSide + i*vSpace +10);
         
         for(int i = 0; i<6; i++)
-            co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide + hSpace*i - 10, topSide - 100);
+            co->font_small->drawString(letters[i], leftSide + hSpace*i - 10, topSide - 100);
         
         ofPopStyle();
     };
@@ -162,12 +168,27 @@ public:
     void begin(ofxBox2d * world = nullptr){
         co->designDone1 = false;
         co->designDone2 = false;
-
+        
         forGround.load("img/specialAssets/11_ReDesignForeground.png");
+        
+        looserTick = -1;
+        vector<int>randomLooser;
+        for (int i = 0; i<buttons->size();i++){
+            if (buttons->at(i).isPlaying){
+                randomLooser.push_back(i);
+                if (buttons->at(i).isLooser){
+                    looserTick = i;
+                }
+            }
+        }
+        if(looserTick == -1){
+            int l = randomLooser.size() == 0 ? 0 : randomLooser[int(ofRandom(randomLooser.size()-1))];
+            looserTick = l;
+        }
     };
     
     void reset(){
- 
+        
     };
     
     

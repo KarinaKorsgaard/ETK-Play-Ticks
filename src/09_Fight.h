@@ -58,8 +58,10 @@ public:
                 ballTimerSet = false;
             }
             if(!ballTimerSet && ofGetElapsedTimef() - ballTimer > 3 ){
-                int xvel = teamNumber == 1 ? 3 : -3;
-                ball->setVelocity(xvel, 2);
+                int xvel = teamNumber == 1 ? -5 : 5;
+                int randomUp = ofRandom(1) > 0.5 ? -1:1;
+                
+                ball->setVelocity(xvel, 5 * randomUp);
                 ballTimerSet=true;
             }
             

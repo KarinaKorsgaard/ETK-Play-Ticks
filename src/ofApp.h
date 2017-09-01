@@ -92,10 +92,14 @@ class ofApp : public ofBaseApp{
     
     
     shared_ptr<ofxBox2dCircle>fightBall;
+    ofImage fightBallImg;
+    bool firstServe;
     
     ofParameter<bool>restartApp;
     ofParameter<bool>resetApp;
     void reset();
     
 
+    ofImage scoreImg;
+    vector<vector<string>>scoreMessages;
 };
