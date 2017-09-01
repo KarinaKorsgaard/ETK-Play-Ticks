@@ -112,8 +112,8 @@ public:
                 
             }
             if(buttons->at(i).isPlaying)count++;
-            x = CLAMP (x,0,c-1);
-            y = CLAMP (y,0,s-1);
+            x = CLAMP (x,0,maxColors);
+            y = CLAMP (y,0,maxSymbols-1);
             buttons->at(i).color=colors[x];
             buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
             

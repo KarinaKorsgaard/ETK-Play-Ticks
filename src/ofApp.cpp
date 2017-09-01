@@ -144,20 +144,35 @@ void ofApp::setup(){
     }
     
     
-    for(int i = 0; i<b_scenes.size() ; i++){
-        string m = cc.getLine("timeMessages.txt", i);
-        if (m.length() == 0)
-            m = "There is a line missing";
+//    for(int i = 0; i<b_scenes.size() ; i++){
+//        string m = cc.getLine("timeMessages.txt", i);
+//        if (m.length() == 0)
+//            m = "There is a line missing";
+//        
+//        vector<string>split = ofSplitString(m, "-");
+//        if (split.size() > 0)
+//            m = split[1];
+//        
+//        vector<string>vs;
+//        vs = cc.transformToCollumn(m, 1280, co.font_small);
+//        scoreMessages.push_back(vs);
+//        
+//    }
+    
+    ofxSVG svg;
+    svg.load("svg/timePlacement.svg");
+    vector<ofPolyline> timePalcementPolys = cc.getPolyline(svg);
+    if (timePalcementPolys.size()>1){
+        timePlacement[0] = timePalcementPolys[0].getBoundingBox();
+        timePlacement[1] = timePalcementPolys[1].getBoundingBox();
         
-        vector<string>split = ofSplitString(m, "-");
-        if (split.size() > 0)
-            m = split[1];
-        
-        vector<string>vs;
-        vs = cc.transformToCollumn(m, 1280, co.font_small);
-        scoreMessages.push_back(vs);
-        
+        if (timePlacement[0].y > timePlacement[1].y){
+            ofRectangle temp = timePlacement[0];
+            timePlacement[0] = timePlacement[1];
+            timePlacement[1] = temp;
+        }
     }
+        
     
     p_b_scenes.resize(b_scenes.size());
     
@@ -175,10 +190,7 @@ void ofApp::setup(){
     //physics.setName("game controls");
     physics.add(co.deadTimer.set("dead time",5,1,30));
     physics.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
-    //physics.add(co.drainCoefficient1.set("drain team 1",1,0,5));
-    //physics.add(co.drainCoefficient2.set("drain team 2",1,0,5));
-    
-    
+
     design.setName("Design");
     design.add(co.designDone1.set("team 1 ready",false));
     design.add(co.designDone2.set("team 2 ready",false));
@@ -395,21 +407,55 @@ void ofApp::draw(){
         scoreImg.draw(0,0,1920,1080);
         scoreImg.draw(1920,0,1920,1080);
         
-        int h = scoreMessages[co.sceneNumber].size() * font_small.getLineHeight();
+        string time1 = cc.timeToString(teams[0].time);
+        string time2 = cc.timeToString(teams[1].time);
         
-        if(scoreMessages[co.sceneNumber].size() > 0){
-            vector<string> s;
-            
-            s = cc.replace(scoreMessages[co.sceneNumber],"timekey",cc.timeToString(teams[0].time));
-            for(int i = 0; i< s.size();i++){
-                font_small.drawString(s[i], (1920 - 1280) / 2, (1080-h)/2+i*font_small.getLineHeight());
-            }
-            s = cc.replace(scoreMessages[co.sceneNumber],"timekey",cc.timeToString(teams[1].time));
-            for(int i = 0; i< s.size();i++){
-                font_small.drawString(s[i],1920 + (1920 - 1280) / 2, (1080-h)/2+i*font_small.getLineHeight());
-            }
-            //cc.drawCollumn( s ,1920 + (1920 - 1280) / 2, (1080-h)/2 , &font_small);
-        }
+        float rotation = -2.5f;
+        ofPushMatrix();
+        ofTranslate(10, font_small.getLineHeight()+3.5);
+        
+        ofPushMatrix();
+        ofTranslate(timePlacement[0].x, timePlacement[0].y);
+        ofRotateZ(rotation);
+        font_small.drawString(time1, 0, 0);
+        ofPopMatrix();
+        
+        ofPushMatrix();
+        ofTranslate(timePlacement[1].x, timePlacement[1].y);
+        ofRotateZ(rotation);
+        font_small.drawString(time2, 0, 0);
+        ofPopMatrix();
+        
+        
+        ofPushMatrix();
+        ofTranslate(timePlacement[0].x + 1920, timePlacement[0].y);
+        ofRotateZ(rotation);
+        font_small.drawString(time2, 0, 0);
+        ofPopMatrix();
+        
+        ofPushMatrix();
+        ofTranslate(timePlacement[1].x + 1920, timePlacement[1].y);
+        ofRotateZ(rotation);
+        font_small.drawString(time1, 0, 0);
+        ofPopMatrix();
+        
+        ofPopMatrix();
+        
+//        int h = scoreMessages[co.sceneNumber].size() * font_small.getLineHeight();
+//        
+//        if(scoreMessages[co.sceneNumber].size() > 0){
+//            vector<string> s;
+//            
+//            s = cc.replace(scoreMessages[co.sceneNumber],"timekey",cc.timeToString(teams[0].time));
+//            for(int i = 0; i< s.size();i++){
+//                font_small.drawString(s[i], (1920 - 1280) / 2, (1080-h)/2+i*font_small.getLineHeight());
+//            }
+//            s = cc.replace(scoreMessages[co.sceneNumber],"timekey",cc.timeToString(teams[1].time));
+//            for(int i = 0; i< s.size();i++){
+//                font_small.drawString(s[i],1920 + (1920 - 1280) / 2, (1080-h)/2+i*font_small.getLineHeight());
+//            }
+//            //cc.drawCollumn( s ,1920 + (1920 - 1280) / 2, (1080-h)/2 , &font_small);
+//        }
     }
     
     fbo.end();

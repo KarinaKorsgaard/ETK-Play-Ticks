@@ -71,7 +71,8 @@ class ofApp : public ofBaseApp{
     ofxTrueTypeFontUC font_small;
     ofxTrueTypeFontUC font_medium;
 
-
+    ofRectangle timePlacement[2];
+    
     bool toggleRefill = false;
     float easeRefill1 = 0.;
     float easeRefill2 = 0.;

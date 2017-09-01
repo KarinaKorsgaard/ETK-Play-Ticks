@@ -50,7 +50,12 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
         done = false;
-        if (isCherades)overlay.load("img/specialAssets/11_cheradesOverlay.png");
+        if (isCherades){
+            overlay.load("img/specialAssets/11_cheradesOverlay.png");
+            co->idleA = false;
+            co->idleB = false;
+        }
+    
     }
     
     
