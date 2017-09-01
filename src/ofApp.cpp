@@ -124,6 +124,8 @@ void ofApp::setup(){
     
     //allocate framebuffer
     fbo.allocate(1920*2, 1080, GL_RGBA);
+    fboTeams[0].allocate(1920, 1080, GL_RGBA);
+    fboTeams[1].allocate(1920*2, 1080, GL_RGBA);
     ofEnableAntiAliasing();
     
     
@@ -349,6 +351,19 @@ void ofApp::update(){
 void ofApp::draw(){
     
     
+    if (co.sMap[co.sceneNumber] != "Idle" && co.sMap[co.sceneNumber] != "Ground" ){
+        fboTeams[0].begin();
+        ofClear(0);
+        teams[0].draw();
+        fboTeams[0].end();
+        
+        fboTeams[1].begin();
+        ofClear(0);
+        ofTranslate(-1920, 0);
+        teams[1].draw();
+        fboTeams[1].end();
+    }
+    
     fbo.begin();
     ofClear(0);
     
@@ -399,9 +414,13 @@ void ofApp::draw(){
         ofPopMatrix();
     }
     
-    teams[0].draw();
-    teams[1].draw();
-    
+    if (co.sMap[co.sceneNumber] != "Idle" && co.sMap[co.sceneNumber] != "Ground" ){
+        fboTeams[0].draw(0,0);
+        fboTeams[1].draw(1920,0);
+    }else{
+        teams[0].draw();
+        teams[1].draw();
+    }
     
     if (!co.startScene){
         ofSetColor(255);

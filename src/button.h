@@ -199,7 +199,7 @@ public:
                 
                 int multiX = doubleSize ? teamNumber * 1920 : 0;
                 
-                p.x = multiX + (rect.width*x)+ rect.x;
+                p.x = multiX + (rect.width*x) + rect.x;
                 p.y = rect.height*y + rect.y;
                 
  

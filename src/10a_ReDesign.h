@@ -97,7 +97,7 @@ public:
             if (i != looserTick){
                 
                 ofVec3f data = buttons->at(i).getRawData();
-                float normX = data.x > 1 ? data.x - 1. : data.x;
+                float normX = data.y > 1 ? data.y - 1. : data.y;
                 
                 int x = ofMap (normX,0,1,0,minColors);
                 int y = ofMap (data.z,0,2*PI,0,maxSymbols); // symbol

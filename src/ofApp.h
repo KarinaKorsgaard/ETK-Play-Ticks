@@ -39,6 +39,9 @@ class ofApp : public ofBaseApp{
     
     Team teams[2];
     ofFbo fbo;
+    
+    ofFbo fboTeams[2];
+    
     ofxSyphonServer syphon;
     commonObjects co;
     commonFunctions cc;

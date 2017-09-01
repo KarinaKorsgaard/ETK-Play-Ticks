@@ -207,10 +207,12 @@ public:
                 addedToWinnerlist = true;
                 
                 int t = co->sMap[s] == "Fight" ? (teamId*-1)+1 : teamId;
+                
                 co->teamIsDone.push_back(t);
                 cout << "teamisdonesize "<< co->teamIsDone.size()<< endl;
             }
             if (!playAnimation){
+                
                 cout <<"team "<< teamId << " "<< co->teamIsDone[teamId] << " celebration id" << endl;
                 co->celebration[co->teamIsDone[teamId]].play();
                 
@@ -335,28 +337,7 @@ public:
         }
         return r;
     }
-    
-    
-    
-    //    void divideTimeToButtons(){
-    //        if(time>0){
-    //            for(int i = 0; i<buttons.size();i++){
-    //                if(buttons[i].isDead())continue;
-    //                buttons[i].addValue(-ofGetLastFrameTime()*co->divideTimeTime);
-    //                time-=ofGetLastFrameTime();
-    //            }
-    //        }
-    //    }
-    
-    //    void takeOffSeconds(){
-    //
-    //        if(secondsToTakeOff>0){
-    //            secondsToTakeOff-=ofGetLastFrameTime() * 5.;
-    //            time-=ofGetLastFrameTime() * 5.;
-    //        }
-    //    };
-    
-    
+
 private:
     
     float secondsToTakeOff;
