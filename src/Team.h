@@ -121,6 +121,11 @@ public:
         scenes["Design"]->begin(box2d);
         scenes["Design"]->update();
         scenes["Design"]->reset();
+        
+//        scenes["ReDesign"]->begin(box2d);
+//        scenes["ReDesign"]->update();
+//        scenes["ReDesign"]->reset();
+        
         scenes[co->sMap[co->sceneNumber]]->reset();
         scenes[co->sMap[co->sceneNumber]]->begin(box2d);
         

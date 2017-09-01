@@ -33,7 +33,7 @@ public:
         factoryWidth = poly.getBoundingBox().width;
         top = poly.getBoundingBox().y;
         
-
+        bucketIsFull = false;
     }
     
     bool isIn(ofPoint p){
@@ -123,7 +123,7 @@ public:
     
     bool done = false;
     ofImage overlay;
-    
+    int looserId;
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
@@ -148,7 +148,8 @@ public:
             for(int i=0; i<buttons->size(); i++) {
                 buttons->at(i).update(co->attraction);
             }
-        }
+        }else
+            cout << looserId << "is looser team "<< teamNumber << " from factories"<< endl;
     }
     
     void updateBaskets(){
@@ -179,6 +180,9 @@ public:
             if (!empolyedTicks[i] && buttons->at(i).isPlaying ){
                 co->isUnemployed[teamNumber] = ofPoint( buttons->at(i).table , buttons->at(i).ID );
                 buttons->at(i).isLooser = true;
+                looserId = i;
+            }else{
+                buttons->at(i).isLooser = false;
             }
         }
     }
@@ -238,7 +242,7 @@ public:
             Basket basket;
             baskets.push_back(basket);
             baskets.back().setup(polysOutline[i], slots);
-            
+        
             cout << "BASKET: "<<i<<" slots_ "<<slots<<endl;
         }
         

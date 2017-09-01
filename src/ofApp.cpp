@@ -101,7 +101,7 @@ void ofApp::setup(){
             b.legs[1] = &co.legs[1];
             b.legs[2] = &co.legs[2];
             b.legs[3] = &co.legs[3];
-            b.symbol = &co.characterSymbols[teamNum];
+            b.symbol = &co.characterSymbols[0];
             
             b.box2Dcircle.get()->setData(new ButtonData());
             ButtonData * sd = (ButtonData*)b.box2Dcircle.get()->getData();

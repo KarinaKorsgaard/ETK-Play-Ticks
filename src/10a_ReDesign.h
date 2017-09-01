@@ -53,10 +53,10 @@ public:
         for (int i = 0; i<buttons->size();i++){
             if (buttons->at(i).isPlaying && i != looserTick){
                 
-                for (int j = i+1; j<buttons->size();j++){
+                for (int j = 0; j<buttons->size();j++){
                     if ( buttons->at(j).isPlaying && j != looserTick){
                         
-                        if (buttons->at(i).symbolInt != buttons->at(j).symbolInt &&
+                        if (buttons->at(i).symbolInt != buttons->at(j).symbolInt ||
                             buttons->at(i).colorInt != buttons->at(j).colorInt){
                             diffCount++;
                             
@@ -71,9 +71,9 @@ public:
                 }
             }
         }
-        
-        done = diffCount == 0;
-        
+        if(diffCount == 0)done = true;
+        if(!co->startScene)done = false;
+        cout << diffCount<< "team" << teamNumber << done << endl;
         return done;
         
     };
@@ -108,7 +108,7 @@ public:
                 if(buttons->at(i).isPlaying)count++;
                 
                 x = CLAMP (x,0,maxColors);
-                y = CLAMP (y,0,maxSymbols-1);
+                y = CLAMP (y,0,MAX(maxSymbols-1,0));
                 
                 buttons->at(i).color=colors[x];
                 buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
@@ -146,7 +146,8 @@ public:
                 b.img->at(0).draw(-25,-25,25*2,25*2);
                 
                 ofSetColor(255);
-                b.symbol->draw(-25,-25,25*2,25*2);
+                if(b.symbol != NULL)
+                    b.symbol->draw(-25,-25,25*2,25*2);
                 
                 
                 if(co->debug)
@@ -174,11 +175,14 @@ public:
         
         looserTick = -1;
         vector<int>randomLooser;
+        
         for (int i = 0; i<buttons->size();i++){
             if (buttons->at(i).isPlaying){
+                buttons->at(i).symbol = &co->characterSymbols[buttons->at(i).symbolInt];
                 randomLooser.push_back(i);
                 if (buttons->at(i).isLooser){
                     looserTick = i;
+                    cout << looserTick << " the looser tick was found "<<teamNumber<< endl;
                 }
             }
         }
@@ -186,6 +190,7 @@ public:
             int l = randomLooser.size() == 0 ? 0 : randomLooser[int(ofRandom(randomLooser.size()-1))];
             looserTick = l;
         }
+        cout << looserTick << " the looser was not found is looser from "<<teamNumber<< endl;
     };
     
     void reset(){
