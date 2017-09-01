@@ -7,6 +7,10 @@ void ofApp::setup(){
     co.sceneNumber = 12;
     trailShader.load("trail");
     
+    scoreImg.load("img/timeimage.png");
+    
+    
+    
     box2d.init();
     box2d.setGravity(0, 0);
     box2d.createBounds(ofRectangle(0,0,1920 * 2,1080));
@@ -16,12 +20,12 @@ void ofApp::setup(){
     syphon.setName("tick games");
     font_small.load("fonts/font.ttf", 30);
     font_medium.load("fonts/font.ttf", 65);
-
+    
     co.fillLookUp();
-
+    
     co.font_small = &font_small;
     co.font_medium = &font_medium;
-
+    
     co.characterImgs.resize(2);
     co.characterImgs[0].load("img/characters/body.png");
     co.characterImgs[1].load("img/characters/dead.png");
@@ -114,11 +118,9 @@ void ofApp::setup(){
         }
     }
     
-
-    
     ofAddListener(box2d.contactStartEvents, this, &ofApp::contactStart);
     ofAddListener(box2d.contactEndEvents, this, &ofApp::contactEnd);
-
+    
     
     //allocate framebuffer
     fbo.allocate(1920*2, 1080, GL_RGBA);
@@ -135,10 +137,26 @@ void ofApp::setup(){
             b_scenes.push_back(p);
             co.sMap[i]=ofSplitString(name, "-")[1];
             cout << co.sMap[i] << endl;
-          
+            
         }else{
             break;
         }
+    }
+    
+    
+    for(int i = 0; i<b_scenes.size() ; i++){
+        string m = cc.getLine("timeMessages.txt", i);
+        if (m.length() == 0)
+            m = "There is a line missing";
+        
+        vector<string>split = ofSplitString(m, "-");
+        if (split.size() > 0)
+            m = split[1];
+        
+        vector<string>vs;
+        vs = cc.transformToCollumn(m, 1280, co.font_small);
+        scoreMessages.push_back(vs);
+        
     }
     
     p_b_scenes.resize(b_scenes.size());
@@ -159,7 +177,7 @@ void ofApp::setup(){
     physics.add(co.refillCoef.set("refill amount",startVal/2,0,startVal));
     //physics.add(co.drainCoefficient1.set("drain team 1",1,0,5));
     //physics.add(co.drainCoefficient2.set("drain team 2",1,0,5));
-
+    
     
     design.setName("Design");
     design.add(co.designDone1.set("team 1 ready",false));
@@ -167,11 +185,11 @@ void ofApp::setup(){
     
     gravity.setName("escalator and trail");
     gravity.add(co.moveBall.set("move ball",false));
-    gravity.add(co.ballSpeed.set("ball speeed",1.,0.,1.));
+    gravity.add(co.ballSpeed.set("ball speeed",15.,0.,30.));
     gravity.add(co.gravity.set("gravity",1,0,50));
     gravity.add(co.escalatorSpeed.set("escalator speed",1.,0.,1.));
     gravity.add(co.maxTrailRadius.set("maxTrailRadius", 0.001, 0., 0.05));
-    //gravity.add(co.trailRadius[1].set("trailRadius2", 0.1, 0., 1.));
+
     
     logic.setName("logic");
     logic.add(co.logicPrecision.set("logic precision", 20., 0.01, 100.f));
@@ -185,7 +203,7 @@ void ofApp::setup(){
         market.add(co.factoryRotation.back().set("factory"+ofToString(i+1),0,0,360));
     }
     logic.add(co.showLogicTargets.set(false));
-
+    
     market.setName("factories");
     market.add(co.marketDone1.set("finish market 1",false));
     market.add(co.marketDone2.set("finish market 2",false));
@@ -229,7 +247,7 @@ void ofApp::setup(){
     co.deathSound.setVolume(0.1f);
     
     receivingTables.resize(NUM_TABLES);
-
+    
     for(int i = 0;i<receivingTables.size();i++){
         receivingTables[i]=false;
     }
@@ -244,7 +262,7 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
- 
+    
     if(restartApp)restart();
     if(resetApp)reset();
     
@@ -292,32 +310,33 @@ void ofApp::update(){
             fightBall->setVelocity(1*ran,0);
         }
         if(co.startMovement){
+            if (firstServe){
+                firstServe = false;
+                int serve = teams[0].time > teams[1].time ? -1 : 1;
+                fightBall.get()->setVelocity(5 * serve, 5);
+            }
+            
             ofVec2f v = fightBall->getVelocity();
-         
             v.y*=0.95;
             v.normalize();
             v*=co.ballSpeed;
-            //fightBall->getVelocity().x * 1.01, fightBall->getVelocity().y * 0.9
             fightBall->setVelocity(v);
             fightBall->update();
         }
     }
     
-    
     box2d.update();
     
     
-
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    
     
     fbo.begin();
     ofClear(0);
-    
-    //ofBackground(200);
     
     
     ofSetColor(255);
@@ -355,11 +374,43 @@ void ofApp::draw(){
         ofDrawRectangle(0,0,1920*2 , 1080);
         trailShader.end();
     }
-    if(co.sMap[co.sceneNumber] == "Fight" && co.teamIsDone.size() == 0 && co.startScene)
-        fightBall->draw();
+    if(co.sMap[co.sceneNumber] == "Fight" && co.teamIsDone.size() == 0 && co.startScene){
+        //fightBall->draw();
+        ofPushMatrix();
+        ofTranslate(fightBall->getPosition());
+        ofRotateZ(fightBall->getRotation());
+        int r = fightBall->getRadius();
+        ofSetColor(255);
+        fightBallImg.draw(-r,-r,r*2,r*2);
+        ofPopMatrix();
+    }
     
     teams[0].draw();
     teams[1].draw();
+    
+    
+    if (!co.startScene){
+        ofSetColor(255);
+        
+        scoreImg.draw(0,0,1920,1080);
+        scoreImg.draw(1920,0,1920,1080);
+        
+        int h = scoreMessages[co.sceneNumber].size() * font_small.getLineHeight();
+        
+        if(scoreMessages[co.sceneNumber].size() > 0){
+            vector<string> s;
+            
+            s = cc.replace(scoreMessages[co.sceneNumber],"timekey",cc.timeToString(teams[0].time));
+            for(int i = 0; i< s.size();i++){
+                font_small.drawString(s[i], (1920 - 1280) / 2, (1080-h)/2+i*font_small.getLineHeight());
+            }
+            s = cc.replace(scoreMessages[co.sceneNumber],"timekey",cc.timeToString(teams[1].time));
+            for(int i = 0; i< s.size();i++){
+                font_small.drawString(s[i],1920 + (1920 - 1280) / 2, (1080-h)/2+i*font_small.getLineHeight());
+            }
+            //cc.drawCollumn( s ,1920 + (1920 - 1280) / 2, (1080-h)/2 , &font_small);
+        }
+    }
     
     fbo.end();
     
@@ -377,13 +428,16 @@ void ofApp::draw(){
         int red = receivingTables[i]?20:200;
         ofSetColor(red, 200-red , 0);
         ofDrawRectangle(gui.getWidth()*2 + 40, i*20+20, 18, 18);
+        ofSetColor(255);
+        ofDrawBitmapString(ofToString(i+1), gui.getWidth()*2 + 40 + 20, i*20+20);
     }
+    
     
     
 }
 //--------------------------------------------------------------
 void ofApp::handleSceneChange(){
-
+    
     
     // toggle scenechanges
     int resent = -1;
@@ -412,23 +466,25 @@ void ofApp::handleSceneChange(){
         else{
             box2d.enableEvents();
         }
-
+        
         if(co.sMap[co.sceneNumber] == "Fight"){
+            fightBallImg.load("img/specialAssets/08_FightBall.png");
             fightBall = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
             fightBall.get()->setPhysics(10., 5., 10.0);
             fightBall.get()->setup(box2d.getWorld(), 1920,1080/2 , 40);
             fightBall.get()->alive = true;
-            
-            fightBall.get()->setVelocity(5, 5);
             
             Fight * f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
             Fight * f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);
             
             f1->ball = fightBall;
             f2->ball = fightBall;
-   
+            
+            firstServe = true;
+            
         }else if(co.sMap[p_sceneNumber] == "Fight"){
             fightBall->destroy();
+            fightBallImg.clear();
         }
         
         
@@ -455,7 +511,7 @@ void ofApp::handleSceneChange(){
             groundVideo.stop();
         }
         
-        if(co.sMap[p_sceneNumber] == "Factories" ){
+        if(co.sMap[p_sceneNumber] == "Factories" || co.sMap[p_sceneNumber] == "ReDesign"){
             string abc = "A-B-C-D-E-F";
             vector<string>letters = ofSplitString(abc,"-");
             unemployedMessage = "unemplyed ticks:";
@@ -464,7 +520,7 @@ void ofApp::handleSceneChange(){
         }
         
         p_sceneNumber = co.sceneNumber;
-
+        
     }
 }
 //--------------------------------------------------------------
@@ -479,14 +535,14 @@ void ofApp::refill(int team, float timef){
             
             float newValue = oldValue + co.refillCoef;
             b->setValue(CLAMP(ease(t,oldValue,newValue,co.refillTime),0,newValue));
-
+            
             ofPushMatrix();
             ofTranslate(b->getGridPos( b->table - b->table%2*team , b->ID));
             ofTranslate(1920 * team,0);
             ofTranslate(800,0);
             b->draw(false);
             ofPopMatrix();
-           
+            
         }
     }
     if(t>co.refillTime && team == 0)co.refill1=false;
@@ -494,17 +550,17 @@ void ofApp::refill(int team, float timef){
 }
 //--------------------------------------------------------------
 void ofApp::exit(){
-
+    
     co.oscIn.~ofxOscReceiver();
     co.oscOut.~ofxOscSender();
     if(co.logReport){
         string path = ofToString("reports/"+ofGetTimestampString("%m-%d_%H-%M")+".txt");
         ofFile newFile(ofToDataPath(path),ofFile::WriteOnly); //file doesn't exist yet
         newFile.create();
-
+        
         for(int i = 0; i< co.logs.size(); i++){
             newFile <<co.logs[i]+"\n";
-
+            
         }
         newFile.close();
     }
@@ -516,7 +572,7 @@ void ofApp::exit(){
 void ofApp::keyPressed(int key){
     if(key == 's')co.startScene = true;
     if(key == 'd')co.debug=!co.debug;
-
+    
 }
 
 //--------------------------------------------------------------
@@ -658,7 +714,7 @@ string ofApp:: getAdress(int _firstSecond, int _tabel, int _button){
             result.append(str);
         indx++;
     }
-   // ofLog() << result <<endl;
+    // ofLog() << result <<endl;
     return result;
 }
 
@@ -729,11 +785,11 @@ void ofApp:: loadFromRestart(){
         teams[1].time = xml.getValue("team1time", 0);
         cout << teams[0].time << endl;
         cout << xml.getValue("team0", 0)<< endl;
-      
+        
         co.numPresentButtons[0] = xml.getValue("numpeople0",0);
         co.numPresentButtons[1] = xml.getValue("numpeople1",0);
         
-
+        
         for(int u = 0; u < 2; u++){
             for(int i = 0; i<36;i++){
                 Button * b = &teams[u].buttons.at(i);
@@ -745,7 +801,7 @@ void ofApp:: loadFromRestart(){
                 teams[u].buttons.at(i).isWinner = xml.getValue(team+ofToString(i)+"winner",0);
                 if(teams[u].buttons.at(i).isPlaying)
                     cout <<"symbol " << b->symbolInt << " color "<< b->colorInt << endl;
-               
+                
                 float x = xml.getValue(team+ofToString(i)+"xpos",0);
                 float y = xml.getValue(team+ofToString(i)+"ypos",0);
                 
@@ -763,9 +819,9 @@ void ofApp:: loadFromRestart(){
         b_scenes[co.sceneNumber]=true;
         
         ofFile::removeFile("restart.xml");
-    
+        
     }
-
+    
 }
 
 //--------------------------------------------------------------
@@ -773,7 +829,7 @@ void ofApp::contactStart(ofxBox2dContactArgs &e) {
     if(e.a != NULL && e.b != NULL) {
         if(co.sMap[co.sceneNumber] == "Fight"){
             if(e.a->GetType() != b2Shape::e_circle && e.a->GetType()!= b2Shape::e_edge  && e.b->GetType() == b2Shape::e_circle) {
-
+                
                 RacketData * racketData = (RacketData*)e.a->GetBody()->GetUserData();
                 ButtonData * buttonData = (ButtonData*)e.b->GetBody()->GetUserData();
                 
@@ -786,20 +842,20 @@ void ofApp::contactStart(ofxBox2dContactArgs &e) {
                 }
             }
         }
-
+        
         if(e.a->GetType() == b2Shape::e_circle && e.b->GetType() == b2Shape::e_circle) {
-
+            
             ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
             ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
-
-
+            
+            
             if(aData && bData) {
-
+                
                 //sound[aData->teamID].play();
                 if(!teams[bData->teamID].buttons[bData->buttonID].isDead() &&
                    !teams[aData->teamID].buttons[aData->buttonID].isDead() &&
                    teams[bData->teamID].buttons[bData->buttonID].on &&
-                   teams[aData->teamID].buttons[aData->buttonID].on 
+                   teams[aData->teamID].buttons[aData->buttonID].on
                    )
                 {
                     float f = ofGetElapsedTimef();
@@ -821,18 +877,18 @@ void ofApp::contactStart(ofxBox2dContactArgs &e) {
 //--------------------------------------------------------------
 void ofApp::contactEnd(ofxBox2dContactArgs &e) {
     if(e.a != NULL && e.b != NULL) {
-
+        
         ButtonData * aData = (ButtonData*)e.a->GetBody()->GetUserData();
         ButtonData * bData = (ButtonData*)e.b->GetBody()->GetUserData();
-
+        
         if(aData) {
             aData->bHit = false;
-
+            
         }
-
+        
         if(bData) {
             bData->bHit = false;
-
+            
         }
     }
 }

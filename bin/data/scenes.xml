@@ -1,16 +1,16 @@
 <scenes>
-	<0-Design>0</0-Design>
-	<1-Area>0</1-Area>
-	<2-Trail>0</2-Trail>
-	<3-Maze>0</3-Maze>
-	<4-Representative>0</4-Representative>
-	<5-LogicGame>0</5-LogicGame>
-	<6-AverageMaze>0</6-AverageMaze>
+	<0-Idle>0</0-Idle>
+	<1-Design>0</1-Design>
+	<2-Area>0</2-Area>
+	<3-Trail>0</3-Trail>
+	<4-Maze>0</4-Maze>
+	<5-Representative>0</5-Representative>
+	<6-LogicGame>0</6-LogicGame>
 	<7-Fences>0</7-Fences>
 	<8-Fight>0</8-Fight>
 	<9-Factories>0</9-Factories>
-	<10-ReDesign>0</10-ReDesign>
-	<11-Charades>0</11-Charades>
-	<12-GroundGame>0</12-GroundGame>
-	<13-Idle>0</13-Idle>
+	<10-Charades>0</10-Charades>
+	<11-ReDesign>0</11-ReDesign>
+	<12-Trial>0</12-Trial>
+	<13-GroundGame>0</13-GroundGame>
 </scenes>

@@ -26,6 +26,7 @@
 #include "10a_ReDesign.h"
 #include "11_Cherades.h"
 #include "12_Ground.h"
+#include "13_Trial.h"
 
 #include "Scene.h"
 
@@ -48,7 +49,7 @@ public:
     
     commonObjects *co;
     int p_sceneNum=0;
-
+    
     
     Design design;
     ReDesign reDesign;
@@ -62,11 +63,12 @@ public:
     Fight fight;
     Factories factories;
     Idle idle;
+    Trial trial;
     Idle charades07;
     
     //bool setSecondsToTakeOff = true;
     Ground ground;
-
+    
     std::map<string, Scene *>scenes;
     
     Team(){};
@@ -92,6 +94,7 @@ public:
         scenes["Charades"]=(&charades07);
         scenes["Idle"]=(&idle);
         scenes["GroundGame"]=(&ground);
+        scenes["Trial"]=(&trial);
         
         map<string, Scene *>::iterator it;
         for (it = scenes.begin(); it != scenes.end(); it++)
@@ -113,6 +116,7 @@ public:
         charades07.setup(co,&buttons);
         idle.setup(co,&buttons, false, ofRectangle(0,0,1920*2,1080));
         ground.setup(co,&buttons);
+        trial.setup(co,&buttons);
         
         scenes["Design"]->begin(box2d);
         scenes["Design"]->update();
@@ -120,35 +124,35 @@ public:
         scenes[co->sMap[co->sceneNumber]]->reset();
         scenes[co->sMap[co->sceneNumber]]->begin(box2d);
         
-           
+        
     }
     
     void update(){
         
         int s = co->sceneNumber;
         if(p_sceneNum != s){
-
+            
             reset();
-
+            
             scenes[co->sMap[s]]->begin(box2d);
             
             if(scenes[co->sMap[s]]->solidPolys.size()>0)
                 createScene(scenes[co->sMap[s]]->solidPolys);
             
-//            
-//            if(co->sMap[s] != "Idle" &&
-//               co->sMap[s] != "GroundGame" &&
-//               co->sMap[s] != "Fight"
-//               
-//               ){
-//                createWall();
-//            }
-
+            //
+            //            if(co->sMap[s] != "Idle" &&
+            //               co->sMap[s] != "GroundGame" &&
+            //               co->sMap[s] != "Fight"
+            //
+            //               ){
+            //                createWall();
+            //            }
+            
             scenes[co->sMap[p_sceneNum]]->reset();
- 
+            
             if(teamId == 0){
                 co->background.load("img/backgrounds/"+co->sMap[s]+".png");
-
+                
                 string file1 = "videos/celebrations/"+co->sMap[s]+"Winner"+".mov";
                 string file2 = "videos/celebrations/"+co->sMap[s]+"Looser"+".mov";
                 if (!ofFile::doesFileExist(file1)){
@@ -174,7 +178,7 @@ public:
         
         //--------------------------------------------------------------
         bool forceDone = false;
-
+        
         
         if(co->sMap[s] == "Factories")
             forceDone = teamId == 0 ? co->marketDone1 : co->marketDone2;
@@ -185,7 +189,7 @@ public:
         //--------------------------------------------------------------
         isDone = scenes[co->sMap[s]]->isDone(forceDone);
         
-
+        
         if(!isDone){
             drainTime();
             drainIndividuals();
@@ -238,11 +242,11 @@ public:
         int s = co->sceneNumber;
         scenes[co->sMap[s]]->draw();
         
-
+        
         if(playAnimation){
             ofSetColor(255);
             co->celebration[co->teamIsDone[teamId]].draw( (teamId*1920) + ( 1920/2 - co->celebration[co->teamIsDone[teamId]].getWidth()/2 ),
-                             1080/2 - co->celebration[co->teamIsDone[teamId]].getHeight()/2 );
+                                                         1080/2 - co->celebration[co->teamIsDone[teamId]].getHeight()/2 );
             
             for(int i = 0; i<buttons.size();i++){
                 buttons[i].dy = 0.01;
@@ -255,36 +259,36 @@ public:
         }
         
         drawResult();
-
+        
     }
-
     
-
+    
+    
     
     
     void drawResult(){
         
         float t = time;
         int s = co->sceneNumber;
-        if(co->sMap[s]=="Design"){
-        Design * d = static_cast<Design *>(scenes[co->sMap[s]]);
-            t = d->countDown;
-        }
-        string timeString = timeToString(t);
-        int x = 50 + (teamId * 1920);
-        if(co->sMap[s]=="Fight"){
-            timeString = ofToString(co->tennisPoint[teamId]+1);
-            if (teamId == 1){
-                int w = co->font_medium->getStringBoundingBox(timeString,0,0).width + 50;
-                x = 1920*2 - w;
+        if(co->sMap[s]!="Design"){
+            
+            string timeString = timeToString(t);
+            int x = 50 + (teamId * 1920);
+            if(co->sMap[s]=="Fight"){
+                timeString = ofToString(co->tennisPoint[teamId]+1);
+                if (teamId == 1){
+                    int w = co->font_medium->getStringBoundingBox(timeString,0,0).width + 50;
+                    x = 1920*2 - w;
+                }
             }
+            
+            ofSetColor(ofColor::royalBlue);
+            co->font_medium->drawString( timeString , x , 120);
         }
- 
-        ofSetColor(ofColor::royalBlue);
-        co->font_medium->drawString( timeString , x , 120);
+        
         
     }
-
+    
     
     void drainTime(){
         if(co->startTime){
@@ -323,25 +327,25 @@ public:
         return r;
     }
     
-
     
-//    void divideTimeToButtons(){
-//        if(time>0){
-//            for(int i = 0; i<buttons.size();i++){
-//                if(buttons[i].isDead())continue;
-//                buttons[i].addValue(-ofGetLastFrameTime()*co->divideTimeTime);
-//                time-=ofGetLastFrameTime();
-//            }
-//        }
-//    }
     
-//    void takeOffSeconds(){
-//        
-//        if(secondsToTakeOff>0){
-//            secondsToTakeOff-=ofGetLastFrameTime() * 5.;
-//            time-=ofGetLastFrameTime() * 5.;
-//        }
-//    };
+    //    void divideTimeToButtons(){
+    //        if(time>0){
+    //            for(int i = 0; i<buttons.size();i++){
+    //                if(buttons[i].isDead())continue;
+    //                buttons[i].addValue(-ofGetLastFrameTime()*co->divideTimeTime);
+    //                time-=ofGetLastFrameTime();
+    //            }
+    //        }
+    //    }
+    
+    //    void takeOffSeconds(){
+    //
+    //        if(secondsToTakeOff>0){
+    //            secondsToTakeOff-=ofGetLastFrameTime() * 5.;
+    //            time-=ofGetLastFrameTime() * 5.;
+    //        }
+    //    };
     
     
 private:
@@ -362,7 +366,7 @@ private:
         
         return timeString;
     }
-
+    
     
     void createScene(vector<ofPolyline>polys, float d = 0.,float f = 0.,float b = 0.){
         
@@ -386,7 +390,7 @@ private:
                 }
             }
         }
-      cout << ofToString(polyShapes.size())+ " polyshapes size in " + co->sMap[co->sceneNumber]<< endl;
+        cout << ofToString(polyShapes.size())+ " polyshapes size in " + co->sMap[co->sceneNumber]<< endl;
     }
     
     void createWall(){
@@ -409,13 +413,13 @@ private:
             polyShapes.push_back(poly);
             
         }
-
+        
     }
-
-
+    
+    
     
     void destroyMaze(){
-      
+        
         for(int i = 0; i<polyShapes.size();i++)
             polyShapes[i]->destroy();
         

@@ -178,7 +178,7 @@ public:
         for(int i = 0; i<empolyedTicks.size();i++){
             if (!empolyedTicks[i] && buttons->at(i).isPlaying ){
                 co->isUnemployed[teamNumber] = ofPoint( buttons->at(i).table , buttons->at(i).ID );
-                
+                buttons->at(i).isLooser = true;
             }
         }
     }
@@ -250,7 +250,7 @@ public:
         for(int i = 0; i<buttons->size();i++){
             if(buttons->at(i).isPlaying){
                 float addX = teamNumber == 0 ? 0 : 1920;
-                
+                buttons->at(i).isLooser = false;
                 float p = ofRandom(-100,100);
                 buttons->at(i).setPosition(1920/2 + addX + p, 1080/2 + p);
                 

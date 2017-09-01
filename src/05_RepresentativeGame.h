@@ -22,6 +22,8 @@ public:
     ~Representative(){};
     
     
+    ofImage overlay;
+    
     ofImage doorImg[2];
     ofVec2f midt;
 
@@ -165,11 +167,10 @@ public:
 
         
         for(int i = 0; i<spots.size();i++){
-            if(spots[i].isTaken)
-                ofSetColor(250,60,60);
-            else ofSetColor(60,250,60);
-            
-            ofDrawCircle(spots[i].pos,35);
+            if(spots[i].isTaken){
+                ofSetColor(255, 200);
+                ofDrawCircle(spots[i].pos,40);
+            }
         }
         ofSetColor(255);
         for(int i=0; i<buttons->size(); i++) {
@@ -192,7 +193,8 @@ public:
             doorImg[i].draw(x,y,w,h);
             //doors[i]->draw();
         }
-
+        ofSetColor(255);
+        if (overlay.isAllocated())overlay.draw(1920*teamNumber , 0, 1920, 1080);
     };
     
     void begin(ofxBox2d * world = nullptr){
@@ -224,6 +226,8 @@ public:
         
         doorImg[0].load("img/specialAssets/05_Door-01.png");
         doorImg[1].load("img/specialAssets/05_Door-02.png");
+        
+        overlay.load("img/specialAssets/05_RepresentativeOverlay.png");
         
     };
     

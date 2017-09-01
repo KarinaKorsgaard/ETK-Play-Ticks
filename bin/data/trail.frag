@@ -55,20 +55,20 @@ void main (void) {
     
     color.rgba +=c4;
     //color.rg += c4;
-   
-    float t = sin(u_time*2.)*0.1 + 0.2;
-    float c = circle(uv, u_mask1/u_resolution.xx,0.5*( u_radius1 + abs(sin(u_time*4.))*0.001 ),0.4, 0. );
-    color.a +=0.4* c;
-    color.r +=0.9* c;
-    color.g +=0.6* c;
-    
-    
-    
-    t = sin((u_time+13. )*2.)*0.1 + 0.2;
-    c = circle(uv, u_mask2/u_resolution.xx, 0.5*( u_radius2 + abs(sin(u_time*4.))*0.001 ),0.4 ,0.5);
-    color.a +=0.5* c;
-    color.r +=0.9* c;
-    color.g +=0.6* c;
+//   
+//    float t = sin(u_time*2.)*0.1 + 0.2;
+//    float c = circle(uv, u_mask1/u_resolution.xx,0.5*( u_radius1 + abs(sin(u_time*4.))*0.001 ),0.4, 0. );
+//    color.a +=0.4* c;
+//    color.r +=0.9* c;
+//    color.g +=0.6* c;
+//    
+//    
+//    
+//    t = sin((u_time+13. )*2.)*0.1 + 0.2;
+//    c = circle(uv, u_mask2/u_resolution.xx, 0.5*( u_radius2 + abs(sin(u_time*4.))*0.001 ),0.4 ,0.5);
+//    color.a +=0.5* c;
+//    color.r +=0.9* c;
+//    color.g +=0.6* c;
     
    // color.a -= 0.3;
     //color.rga *=vec3(0.8,0.5,0.6) + r;

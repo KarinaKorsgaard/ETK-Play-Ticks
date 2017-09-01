@@ -15,7 +15,7 @@ public:
     vector<string>letters;
     bool done;
     string colorFile;
-   
+    
     int numColors;
     void setup(commonObjects*_co, vector<Button>*b, string _colorFile, int _numColors){
         buttons = b;
@@ -41,7 +41,7 @@ public:
                 
             }
         }
-    };
+    }
     
     
     bool isDone(bool b = false){
@@ -52,13 +52,13 @@ public:
         
         for(int i = 0; i<buttons->size();i++){
             if(buttons->at(i).isPlaying){
-               
+                
                 for(int j = i+1; j<buttons->size();j++){
                     if( buttons->at(j).isPlaying ){
                         
                         if (buttons->at(i).symbolInt == buttons->at(j).symbolInt &&
                             buttons->at(i).colorInt == buttons->at(j).colorInt){
-            
+                            
                             drawCircles[i]=true;
                             drawCircles[j]=true;
                             isDifferent=false;
@@ -68,16 +68,16 @@ public:
                 }
             }
         }
-
+        
         
         
         if(!b)isDifferent=false;
         
-       // if(isDifferent)countDown = 0.;
+        // if(isDifferent)countDown = 0.;
         done = isDifferent;
         return isDifferent;
-       // return false;
-    };
+        // return false;
+    }
     
     void update(){
         
@@ -90,16 +90,16 @@ public:
         int s = co->characterSymbols.size();
         
         int numPlayers = co->numPresentButtons[teamNumber];
-
+        
         maxColors = co->lookUp[numPlayers][0];
         maxSymbols = co->lookUp[numPlayers][1];
         
         //int minColors = MIN(maxColors,maxSymbols);
         int minColors = maxColors == maxSymbols ? maxColors : maxColors-1;
-
+        
         minColors=MAX(minColors,1);
         int howManyGetsMore = numPlayers-(minColors*maxSymbols);
-
+        
         int count = 0;
         for(int i=0; i<buttons->size(); i++) {
             ofVec3f data = buttons->at(i).getRawData();
@@ -107,19 +107,19 @@ public:
             int x = ofMap (normX,0,1,0,minColors);
             int y = ofMap (data.y,0,1,0,maxSymbols); // symbol
             if(count < howManyGetsMore){
-         
+                
                 x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
-   
+                
             }
             if(buttons->at(i).isPlaying)count++;
             x = CLAMP (x,0,c-1);
             y = CLAMP (y,0,s-1);
             buttons->at(i).color=colors[x];
             buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
-           
+            
             buttons->at(i).colorInt = x;
             buttons->at(i).symbolInt = y;
-
+            
             
         }
     }
@@ -140,7 +140,7 @@ public:
                 
                 int table =ceil( (b.table+1 + (teamNumber*-1 + 1))/ 2)+0.1 - 1;
                 
-                ofTranslate( (table * hSpace) + leftSide, b.ID * vSpace + topSide );
+                ofTranslate( (b.ID * hSpace) + leftSide, table * vSpace + topSide );
                 
                 
                 ofSetColor(255);
@@ -159,7 +159,7 @@ public:
                 
                 
                 if(co->debug)
-                    co->font_small->drawString(ofToString(b.table+1)+" :"+ofToString(b.ID+1), -10, 20);
+                    co->font_small->drawString(ofToString(b.ID+1)+" :"+ofToString(b.table+1), -10, 20);
                 ofPopMatrix();
             }
         }
@@ -167,13 +167,13 @@ public:
         if(forGround.isAllocated())forGround.draw(teamNumber * 1920 , 0 , 1920 , 1080);
         
         for(int i = 0; i<6; i++)
-            co->font_small->drawString(letters[i], leftSide - 125*2, topSide + i*vSpace +10);
+            co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide - 125*2, topSide + i*vSpace +10);
         
         for(int i = 0; i<6; i++)
-            co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide + hSpace*i - 10, topSide - 100);
+            co->font_small->drawString(letters[i], leftSide + hSpace*i - 10, topSide - 100);
         
         ofPopStyle();
-    };
+    }
     
     void begin(ofxBox2d * world = nullptr){
         countDown = 5*60;
@@ -183,17 +183,15 @@ public:
         
         drawCircles.resize(buttons->size());
         
-
+        
         
         forGround.load("img/specialAssets/01_DesignForeground.png");
-    };
+    }
     
     void reset(){
         drawCircles.clear();
+    }
     
-     
-    };
     
-
     
 };

@@ -15,9 +15,9 @@ public:
     ofxBox2d * thisWorld;
     
     vector<ofImage>dispensorImages;
-
+    
     ofImage escalatorImg[3];
-
+    
     vector<shared_ptr<ofxBox2dRect>>escalators;
     vector<shared_ptr<ofxBox2dPolygon>>dispensors;
     
@@ -35,7 +35,7 @@ public:
     ofImage overlay;
     
     vector<int> buttonsInPits;
-
+    
     vector<int>upDown;
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
@@ -94,7 +94,7 @@ public:
                     }
                 }
                 inPits[i] = isButtonInAPit;
-                    
+                
                 
                 
                 if(!moveEscalators){
@@ -118,7 +118,7 @@ public:
                     string  s = moveEscalators ? "On" : "Off";
                     m.setAddress("/elevator"+s+ofToString(teamNumber+1));
                     co->oscOut.sendMessage(m);
-                
+                    
                 }
                 
             }
@@ -134,24 +134,22 @@ public:
                         dispensorImages.erase(dispensorImages.begin());
                         
                     }
-                        
+                    
                 }
             }
-            
-            
-            
-        }else{
+        }else{ // if is not doen
             buttons->at(theWinner).isWinner = true;
         }
         if(moveEscalators){
-            time+= ofGetLastFrameTime();
+            time += ofGetLastFrameTime();
             for(int i = 0; i<escalators.size();i++){
                 int floor = movingPolys[i].getBoundingBox().y + movingPolys[i].getBoundingBox().height;
-                float ypos = abs(sin(time*co->escalatorSpeed)) * floor;
-              //  escalators[i]->setPosition(escalators[i]->getPosition().x + ofVec2f(0,upDown[i] * co->escalatorSpeed *10.f* ofGetLastFrameTime()));
+                
+                float escalatorSpeed = co->escalatorSpeed * float(1920 - floor) * 0.001;
+                float ypos = abs(sin(time*escalatorSpeed)) * floor;
+                
                 escalators[i]->setPosition(escalators[i]->getPosition().x ,ypos);
-            //    if(escalators[i]->getPosition().y > (1080 - i*solidHeight) )upDown[i]=-1;
-            //    if(escalators[i]->getPosition().y < 0 )upDown[i] = 1;
+                
             }
         }
     }
@@ -160,8 +158,7 @@ public:
         
         ofSetColor(0);
         
-        for(int i = 0; i<pitHole.size();i++)
-            pitHole[i]->draw();
+        
         
         ofSetColor(255);
         for(int i=0; i<buttons->size(); i++) {
@@ -170,7 +167,7 @@ public:
                 ofSetColor(0,100);
                 ofDrawCircle(buttons->at(i).getBiquadPos(),25);
                 ofSetColor(255);
-
+                
             }
             if (co->debug){
                 buttons->at(i).drawDebug();
@@ -183,7 +180,7 @@ public:
             dispensorImages[i].draw(dispensorPoly[i].getBoundingBox());
         
         for(int i = 0; i< MIN(3 , escalators.size());i++){
-
+            
             int x = escalators[i]->getPosition().x;
             int y = escalators[i]->getPosition().y;
             int w = escalators[i]->getWidth();
@@ -191,13 +188,17 @@ public:
             x -= w/2;
             y -= h/2;
             escalatorImg[i].draw(x,y,w,h);
-    
+            
         }
         ofNoFill();
         ofDrawRectangle(start);
         ofFill();
         
         overlay.draw(teamNumber * 1920, 0, 1920, 1080);
+        
+        ofSetColor(255);
+        for(int i = 0; i<pitHole.size();i++)
+            pitHole[i]->draw();
     };
     
     void begin(ofxBox2d * world = nullptr){
@@ -227,17 +228,22 @@ public:
         //world->setGravity(0,co->gravity);
         createScene(world,movingPolys);
         
-
+        
         escalatorImg[0].load("img/specialAssets/07_escalatorPads-01.png");
         escalatorImg[1].load("img/specialAssets/07_escalatorPads-02.png");
         escalatorImg[2].load("img/specialAssets/07_escalatorPads-03.png");
-
+        
         svg.load("svg/08_EscalatorPits.svg");
         pitPolys = getPolyline(svg);
         cout << "PITPOLYS "<< pitPolys.size()<<endl;
-        for(int i = 0; i<36;i++)
-            inPits[i]=false;
         
+        vector<int>rTickOrder;
+        for(int i = 0; i<36;i++){
+            inPits[i]=false;
+            rTickOrder.push_back(i);
+        }
+        std::random_shuffle ( rTickOrder.begin(), rTickOrder.end() );
+
         buttonsInPits.resize(pitPolys.size());
         
         svg.load("svg/08_TickDispensor.svg");
@@ -245,19 +251,16 @@ public:
         dispensorPoly=getPolyline(svg);
         createDispensor(dispensorPoly);
         
-        vector<int>random;
-        random.resize(36);
-        for(int i = 0; i<36;i++)random[i]=i;
-        
+
         solidHeigth = 400;
         int count = 0;
         ofRectangle d = ofRectangle(teamNumber*1920, 1000, 1920, 10);
         for(int i = 0; i<buttons->size();i++){
-            if(buttons->at(i).isPlaying){
+            if(buttons->at(rTickOrder[i]).isPlaying){
                 
-                buttons->at(random[i]).setPosition(ofRandom(d.width - 50)+d.x +25, ofRandom(d.height-50)+d.y+25);
-                buttons->at(random[i]).isWinner = false;
-                buttons->at(random[i]).getOutOfPolys(solidPolys);
+                buttons->at(rTickOrder[i]).setPosition(ofRandom(d.width - 50)+d.x +25, ofRandom(d.height-50)+d.y+25);
+                buttons->at(rTickOrder[i]).isWinner = false;
+                buttons->at(rTickOrder[i]).getOutOfPolys(solidPolys);
                 
                 count ++;
                 if(count > 4)d = dispensorPoly[0].getBoundingBox();
@@ -271,8 +274,9 @@ public:
             dispensorImages.push_back(im);
         }
         
-
-    };
+        
+    }
+    
     void reset(){
         dispensorImages.clear();
         dispensorPoly.clear();
@@ -300,49 +304,49 @@ public:
     }
     
     
-
+    
     void createDispensor(vector<ofPolyline>polys, float d = 0.,float f = 0.,float b = 0.){
         
         
-            for(int i = 0 ;i <polys.size();i++){
-                ofRectangle r = polys[i].getBoundingBox();
-                if(polys[i].getVertices().size()>3 && (r.width<1900 || r.height < 1070)){
-                    
-                    shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
-                    
-                    vector<ofPoint>verts;
-                    for(auto p : polys[i].getVertices())
-                        verts.push_back(ofPoint(p.x, p.y));
-                    
-                    poly->addVertices(verts);
-                    poly->setPhysics(d,f,b);
-                    poly->triangulatePoly();
-                    
-                    poly->create(thisWorld->getWorld());
-                    dispensors.push_back(poly);
-                }
+        for(int i = 0 ;i <polys.size();i++){
+            ofRectangle r = polys[i].getBoundingBox();
+            if(polys[i].getVertices().size()>3 && (r.width<1900 || r.height < 1070)){
+                
+                shared_ptr<ofxBox2dPolygon> poly = shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);
+                
+                vector<ofPoint>verts;
+                for(auto p : polys[i].getVertices())
+                    verts.push_back(ofPoint(p.x, p.y));
+                
+                poly->addVertices(verts);
+                poly->setPhysics(d,f,b);
+                poly->triangulatePoly();
+                
+                poly->create(thisWorld->getWorld());
+                dispensors.push_back(poly);
             }
+        }
         
     }
     
     void createPit(ofxBox2d * world ,ofPolyline polys){
-       
-            ofRectangle rect = polys.getBoundingBox();
-            
-            rect.x += rect.width/2;
-            rect.y += 5;
-            rect.height = 10;
         
-            if(polys.getVertices().size()>3 && (rect.width<1900 && rect.height < 1070)){
-                
-                shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-                r->setPhysics(0., 0., 0.);
-                r->setup(world->getWorld(), rect);
-                
-                pitHole.push_back(r);
-           
-                
-            }        
+        ofRectangle rect = polys.getBoundingBox();
+        
+        rect.x += rect.width/2;
+        rect.y += 5;
+        rect.height = 10;
+        
+        if(polys.getVertices().size()>3 && (rect.width<1900 && rect.height < 1070)){
+            
+            shared_ptr<ofxBox2dRect> r = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+            r->setPhysics(0., 0., 0.);
+            r->setup(world->getWorld(), rect);
+            
+            pitHole.push_back(r);
+            
+            
+        }
     }
     
     void createScene(ofxBox2d * world ,vector<ofPolyline>polys){
@@ -361,11 +365,11 @@ public:
                 
                 escalators.push_back(r);
                 upDown.push_back(1);
-  
+                
             }
         }
         
         //cout << ofToString(polyShapes.size())+ " fences size in " + co->sMap[co->sceneNumber]<< endl;
     }
-
+    
 };

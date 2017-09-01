@@ -25,13 +25,13 @@ public:
     ofParameter<bool> startMovement;
     ofParameter<bool>startScene;
     ofParameter<bool>startTime;
-
+    
     bool debug;
     bool logDone = false;
     
     ofImage background;
     vector<string>logs;
-
+    
     string timeStamp = "%H:%M";
     
     int sceneNumber;
@@ -60,7 +60,7 @@ public:
     ofParameter<float>refillCoef;
     
     ofParameter<float>maxTrailRadius;
-
+    
     float trailRadius[2];
     
     ofParameter<float>logicPrecision;
@@ -69,29 +69,29 @@ public:
     ofParameter<bool>showLogicTargets;
     
     ofParameter<int>gravity;
-
+    
     
     ofParameter<bool>marketDone1;
     ofParameter<bool>marketDone2;
     
     ofParameter<bool>designDone1;
     ofParameter<bool>designDone2;
-
+    
     ofParameter<bool>idleA;
     ofParameter<bool>idleB;
-
+    
     ofParameter<bool>pauseTeam1;
     ofParameter<bool>pauseTeam2;
     
     ofParameter<bool>refill1;
     ofParameter<bool>refill2;
     ofParameter<float>deadTimer;
-
+    
     ofParameter<bool>playSound;
     
     ofParameter<bool>moveThemOut;
     
-
+    
     ofxTrueTypeFontUC * font_small;
     ofxTrueTypeFontUC * font_medium;
     
@@ -114,8 +114,6 @@ public:
             logs.push_back(l);
         }
     }
-    
-    //int numSymbolsPresent[2], numColorsPresent[2];
     
     int lookUp[37][2];
     
@@ -170,8 +168,22 @@ public:
         t /= d;
         return c*t*t + b;
     }
+    vector<string> replace(vector<string> strings, string from, string to ){
+        vector<string> result;
+        result.resize(strings.size());
+        for(int i = 0; i< strings.size();i++){
+            string s = strings[i];
+            
+            size_t f = s.find(from);
+            s.replace(f, from.length(), to);
+            
+            result[i] = s;
+        }
+        
+        return result;
+        
+    }
     
-
     
     vector<string> transformToCollumn(string str, int w, ofxTrueTypeFontUC * font ){
         vector<string> result;
@@ -186,14 +198,14 @@ public:
             if(font->getStringBoundingBox(appending, 0, 0).width > w && ( c == " " || c == "-") ){
                 //font->drawString(appending, 0, 0);
                 result.push_back(appending);
-              //  result.append("#");
+                //  result.append("#");
                 //ofTranslate(0, font->getLineHeight());
                 appending.clear();
             }
         }
         //font->drawString(appending, 0, 0);
         result.push_back(appending);
-               
+        
         return result;
         
     }
@@ -210,7 +222,7 @@ public:
         
         return timeString;
     }
-
+    
     
     string drawCollumn(vector<string> s, int x, int y, ofxTrueTypeFontUC * font ){
         //ofPushMatrix();
@@ -258,10 +270,10 @@ public:
         }
     }
     
-
+    
     
     vector<ofPolyline> getPolyline(ofxSVG svg, bool doble = false){
-       // vector<ofPolyline> result;
+        // vector<ofPolyline> result;
         vector<ofPolyline>polys;
         
         for(int j = 0; j<svg.getNumPath();j++){
@@ -273,14 +285,14 @@ public:
                 polys.push_back(lines[0]);
         }
         return polys;
-
+        
     }
     
     string getLine(string fileName, int num_line){
         ofFile file;
         file.open(ofToDataPath(fileName));
         ofBuffer b = file.readToBuffer();
-
+        
         
         string str = "";
         int indx = 0;
