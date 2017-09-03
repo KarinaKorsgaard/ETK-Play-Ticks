@@ -167,7 +167,6 @@
 		2174A7C11F30B2E00022C956 /* 09_Fight.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 09_Fight.h; sourceTree = "<group>"; };
 		218283241F59599A0035E1B1 /* 13_Trial.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 13_Trial.h; sourceTree = "<group>"; };
 		218283251F59604D0035E1B1 /* oscMessages.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = oscMessages.txt; path = bin/data/oscMessages.txt; sourceTree = SOURCE_ROOT; };
-		218283261F5971240035E1B1 /* timeMessages.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = timeMessages.txt; path = bin/data/timeMessages.txt; sourceTree = SOURCE_ROOT; };
 		219B5F601E7A70520002FD2A /* pushing.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pushing.h; sourceTree = "<group>"; };
 		21A9BC861E72C76B005F90E3 /* pingPong.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pingPong.h; sourceTree = "<group>"; };
 		21A9BC8E1E7694CE005F90E3 /* 11_Cherades.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 11_Cherades.h; sourceTree = "<group>"; };
@@ -977,7 +976,6 @@
 				21E6CA4E1E6D5E0300E0C55D /* Team.h */,
 				21D00CA41E93DEF2009FFBA7 /* sceneNames.txt */,
 				218283251F59604D0035E1B1 /* oscMessages.txt */,
-				218283261F5971240035E1B1 /* timeMessages.txt */,
 				21E6CA721E6DA18000E0C55D /* config.xml */,
 				21BAD9541F41DE04000D0C8B /* trail.frag */,
 				21AE24E71E6EEB6D00150433 /* ButtonData.h */,

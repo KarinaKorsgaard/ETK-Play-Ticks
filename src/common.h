@@ -40,6 +40,8 @@ public:
     
     float tennisPoint[2];
     
+    double delayPlayTime;
+    
     ofVideoPlayer celebration[2];
     vector<int>teamIsDone;
     
