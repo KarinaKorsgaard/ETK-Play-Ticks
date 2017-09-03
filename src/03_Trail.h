@@ -27,7 +27,7 @@ public:
 
         
         start = 300 + teamNumber * 1920;
-        end = 1920-300 + teamNumber * 1920;
+        end = 1920-120 + teamNumber * 1920;
         
         filter.setFc(0.05f);
         
