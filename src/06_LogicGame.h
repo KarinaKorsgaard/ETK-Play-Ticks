@@ -188,8 +188,11 @@ public:
             
             float random = ofRandom(360);
             circles[i].cur_rotation = random;
-            circles[i].p_rotation = random;
+            float pRot = i > 0 ? circles[i-1].p_rotation : 0;
+            circles[i].p_rotation = pRot + ofRandom(100,150);
             circles[i].startRot = random;
+            
+            cout << random<< endl;
             
         }
     }
