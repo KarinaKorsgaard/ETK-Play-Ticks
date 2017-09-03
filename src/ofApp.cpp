@@ -863,16 +863,16 @@ void ofApp:: loadFromRestart(){
                 string team = "team"+ofToString(u)+"button";
                 
                 teams[u].buttons.at(i).isPlaying = xml.getValue(team+ofToString(i)+"isPlaying",b->isPlaying);
-                teams[u].buttons.at(i).symbolInt = xml.getValue(team+ofToString(i)+"symbol",0);
+                teams[u].buttons.at(i).symbolInt =CLAMP (xml.getValue(team+ofToString(i)+"symbol",0), 0, co.characterSymbols.size()-1);
+                cout <<"SYMBOL " <<teams[u].buttons.at(i).symbolInt << endl;
+                
                 teams[u].buttons.at(i).colorInt = xml.getValue(team+ofToString(i)+"color",0);
                 teams[u].buttons.at(i).isWinner = xml.getValue(team+ofToString(i)+"winner",0);
-                if(teams[u].buttons.at(i).isPlaying)
-                    cout <<"symbol " << b->symbolInt << " color "<< b->colorInt << endl;
-                
+
                 float x = xml.getValue(team+ofToString(i)+"xpos",0);
                 float y = xml.getValue(team+ofToString(i)+"ypos",0);
                 
-                cout <<"XX " << x << " YY "<< y << endl;
+               // cout <<"XX " << x << " YY "<< y << endl;
                 teams[u].buttons.at(i).setPosition(x, y);
                 
                 
