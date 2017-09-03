@@ -104,6 +104,8 @@ class ofApp : public ofBaseApp{
     void reset();
     
 
-    ofImage scoreImg;
+    ofImage scoreImgWon;
+    ofImage scoreImgLost;
+    ofImage scoreImgTie;
     vector<vector<string>>scoreMessages;
 };

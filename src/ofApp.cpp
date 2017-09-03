@@ -7,7 +7,9 @@ void ofApp::setup(){
     co.sceneNumber = 12;
     trailShader.load("trail");
     
-    scoreImg.load("img/timeimage.png");
+    scoreImgWon.load("img/mobile/defaultWon.png");
+    scoreImgLost.load("img/mobile/defaultLost.png");
+    scoreImgTie.load("img/mobile/defaultTie.png");
     
     
     
@@ -425,9 +427,18 @@ void ofApp::draw(){
     
     if (!co.startScene){
         ofSetColor(255);
-        
-        scoreImg.draw(0,0,1920,1080);
-        scoreImg.draw(1920,0,1920,1080);
+        if (teams[0].time < teams[1].time){
+            scoreImgWon.draw(0,0,1920,1080);
+            scoreImgLost.draw(1920,0,1920,1080);
+        }
+        else if (teams[0].time == teams[1].time){
+            scoreImgTie.draw(0,0,1920,1080);
+            scoreImgTie.draw(1920,0,1920,1080);
+        }
+        else{
+            scoreImgLost.draw(0,0,1920,1080);
+            scoreImgWon.draw(1920,0,1920,1080);
+        }
         
         string time1 = cc.timeToString(teams[0].time);
         string time2 = cc.timeToString(teams[1].time);
@@ -535,6 +546,22 @@ void ofApp::handleSceneChange(){
             box2d.enableEvents();
         }
         
+        string won = "img/mobile/"+co.sMap[co.sceneNumber]+"Won.png";
+        string lost = "img/mobile/"+co.sMap[co.sceneNumber]+"Lost.png";
+        string tie = "img/mobile/"+co.sMap[co.sceneNumber]+"Tie.png";
+        
+        if (ofFile::doesFileExist(won))
+            scoreImgWon.load(won);
+        else scoreImgWon.load("img/mobile/defaultWon.png");
+        
+        if (ofFile::doesFileExist(lost))
+            scoreImgLost.load(lost);
+        else scoreImgLost.load("img/mobile/defaultLost.png");
+        
+        if (ofFile::doesFileExist(tie))
+            scoreImgLost.load(tie);
+        else scoreImgLost.load("img/mobile/defaultTie.png");
+        
         if(co.sMap[co.sceneNumber] == "Fight"){
             fightBallImg.load("img/specialAssets/08_FightBall.png");
             fightBall = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
@@ -586,7 +613,7 @@ void ofApp::handleSceneChange(){
             unemployedMessage1 = ("team 1 : table "+ofToString(co.isUnemployed[0].x + 1) +" id: "+letters[co.isUnemployed[0].y]);
             unemployedMessage2 = ("team 2 : table "+ofToString(co.isUnemployed[1].x + 1) +" id: "+letters[co.isUnemployed[1].y]);
         }
-        
+     
         p_sceneNumber = co.sceneNumber;
         
     }
