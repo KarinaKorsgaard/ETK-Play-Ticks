@@ -172,38 +172,32 @@ public:
             if (!addedToWinnerlist){
                 addedToWinnerlist = true;
                 
+                ofxOscMessage m;
+                m.setAddress("/won"+ofToString(teamId+1));
+                co->oscOut.sendMessage(m);
+
                 int t = co->sMap[s] == "Fight" ? (teamId*-1)+1 : teamId;
-                
                 co->teamIsDone.push_back(t);
                 cout << "teamisdonesize "<< co->teamIsDone.size()<< endl;
             }
             
             if (!playAnimation){
-                
                 playtime += ofGetLastFrameTime();
-                
                 for(int i = 0; i<buttons.size();i++){
                     Button * b = &buttons[i];
                     b->setArmSwap(0);
                     b->setRotation(0);
                 }
-
             }
+            
             if (playtime > co->delayPlayTime){
                 cout <<"team "<< teamId << " "<< co->teamIsDone[teamId] << " celebration id" << endl;
                 co->celebration[co->teamIsDone[teamId]].play();
                 playAnimation = true;
             }
             
-            else {
+            if (playAnimation){
                 co->celebration[co->teamIsDone[teamId]].update();
-                
-                if(!wonSent){
-                    ofxOscMessage m;
-                    m.setAddress("/won"+ofToString(teamId+1));
-                    co->oscOut.sendMessage(m);
-                    wonSent=true;
-                }
             }
         }
         
@@ -389,7 +383,6 @@ private:
         co->celebration[teamId].stop();
         playAnimation = false;
         playtime = 0.f;
-        wonSent = false;
         destroyMaze();
         
         scenes[co->sMap[s]]->begin(box2d);
@@ -472,7 +465,7 @@ private:
     }
     
     ofVec3f p_averageData;
-    bool wonSent;
+
 };
 
 #endif /* Team_h */
