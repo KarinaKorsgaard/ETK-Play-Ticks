@@ -177,6 +177,7 @@ public:
                 co->teamIsDone.push_back(t);
                 cout << "teamisdonesize "<< co->teamIsDone.size()<< endl;
             }
+            
             if (!playAnimation){
                 
                 playtime += ofGetLastFrameTime();
@@ -191,7 +192,6 @@ public:
             if (playtime > co->delayPlayTime){
                 cout <<"team "<< teamId << " "<< co->teamIsDone[teamId] << " celebration id" << endl;
                 co->celebration[co->teamIsDone[teamId]].play();
-                
                 playAnimation = true;
             }
             

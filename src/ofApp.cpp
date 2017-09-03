@@ -531,9 +531,11 @@ void ofApp::handleSceneChange(){
     if(resent!=-1){
         restart();
         
-        ofxXmlSettings xml;
-        xml.load("delayTimes.xml");
-        co.delayPlayTime = xml.getValue 
+
+        string fullstring = cc.getLine("winVideoDelay.txt", co.sceneNumber);
+        co.delayPlayTime = float(ofToInt( ofSplitString(fullstring, " : ")[1]))/1000.f;
+        cout <<"DELAYTIME: "<< co.delayPlayTime << endl;
+        
         co.startScene = false;
         co.startMovement = false;
         co.startTime = false;

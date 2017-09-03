@@ -1,8 +1,8 @@
-0-Idle : 0
+0-Idle : 1000
 1-Design : 3000
-2-Area : 0
-3-Trail : 0
-4-Maze : 0
+2-Area : 10
+3-Trail : 100
+4-Maze : 2309
 5-Representative : 0
 6-LogicGame : 0
 7-Fences : 0
