@@ -51,11 +51,11 @@ public:
         inPits.resize(36);
     };
     
-    bool reached(){
+    bool isDone(bool b = false){
         bool isInside=false;
         for(int i = 0; i<buttons->size();i++){
             Button *b =&buttons->at(i);
-            if(!b->isPlaying || !b->on)continue; // if b is not playing or not on, dont check.
+            //if(!b->isPlaying || !b->on)continue; // if b is not playing or not on, dont check.
             if(winningArea.inside(b->getBiquadPos())){
                 isInside = true;
                 theWinner = i;
@@ -65,11 +65,11 @@ public:
         return isInside;
     };
     
-    bool isDone(bool b = false){
-        if(reached())isDoneCounter+=ofGetLastFrameTime();
-        else isDoneCounter = 0;
-        return isDoneCounter>5.f;
-    }
+//    bool isDone(bool b = false){
+//        if(reached())isDoneCounter+=ofGetLastFrameTime();
+//        else isDoneCounter = 0;
+//        return isDoneCounter>1.f;
+//    }
     
     void update(){
         
