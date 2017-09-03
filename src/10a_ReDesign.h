@@ -17,6 +17,7 @@ public:
     string colorFile;
     
     
+    int culpritColor, culpritSymbol;
     int numColors;
     
     void setup(commonObjects*_co, vector<Button>*b, string _colorFile, int _numColors){
@@ -48,24 +49,16 @@ public:
     
     bool isDone(bool b = false){
         
-        int diffCount = 0;
-        
+        done = true;
         for (int i = 0; i<buttons->size();i++){
-            if (buttons->at(i).isPlaying){
-                
-                for (int j = i; j<buttons->size();j++){
-                    if ( buttons->at(j).isPlaying ){
-                        
-                        if (buttons->at(i).symbolInt != buttons->at(j).symbolInt ||
-                            buttons->at(i).colorInt != buttons->at(j).colorInt){
-                            diffCount++;
-                            
-                        }
-                    }
+            if (buttons->at(i).isPlaying && i != looserTick){
+                if (buttons->at(i).symbolInt != culpritSymbol ||
+                    buttons->at(i).colorInt != culpritColor){
+                    done = false;
                 }
             }
         }
-        if(diffCount == 0)done = true;
+        
         if(!co->startScene)done = false;
        // cout << diffCount<< "team" << teamNumber << done << endl;
         return done;
@@ -88,7 +81,7 @@ public:
             int howManyGetsMore = numPlayers-(minColors*maxSymbols);
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
-                if (i != looserTick){
+               // if (i != looserTick){
                     
                     ofVec3f data = buttons->at(i).getRawData();
                     float normX = data.y > 1 ? data.y - 1. : data.y;
@@ -103,13 +96,20 @@ public:
                     
                     x = CLAMP (x,0,maxColors);
                     y = CLAMP (y,0,MAX(maxSymbols-1,0));
-                    
+                
+                if (i == looserTick && !co->canCulpritMove){
+                    x = culpritColor;
+                    y = culpritSymbol;
+                }
+                
                     buttons->at(i).color=colors[x];
                     buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
                     
                     buttons->at(i).colorInt = x;
                     buttons->at(i).symbolInt = y;
-                }
+                
+
+             //   }
             }
         }
     }
@@ -185,6 +185,10 @@ public:
             int l = randomLooser.size() == 0 ? 0 : randomLooser[int(ofRandom(randomLooser.size()-1))];
             looserTick = l;
         }
+        
+        
+        culpritColor = buttons->at(looserTick).colorInt;
+        culpritSymbol = buttons->at(looserTick).symbolInt;
         cout << looserTick << " the looser was not found is looser from "<<teamNumber<< endl;
     };
     

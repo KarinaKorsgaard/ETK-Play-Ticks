@@ -196,6 +196,7 @@ void ofApp::setup(){
     design.setName("Design");
     design.add(co.designDone1.set("team 1 ready",false));
     design.add(co.designDone2.set("team 2 ready",false));
+    design.add(co.canCulpritMove.set("can culprit move", false));
     
     gravity.setName("escalator and trail");
     gravity.add(co.moveBall.set("move ball",false));
