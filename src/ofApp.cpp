@@ -530,6 +530,10 @@ void ofApp::handleSceneChange(){
     
     if(resent!=-1){
         restart();
+        
+        ofxXmlSettings xml;
+        xml.load("delayTimes.xml");
+        co.delayPlayTime = xml.getValue 
         co.startScene = false;
         co.startMovement = false;
         co.startTime = false;

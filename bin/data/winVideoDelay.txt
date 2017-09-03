@@ -1,0 +1,14 @@
+0-Idle : 0
+1-Design : 3000
+2-Area : 0
+3-Trail : 0
+4-Maze : 0
+5-Representative : 0
+6-LogicGame : 0
+7-Fences : 0
+8-Fight : 0
+9-Factories : 0
+10-Charades : 0
+11-ReDesign : 0
+12-Trial : 0
+13-GroundGame : 0

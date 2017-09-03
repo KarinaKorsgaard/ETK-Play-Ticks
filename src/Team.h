@@ -42,10 +42,14 @@ public:
     double time;
     bool isDone;
     bool playAnimation;
+    float playtime = 0.f;
+    
     bool addedToWinnerlist = false;
     vector<Button>buttons;
     int teamId;
     int fenceAttraction;
+    
+    
     
     commonObjects *co;
     int p_sceneNum=0;
@@ -121,11 +125,7 @@ public:
         scenes["Design"]->begin(box2d);
         scenes["Design"]->update();
         scenes["Design"]->reset();
-        
-//        scenes["ReDesign"]->begin(box2d);
-//        scenes["ReDesign"]->update();
-//        scenes["ReDesign"]->reset();
-        
+
         scenes[co->sMap[co->sceneNumber]]->reset();
         scenes[co->sMap[co->sceneNumber]]->begin(box2d);
         
@@ -137,42 +137,8 @@ public:
         int s = co->sceneNumber;
         if(p_sceneNum != s){
             
-            reset();
+            reset(s);
             
-            scenes[co->sMap[s]]->begin(box2d);
-            
-            if(scenes[co->sMap[s]]->solidPolys.size()>0)
-                createScene(scenes[co->sMap[s]]->solidPolys);
-            
-            //
-            //            if(co->sMap[s] != "Idle" &&
-            //               co->sMap[s] != "GroundGame" &&
-            //               co->sMap[s] != "Fight"
-            //
-            //               ){
-            //                createWall();
-            //            }
-            
-            scenes[co->sMap[p_sceneNum]]->reset();
-            
-            if(teamId == 0){
-                co->background.load("img/backgrounds/"+co->sMap[s]+".png");
-                
-                string file1 = "videos/celebrations/"+co->sMap[s]+"Winner"+".mov";
-                string file2 = "videos/celebrations/"+co->sMap[s]+"Looser"+".mov";
-                if (!ofFile::doesFileExist(file1)){
-                    file1 = "videos/celebrationDefaultWinner.mov";
-                }
-                if (!ofFile::doesFileExist(file2)){
-                    file2 = "videos/celebrationDefaultLooser.mov";
-                }
-                co->celebration[0].load(file1);
-                co->celebration[1].load(file2);
-            }
-            
-            co->teamIsDone.clear();
-            addedToWinnerlist = false;
-            p_sceneNum = s;
         }
         
         scenes[co->sMap[s]]->update();
@@ -213,17 +179,20 @@ public:
             }
             if (!playAnimation){
                 
-                cout <<"team "<< teamId << " "<< co->teamIsDone[teamId] << " celebration id" << endl;
-                co->celebration[co->teamIsDone[teamId]].play();
+                playtime += ofGetLastFrameTime();
                 
-                playAnimation = true;
-                
-                //dance
                 for(int i = 0; i<buttons.size();i++){
                     Button * b = &buttons[i];
                     b->setArmSwap(0);
                     b->setRotation(0);
                 }
+
+            }
+            if (playtime > co->delayPlayTime){
+                cout <<"team "<< teamId << " "<< co->teamIsDone[teamId] << " celebration id" << endl;
+                co->celebration[co->teamIsDone[teamId]].play();
+                
+                playAnimation = true;
             }
             
             else {
@@ -416,12 +385,40 @@ private:
         polyShapes.clear();
         
     }
-    void reset(){
+    void reset(int s){
         co->celebration[teamId].stop();
-        
         playAnimation = false;
+        playtime = 0.f;
         wonSent = false;
         destroyMaze();
+        
+        scenes[co->sMap[s]]->begin(box2d);
+        
+        if(scenes[co->sMap[s]]->solidPolys.size()>0)
+            createScene(scenes[co->sMap[s]]->solidPolys);
+        
+        
+        scenes[co->sMap[p_sceneNum]]->reset();
+        
+        if(teamId == 0){
+            co->background.load("img/backgrounds/"+co->sMap[s]+".png");
+            
+            string file1 = "videos/celebrations/"+co->sMap[s]+"Winner"+".mov";
+            string file2 = "videos/celebrations/"+co->sMap[s]+"Looser"+".mov";
+            if (!ofFile::doesFileExist(file1)){
+                file1 = "videos/celebrationDefaultWinner.mov";
+            }
+            if (!ofFile::doesFileExist(file2)){
+                file2 = "videos/celebrationDefaultLooser.mov";
+            }
+            co->celebration[0].load(file1);
+            co->celebration[1].load(file2);
+        }
+        
+        co->teamIsDone.clear();
+        addedToWinnerlist = false;
+        p_sceneNum = s;
+
     }
     
     float ease(float t, float b, float c, float d) {
