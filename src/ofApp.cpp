@@ -497,7 +497,7 @@ void ofApp::draw(){
         ofSetColor(red, 200-red , 0);
         ofDrawRectangle(gui.getWidth()*2 + 40, i*20+20, 18, 18);
         ofSetColor(255);
-        ofDrawBitmapString(ofToString(i+1), gui.getWidth()*2 + 40 + 20, i*20+20);
+        ofDrawBitmapString(ofToString(i+1), gui.getWidth()*2 + 40 + 20, i*20+20 + 15);
     }
     
     
