@@ -31,7 +31,7 @@ public:
             
         }
     //    if(allAreDead)isInside=false;
-        if(indx<5)isInside = false;
+        //if(indx<5)isInside = false;
         return isInside;
     };
     
