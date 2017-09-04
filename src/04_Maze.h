@@ -82,12 +82,8 @@ public:
         svg.load("svg/04_Maze.svg");
         solidPolys = getPolyline(svg);
         
-        float max = 0;
-        for(int i = 0; i<solidPolys.size();i++){
-            float x = solidPolys[i].getBoundingBox().y+solidPolys[i].getBoundingBox().height;
-            if(x<1060 && x>max )max = x;
-        }
-        upThres = max;
+
+        upThres = 1080-100;
         
         
     };
