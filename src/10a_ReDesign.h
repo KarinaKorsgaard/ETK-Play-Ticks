@@ -153,12 +153,12 @@ public:
         ofSetColor(255);
         if(forGround.isAllocated())forGround.draw(teamNumber * 1920 , 0 , 1920 , 1080);
         
-        for(int i = 0; i<6; i++)
-            co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide - 125*2, topSide + i*vSpace +10);
-        
-        for(int i = 0; i<6; i++)
-            co->font_small->drawString(letters[i], leftSide + hSpace*i - 10, topSide - 100);
-        
+//        for(int i = 0; i<6; i++)
+//            co->font_small->drawString(ofToString((i+1)*2 - (teamNumber*-1+1)), leftSide - 125*2, topSide + i*vSpace +10);
+//        
+//        for(int i = 0; i<6; i++)
+//            co->font_small->drawString(letters[i], leftSide + hSpace*i - 10, topSide - 100);
+//        
         ofPopStyle();
     };
     

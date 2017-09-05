@@ -184,12 +184,16 @@ public:
             }
             
             if (!playAnimation){
-                playtime += ofGetLastFrameTime();
-                for(int i = 0; i<buttons.size();i++){
-                    Button * b = &buttons[i];
-                    b->setArmSwap(0);
-                    b->setRotation(0);
+                if(playtime == 0.0){
+                    for(int i = 0; i<buttons.size();i++){
+                        Button * b = &buttons[i];
+                        b->setArmSwap(0);
+                        b->setRotation(0);
+                    }
                 }
+                
+                playtime += ofGetLastFrameTime();
+
             }
             
             if (playtime > co->delayPlayTime){
@@ -249,17 +253,22 @@ public:
         if(co->sMap[s]!="Design"){
             
             string timeString = timeToString(t);
-            int x = 50 + (teamId * 1920);
+            string name = "";
+
             if(co->sMap[s]=="Fight"){
                 timeString = ofToString(co->tennisPoint[teamId]+1);
                 if (teamId == 1){
                     int w = co->font_medium->getStringBoundingBox(timeString,0,0).width + 50;
-                    x = 1920*2 - w;
+                 
                 }
             }
-            
+            else name = teamId == 0 ? "Peremets ":"Pealinn ";
+
+            int w = co->font_medium->getStringBoundingBox(name+timeString,0,0).width + 50;
+            int x = teamId == 0 ? 50 : 1920*2 - 50 - w;
             ofSetColor(ofColor::royalBlue);
-            co->font_medium->drawString( timeString , x , 120);
+            
+            co->font_medium->drawString( name+timeString , x , 120);
         }
         
         
