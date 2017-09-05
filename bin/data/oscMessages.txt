@@ -51,5 +51,5 @@
 /TrialTeam1 int int
 /TrialTeam2 int int
 
-/TrialTeam1 int
-/TrialTeam2 int
+/TrialTeamVote1 int
+/TrialTeamVote2 int

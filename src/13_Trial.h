@@ -64,7 +64,7 @@ public:
         {
             ofxOscMessage m;
             int s = vote[0] > vote[1] ? 1 : 0;
-            m.setAddress("/TrialTeam"+ofToString(teamNumber+1));
+            m.setAddress("/TrialTeamVote"+ofToString(teamNumber+1));
             m.addIntArg(s);
             co->oscOut.sendMessage(m);
         
