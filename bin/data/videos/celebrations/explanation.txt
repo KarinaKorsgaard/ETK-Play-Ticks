@@ -1,1 +1,0 @@
-the level will use the looser and winner video if it is there. Otherwise it will use the default celebration.
