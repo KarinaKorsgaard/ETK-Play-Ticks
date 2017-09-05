@@ -186,14 +186,13 @@ public:
         for(int i = 0; i < 6 ; i++){
             circles[i].isTarget = false;
             
-            float random = ofRandom(360);
+            
             float pRot = i > 0 ? circles[i-1].p_rotation : 0;
             circles[i].cur_rotation = pRot + ofRandom(60,160);
             
             circles[i].p_rotation = ofRadToDeg(buttons->at(winnerButtons[i]).getRawData().z);
             circles[i].startRot = circles[i].cur_rotation;
-            
-            cout << random<< endl;
+          
             
         }
     }

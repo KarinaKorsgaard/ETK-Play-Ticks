@@ -731,6 +731,9 @@ void ofApp::updateOsc(){
         co.oscIn.getNextMessage(m);
         if(m.getAddress() == "/next")
             b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size()-1)]=true;
+
+        else if(m.getAddress() == "/start")
+            co.startScene = true;
     }
     
     while (receiver.hasWaitingMessages()) {

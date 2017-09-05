@@ -126,6 +126,8 @@ public:
         scenes["Design"]->update();
         scenes["Design"]->reset();
 
+
+        
         scenes[co->sMap[co->sceneNumber]]->reset();
         scenes[co->sMap[co->sceneNumber]]->begin(box2d);
         
