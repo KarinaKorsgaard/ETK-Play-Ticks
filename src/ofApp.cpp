@@ -447,6 +447,7 @@ void ofApp::draw(){
         ofPushMatrix();
         ofTranslate(10, font_small.getLineHeight()+3.5);
         
+        ofSetColor(0);
         ofPushMatrix();
         ofTranslate(timePlacement[0].x, timePlacement[0].y);
         ofRotateZ(rotation);
