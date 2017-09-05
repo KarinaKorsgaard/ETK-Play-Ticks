@@ -63,8 +63,9 @@ public:
         else
         {
             ofxOscMessage m;
-            string s = vote[0] > vote[1] ? "Burn" : "LetGo";
-            m.setAddress("/Trial"+s+"Team"+ofToString(teamNumber+1));
+            int s = vote[0] > vote[1] ? 1 : 0;
+            m.setAddress("/TrialTeam"+ofToString(teamNumber+1));
+            m.addIntArg(s);
             co->oscOut.sendMessage(m);
         
         }
