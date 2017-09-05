@@ -266,7 +266,7 @@ public:
 
             int w = co->font_medium->getStringBoundingBox(name+timeString,0,0).width + 50;
             int x = teamId == 0 ? 50 : 1920*2 - 50 - w;
-            ofSetColor(ofColor::royalBlue);
+            ofSetColor(255);
             
             co->font_medium->drawString( name+timeString , x , 120);
         }
