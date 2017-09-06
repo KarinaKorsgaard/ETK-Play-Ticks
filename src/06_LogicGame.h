@@ -29,12 +29,12 @@ public:
     
     float update(float precision, float attraction, float z){
         //if (b != nullptr)b->update(2000);
-        isTarget = abs(cur_rotation-targetRotation) < precision;
-        
-        float cur = cur_rotation+100;
-        float tar = targetRotation+100;
-        
-        isTarget = abs(cur-tar) < precision;
+
+
+        if (cur_rotation < precision || cur_rotation > 360-precision )
+            isTarget = true;
+        else isTarget = false;
+       
         //float
         //cout << abs(cur_rotation-targetRotation) << endl;
         float dr = ofRadToDeg(z) - p_rotation;
