@@ -211,9 +211,9 @@ void ofApp::setup(){
     logic.setName("logic");
     logic.add(co.logicPrecision.set("logic precision", 20., 0.01, 100.f));
     for(int i = 0 ; i<6; i++){
-        ofParameter<float>t;
-        co.targetCircleRot.push_back(t);
-        logic.add(co.targetCircleRot.back().set("circle"+ofToString(i+1),0,0,360));
+        //ofParameter<float>t;
+        //co.targetCircleRot.push_back(t);
+        //logic.add(co.targetCircleRot.back().set("circle"+ofToString(i+1),0,0,360));
         
         ofParameter<float>f;
         co.factoryRotation.push_back(f);

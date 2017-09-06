@@ -30,8 +30,13 @@ public:
     float update(float precision, float attraction, float z){
         //if (b != nullptr)b->update(2000);
         isTarget = abs(cur_rotation-targetRotation) < precision;
+        
+        float cur = cur_rotation+100;
+        float tar = targetRotation+100;
+        
+        isTarget = abs(cur-tar) < precision;
         //float
-       
+        //cout << abs(cur_rotation-targetRotation) << endl;
         float dr = ofRadToDeg(z) - p_rotation;
 
         if(abs(dr) < 355)cur_rotation += dr ;
@@ -60,6 +65,7 @@ public:
         ofTranslate(midt);
         ofRotate(targetRotation);
         int s = ring.getWidth();
+        ofSetColor(255,100);
         ring.draw(-s/2,-s/2,s,s);
         ofPopMatrix();
 
@@ -83,7 +89,7 @@ public:
         
         for(int i = 0; i < 6 ; i++){
             circle c = *new circle;
-            c.setup(ofRandom(360), co->targetCircleRot[i]);
+            c.setup(ofRandom(360), 0);
             circles.push_back(c);
             circles.back().ring.load("img/specialAssets/rings/ring-0"+ofToString(i+1)+".png");
         }
@@ -108,8 +114,9 @@ public:
           
             if(!isDone())
                 collectedRotation+=circles[i].update(co->logicPrecision, co->attraction, buttons->at(winnerButtons[i]).getRawData().z);
-            if(co->showLogicTargets)
-                circles[i].setTarget(co->targetCircleRot[i]);
+            //if(co->showLogicTargets)
+            
+            
         }
         if(collectedRotation!=temp){
             ofxOscMessage m;
@@ -188,10 +195,10 @@ public:
             
             
             float pRot = i > 0 ? circles[i-1].p_rotation : 0;
-            circles[i].cur_rotation = pRot + ofRandom(60,160);
-            circles[i].p_rotation = ofRadToDeg(buttons->at(winnerButtons[i]).getRawData().z);
-       
-          
+            circles[i].cur_rotation = ofRandom(360);
+            circles[i].p_rotation = pRot + ofRandom(60,160);
+            circles[i].p_rotation = int(circles[i].p_rotation) % 360;
+            circles[i].setTarget(0);
             
         }
     }
