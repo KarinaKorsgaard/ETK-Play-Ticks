@@ -49,7 +49,7 @@ public:
                 if (i != looserTick)
                     buttons->at(i).update(co->attraction);
                 else
-                    buttons->at(i).setPosition(1920*teamNumber + 1920/2 , 1080 / 2);
+                    buttons->at(i).setPosition(1920*teamNumber + 998 , 445);
             }
             
             
