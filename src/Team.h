@@ -165,11 +165,11 @@ public:
         
         if(!isDone){
             drainTime();
-            drainIndividuals();
+            //drainIndividuals();
             playAnimation=false;
         }
         
-        else if (isDone){
+        else if (isDone && co->startScene){
             
             if (!addedToWinnerlist){
                 addedToWinnerlist = true;
