@@ -186,6 +186,8 @@ public:
             
             if (!playAnimation){
                 if(playtime == 0.0){
+                    int video = co->teamIsDone[0] == teamId ? 0 : 1;
+                    cout <<"team "<< teamId << " video"<< video<< " coTeamIsDone "<<co->teamIsDone[0] << " team is done sise "<< co->teamIsDone.size() << endl;
                     for(int i = 0; i<buttons.size();i++){
                         Button * b = &buttons[i];
                         b->setArmSwap(0);
@@ -200,13 +202,15 @@ public:
             if (playtime > co->delayPlayTime){
                 
                 int video = co->teamIsDone[0] == teamId ? 0 : 1;
-                cout <<"team "<< teamId << " sees "<<video << " "<< video<< " "<<co->teamIsDone[0] << " celebration id" << endl;
+                
                 co->celebration[video].play();
                 playAnimation = true;
             }
             
             if (playAnimation){
-                co->celebration[co->teamIsDone[teamId]].update();
+                int video = co->teamIsDone[0] == teamId ? 0 : 1;
+               // cout <<" video "<< video<< endl;
+                co->celebration[video].update();
             }
         }
         
@@ -228,7 +232,8 @@ public:
         
         if(playAnimation){
             ofSetColor(255);
-            co->celebration[co->teamIsDone[teamId]].draw( (teamId*1920) + ( 1920/2 - co->celebration[co->teamIsDone[teamId]].getWidth()/2 ),
+            int video = co->teamIsDone[0] == teamId ? 0 : 1;
+            co->celebration[video].draw( (teamId*1920) + ( 1920/2 - co->celebration[co->teamIsDone[teamId]].getWidth()/2 ),
                                                          1080/2 - co->celebration[co->teamIsDone[teamId]].getHeight()/2 );
             
             for(int i = 0; i<buttons.size();i++){
