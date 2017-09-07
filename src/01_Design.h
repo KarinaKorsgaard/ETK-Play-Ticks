@@ -68,7 +68,7 @@ public:
                 }
             }
         }
-        
+        cout << done << endl;
         
         
         if(!b)isDifferent=false;

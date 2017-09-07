@@ -553,21 +553,34 @@ void ofApp::handleSceneChange(){
             box2d.enableEvents();
         }
         
-        string won = "img/mobile/"+co.sMap[co.sceneNumber]+"Won.png";
-        string lost = "img/mobile/"+co.sMap[co.sceneNumber]+"Lost.png";
-        string tie = "img/mobile/"+co.sMap[co.sceneNumber]+"Tie.png";
-        
-        if (ofFile::doesFileExist(won))
-            scoreImgWon.load(won);
+        string won = "img/mobile/"+co.sMap[p_sceneNumber]+"Won.png";
+        string lost = "img/mobile/"+co.sMap[p_sceneNumber]+"Lost.png";
+        string tie = "img/mobile/"+co.sMap[p_sceneNumber]+"Tie.png";
+        cout << won << endl;
+
+        if (ofFile::doesFileExist(won)){
+            ofFile f(won);
+            scoreImgWon.clear();
+            scoreImgWon.load(f);
+            cout << "i loded a new file" + won<< endl;
+        }
         else scoreImgWon.load("img/mobile/defaultWon.png");
         
-        if (ofFile::doesFileExist(lost))
+        if (ofFile::doesFileExist(lost)){
+            scoreImgLost.clear();
             scoreImgLost.load(lost);
+        }
         else scoreImgLost.load("img/mobile/defaultLost.png");
         
-        if (ofFile::doesFileExist(tie))
-            scoreImgLost.load(tie);
-        else scoreImgLost.load("img/mobile/defaultTie.png");
+        if (ofFile::doesFileExist(tie)){
+            scoreImgTie.clear();
+            scoreImgTie.load(tie);
+        }
+        else scoreImgTie.load("img/mobile/defaultTie.png");
+        
+        scoreImgWon.update();
+        scoreImgLost.update();
+        scoreImgTie.update();
         
         if(co.sMap[co.sceneNumber] == "Fight"){
             fightBallImg.load("img/specialAssets/08_FightBall.png");
@@ -613,7 +626,7 @@ void ofApp::handleSceneChange(){
             groundVideo.stop();
         }
         
-        if(co.sMap[p_sceneNumber] == "Factories" || co.sMap[p_sceneNumber] == "ReDesign"){
+        if(co.sMap[p_sceneNumber] == "Factories" ){
             string abc = "A-B-C-D-E-F";
             vector<string>letters = ofSplitString(abc,"-");
             unemployedMessage = "unemplyed ticks:";
