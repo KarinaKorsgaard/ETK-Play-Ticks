@@ -99,7 +99,7 @@ public:
             
             minColors=MAX(minColors,1);
             int howManyGetsMore = numPlayers-(minColors*maxSymbols);
-            howManyGetsMore = howManyGetsMore == 0 ? maxSymbols : howManyGetsMore;
+            howManyGetsMore = maxSymbols - howManyGetsMore;
             
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
