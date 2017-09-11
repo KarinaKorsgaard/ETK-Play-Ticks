@@ -95,11 +95,26 @@ public:
             maxSymbols = co->lookUp[numPlayers][1];
             
             
-            int minColors = maxColors == maxSymbols ? maxColors : maxColors-1;
+            int minColors = maxColors-1;
             
+            // 6 * 5. 33
+            // 33 - 5 * 5 = 3
+            // 5 - 3 = 2
+            
+            // 4*4
+            // min = 4
+            // 16 - 4*3 = 0
+            // 4 - 0 = 4:
+            
+            // 5*4
+            // min = 4
+            // 17 - 4*4 = 1
+            //
             minColors=MAX(minColors,1);
+            
+            
             int howManyGetsMore = numPlayers-(minColors*maxSymbols);
-            howManyGetsMore = maxSymbols - howManyGetsMore;
+            //howManyGetsMore = maxSymbols - howManyGetsMore;
             
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
