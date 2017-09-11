@@ -221,31 +221,41 @@ public:
         int X = co->numPresentButtons[teamNumber];
         int F = max(co->lookUp[X][0],co->lookUp[X][1]);
         int FsTotal = X-1;
+        
+        int slotsEven = FsTotal / MAX(F, 1);
+        int rest = FsTotal - F*slotsEven;
+        int slotsTotal = 0;
         cout << FsTotal << endl;
+        
         int FsMax = min(co->lookUp[X][0],co->lookUp[X][1]);
         
         int count = 0;
         for(int i = 0;i<F;i++){
-            int slots = 0;
+            int slots = slotsEven;
             
-            if(count < FsTotal-FsMax){
-                slots = FsMax;
-                count += slots;
-                cout << "COUNT: "<<count<<endl;
-            }
-            else{
-                slots = FsTotal - count;
-                count += slots;
-                cout << "REST OF THE SLOTS: "<<count<<endl;
-            }
-            if(count > FsTotal)slots -= count-FsTotal;
+            if(count < rest)slots++;
+            count ++;
+            slotsTotal+=slots;
+//            slotsTotal
+//            if(count < FsTotal-FsMax){
+//                slots = FsMax;
+//                cout << "COUNT: "<<count<<endl;
+//            }
+//            else{
+//                slots = FsTotal - count;
+//                cout << "REST OF THE SLOTS: "<<count<<endl;
+//            }
+//            
+//            if(count > FsTotal)slots -= count-FsTotal;
+            
+            
             Basket basket;
             baskets.push_back(basket);
             baskets.back().setup(polysOutline[i], slots);
         
             cout << "BASKET: "<<i<<" slots_ "<<slots<<endl;
         }
-        
+        cout <<"slots" <<slotsTotal<<" peoplpe: "<<X<<endl;
         co->marketDone1=false;
         co->marketDone2=false;
         

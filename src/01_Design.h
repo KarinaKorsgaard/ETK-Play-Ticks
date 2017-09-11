@@ -118,7 +118,7 @@ public:
             
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
-                if(buttons->at(i).isPlaying){
+                //if(buttons->at(i).isPlaying){
                     ofVec3f data = buttons->at(i).getRawData();
                     float normX = data.x > 1 ? data.x - 1. : data.x;
                     
@@ -148,7 +148,7 @@ public:
                     buttons->at(i).colorInt = x;
                     buttons->at(i).symbolInt = y;
                 }
-            }
+           // }
             
         }
     }
