@@ -123,7 +123,9 @@ public:
         trial.setup(co,&buttons);
         
         scenes["Design"]->begin(box2d);
+        cout << "Before scenes[Design]->update();"<<endl;
         scenes["Design"]->update();
+        cout << "After scenes[Design]->update();"<<endl;
         scenes["Design"]->reset();
 
 
@@ -165,7 +167,7 @@ public:
         
         if(!isDone){
             drainTime();
-            //drainIndividuals();
+            drainIndividuals();
             playAnimation=false;
         }
         
@@ -184,7 +186,7 @@ public:
                 cout << "teamisdonesize "<< co->teamIsDone.size()<< endl;
             }
             
-            if (!playAnimation){
+            if (!playAnimation && co->teamIsDone.size()>0){
                 if(playtime == 0.0){
                     int video = co->teamIsDone[0] == teamId ? 0 : 1;
                     cout <<"team "<< teamId << " video"<< video<< " coTeamIsDone "<<co->teamIsDone[0] << " team is done sise "<< co->teamIsDone.size() << endl;
@@ -199,7 +201,7 @@ public:
 
             }
             
-            if (playtime > co->delayPlayTime){
+            if (playtime > co->delayPlayTime && co->teamIsDone.size()>0){
                 
                 int video = co->teamIsDone[0] == teamId ? 0 : 1;
                 
@@ -207,7 +209,7 @@ public:
                 playAnimation = true;
             }
             
-            if (playAnimation){
+            if (playAnimation && co->teamIsDone.size()>0){
                 int video = co->teamIsDone[0] == teamId ? 0 : 1;
                // cout <<" video "<< video<< endl;
                 co->celebration[video].update();

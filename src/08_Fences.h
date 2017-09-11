@@ -235,7 +235,7 @@ public:
         
         svg.load("svg/08_EscalatorPits.svg");
         pitPolys = getPolyline(svg);
-        cout << "PITPOLYS "<< pitPolys.size()<<endl;
+       // cout << "PITPOLYS "<< pitPolys.size()<<endl;
         
         vector<int>rTickOrder;
         for(int i = 0; i<36;i++){

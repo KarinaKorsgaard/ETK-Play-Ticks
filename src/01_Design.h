@@ -68,7 +68,7 @@ public:
                 }
             }
         }
-        cout << done << endl;
+      //  cout << done << endl;
         
         
         if(!b)isDifferent=false;
@@ -94,31 +94,45 @@ public:
             maxColors = co->lookUp[numPlayers][0];
             maxSymbols = co->lookUp[numPlayers][1];
             
-            //int minColors = MIN(maxColors,maxSymbols);
+            
             int minColors = maxColors == maxSymbols ? maxColors : maxColors-1;
             
             minColors=MAX(minColors,1);
             int howManyGetsMore = numPlayers-(minColors*maxSymbols);
+            howManyGetsMore = howManyGetsMore == 0 ? maxSymbols : howManyGetsMore;
             
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
-                ofVec3f data = buttons->at(i).getRawData();
-                float normX = data.x > 1 ? data.x - 1. : data.x;
-                int x = ofMap (normX,0,1,0,minColors);
-                int y = ofMap (data.y,0,1,0,maxSymbols); // symbol
-                if(count < howManyGetsMore){
+                if(buttons->at(i).isPlaying){
+                    ofVec3f data = buttons->at(i).getRawData();
+                    float normX = data.x > 1 ? data.x - 1. : data.x;
                     
-                    x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
+                    int x = ofMap (normX,0,1,0,maxColors);
                     
+                    
+                    int mSym = x == maxColors-1 ? howManyGetsMore : maxSymbols;
+                   
+//                    cout <<"more "<<howManyGetsMore<<" " ;
+//                    cout <<"mSym "<<mSym<<" ";
+//                    cout <<"colors "<<maxSymbols<<" "<<endl;
+                    
+                    
+                    int y = ofMap (data.y,0,1,0,mSym); // symbol
+                    //                if(count < howManyGetsMore){
+                    //
+                    //                    x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
+                    //
+                    //                }
+                    //                if(buttons->at(i).isPlaying)count++;
+                    x = CLAMP (x,0,maxColors);
+                    y = CLAMP (y,0,maxSymbols-1);
+                    
+                    buttons->at(i).color=colors[x];
+                    buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
+                    
+                    buttons->at(i).colorInt = x;
+                    buttons->at(i).symbolInt = y;
                 }
-                if(buttons->at(i).isPlaying)count++;
-                x = CLAMP (x,0,maxColors);
-                y = CLAMP (y,0,maxSymbols-1);
-                buttons->at(i).color=colors[x];
-                buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
-                
-                buttons->at(i).colorInt = x;
-                buttons->at(i).symbolInt = y;
             }
             
         }

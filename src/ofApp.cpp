@@ -189,6 +189,10 @@ void ofApp::setup(){
     
     physics.add(co.attraction.set("attraction",1,0,2500));
     physics.add(co.fc.set("fc position",0.05,0.01,0.4));
+    
+    physics.add(co.drainCoefficient1.set("drain1",0,0,5));
+    physics.add(co.drainCoefficient2.set("drain2",0,0,5));
+   
     physics.add(co.moveThemOut.set("move ticks out of walls", false));
     physics.add(co.logReport.set("logreport", false));
     //physics.setName("game controls");
@@ -772,18 +776,25 @@ void ofApp::updateOsc(){
                     }
                     else if( m.getAddress()==b->address ){
                         b->on = true;
+ 
+                        float x = m.getArgType(0) == 102 ? m.getArgAsFloat(0) : float(m.getArgAsInt32(0));
+                        float y = m.getArgType(1) == 102 ? m.getArgAsFloat(1) : float(m.getArgAsInt32(1));
+                        float z = m.getArgType(2) == 102 ? m.getArgAsFloat(2) : float(m.getArgAsInt32(2));
                         
-                        float x = reverseX ? 1.f- (m.getArgAsFloat(0)/127.0f) : m.getArgAsFloat(0)/127.0f;
-                        float y = reverseY ? 1.f- (m.getArgAsFloat(1)/127.0f) : m.getArgAsFloat(1)/127.0f;
-                        b->set( x , y , m.getArgAsFloat(2) );
+                        x = reverseX ? 1.f- (x/127.0f) : x/127.0f;
+                        y = reverseY ? 1.f- (y/127.0f) : y/127.0f;
+                        
+                        x = CLAMP(x, 0.05, 0.95);
+                        y = CLAMP(y, 0.05, 0.95);
+                        z = CLAMP(z, 0.0, 2.f*PI);
+                        
+                        b->set( x , y , z );
                         
                         if(b->on && !b->isPlaying){
                             b->isPlaying = true;
                             ButtonData *bd =(ButtonData*)b->box2Dcircle.get()->getData();
                             bd->isPlaying = true;
-                            // prevent them getting stuck on edges
-                            x = CLAMP(x, 0.1, 0.9);
-                            y = CLAMP(y, 0.1, 0.9);
+                            
                             ofVec2f p = ofVec2f(x * 1920 + b->teamNumber*1920, y*1080);
                             
                             if (co.sMap[co.sceneNumber]=="Fences" || co.sMap[co.sceneNumber]=="AverageMaze")p.y = 1000;
@@ -796,8 +807,10 @@ void ofApp::updateOsc(){
                             co.numPresentButtons[b->teamNumber]++;
                         }
                         
+                        
                         break;
                     }
+                    
                 }
             }
         }

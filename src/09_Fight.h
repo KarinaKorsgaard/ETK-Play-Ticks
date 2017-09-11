@@ -119,7 +119,7 @@ public:
     void begin(ofxBox2d * world = nullptr){
         
         co->tennisPoint[teamNumber] = 0;
-        cout << "set button" << endl;
+       // cout << "set button" << endl;
         int firstOn = -1;
         bool isSet = false;
         for(int i=0; i<buttons->size(); i++) {
@@ -160,7 +160,7 @@ public:
             ofxSVG svg;
             svg.load("svg/09_Fight.svg");
             solidPolys = getPolyline(svg);
-            cout << "FIGHT POLYS"<<solidPolys.size()<<endl;
+         //   cout << "FIGHT POLYS"<<solidPolys.size()<<endl;
         }
         
     }
