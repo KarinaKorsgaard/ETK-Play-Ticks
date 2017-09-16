@@ -66,9 +66,10 @@ class ofApp : public ofBaseApp{
     
     vector<bool>receivingTables;
     vector<string>alive;
+    vector<bool>tableHasBeenAlive;
 
     int teamSize=-1;
-    int alertCounter;
+    int alertCounter[12];
     
 
     ofxTrueTypeFontUC font_small;

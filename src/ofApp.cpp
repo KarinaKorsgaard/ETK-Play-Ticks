@@ -46,10 +46,10 @@ void ofApp::setup(){
     co.numPresentButtons[1] = 0;
     
     co.characterSymbols.resize(12);
-    for(int i = 0 ; i< 12 ; i++)
+    for(int i = 0 ; i< 12 ; i++){
         co.characterSymbols[i].load("img/symbols/marker-"+ofToString(i+1, 2, '0')+".png");
-    
-    
+        tableHasBeenAlive.push_back(false);
+    }
     
     ofxXmlSettings xml;
     xml.load("config.xml");
@@ -292,11 +292,16 @@ void ofApp::update(){
     
     
     // make tabels red by interval
-    alertCounter ++;
-    if(alertCounter > ofGetFrameRate()*6){
-        alertCounter=0;
-        for(int i = 0;i<receivingTables.size();i++){
+    for(int i = 0; i<12 ; i++){
+        alertCounter[i] ++;
+        if(alertCounter[i] > ofGetFrameRate()*4){
             receivingTables[i]=false;
+
+            
+            ofxOscMessage m;
+            m.setAddress("/table"+ofToString(i+1)+"isDown");
+            m.addFloatArg(i);
+            co.oscOut.sendMessage(m);
         }
     }
     
@@ -758,9 +763,13 @@ void ofApp::updateOsc(){
         ofxOscMessage m;
         receiver.getNextMessage(m);
         
-        for (int i = 0 ; i<alive.size(); i++) {
-            if(!receivingTables[i])if(m.getAddress() == alive[i])receivingTables[i]=true;
-        }
+//        for (int i = 0 ; i<alive.size(); i++) {
+//            if(!receivingTables[i])
+//                if(m.getAddress() == alive[i]){
+//                    receivingTables[i]=true;
+//                    alertCounter[i] = 0;
+//                }
+//        }
         
         if(co.startMovement){
             for(int t = 0; t < 2 ; t++){
@@ -776,6 +785,9 @@ void ofApp::updateOsc(){
                     }
                     else if( m.getAddress()==b->address ){
                         b->on = true;
+                        
+                        receivingTables[b->table]=true;
+                        alertCounter[b->table] = 0;
  
                         float x = m.getArgType(0) == 102 ? m.getArgAsFloat(0) : float(m.getArgAsInt32(0));
                         float y = m.getArgType(1) == 102 ? m.getArgAsFloat(1) : float(m.getArgAsInt32(1));
@@ -805,6 +817,9 @@ void ofApp::updateOsc(){
                             
                             b->setPosition(p);
                             co.numPresentButtons[b->teamNumber]++;
+                            
+                            
+                            
                         }
                         
                         
