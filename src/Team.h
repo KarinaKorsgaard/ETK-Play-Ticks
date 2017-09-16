@@ -180,7 +180,11 @@ public:
                 m.setAddress("/won"+ofToString(teamId+1));
                 co->oscOut.sendMessage(m);
 
-                int t = co->sMap[s] == "Fight" ? (teamId*-1)+1 : teamId;
+                int t = teamId;
+                
+                if(co->sMap[s]=="Fight"){
+                    t = co->tennisPoint[0] > co->tennisPoint[1] ? 0 : 1;
+                }
                 
                 co->teamIsDone.push_back(t);
                 cout << "teamisdonesize "<< co->teamIsDone.size()<< endl;

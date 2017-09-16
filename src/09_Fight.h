@@ -33,8 +33,8 @@ public:
     }
     
     bool isDone(bool b = false){
-        int t = teamNumber * -1 +1;
-        return co->tennisPoint[t] >= gameOverPoint;
+        int points = MAX(co->tennisPoint[0],co->tennisPoint[0]);
+        return points >= gameOverPoint;
     }
     
     void update(){

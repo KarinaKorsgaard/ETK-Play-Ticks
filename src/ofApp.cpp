@@ -336,7 +336,7 @@ void ofApp::update(){
                 int serve = teams[0].time > teams[1].time ? 1 : -1;
                 int x = serve == 1 ? 1920/2 : 1920/2 + 1920;
                 fightBall.get()->setPosition(x, 1080/2);
-                fightBall.get()->setVelocity(5 * serve, 5);
+                fightBall.get()->setVelocity(5 * serve, 0);
             }
             
             ofVec2f v = fightBall->getVelocity();
