@@ -297,11 +297,12 @@ void ofApp::update(){
         if(alertCounter[i] > ofGetFrameRate()*4){
             receivingTables[i]=false;
 
-            
-            ofxOscMessage m;
-            m.setAddress("/table"+ofToString(i+1)+"isDown");
-            m.addFloatArg(i);
-            co.oscOut.sendMessage(m);
+            if(tableHasBeenAlive[i]){
+                ofxOscMessage m;
+                m.setAddress("/table"+ofToString(i+1)+"isDown");
+                m.addFloatArg(i);
+                co.oscOut.sendMessage(m);
+            }
         }
     }
     
@@ -788,6 +789,7 @@ void ofApp::updateOsc(){
                         
                         receivingTables[b->table]=true;
                         alertCounter[b->table] = 0;
+                        tableHasBeenAlive[b->table]=true;
  
                         float x = m.getArgType(0) == 102 ? m.getArgAsFloat(0) : float(m.getArgAsInt32(0));
                         float y = m.getArgType(1) == 102 ? m.getArgAsFloat(1) : float(m.getArgAsInt32(1));
