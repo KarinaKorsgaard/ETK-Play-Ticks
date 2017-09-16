@@ -126,19 +126,9 @@ public:
                     
                     
                     int mSym = x == maxColors-1 ? howManyGetsMore : maxSymbols;
-                   
-//                    cout <<"more "<<howManyGetsMore<<" " ;
-//                    cout <<"mSym "<<mSym<<" ";
-//                    cout <<"colors "<<maxSymbols<<" "<<endl;
-                    
-                    
+                
                     int y = ofMap (data.y,0,1,0,mSym); // symbol
-                    //                if(count < howManyGetsMore){
-                    //
-                    //                    x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
-                    //
-                    //                }
-                    //                if(buttons->at(i).isPlaying)count++;
+
                     x = CLAMP (x,0,maxColors);
                     y = CLAMP (y,0,maxSymbols-1);
                     

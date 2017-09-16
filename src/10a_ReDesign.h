@@ -82,31 +82,55 @@ public:
             int count = 0;
             for(int i=0; i<buttons->size(); i++) {
                // if (i != looserTick){
-                    
-                    ofVec3f data = buttons->at(i).getRawData();
-                    float normX = data.y > 1 ? data.y - 1. : data.y;
-                    
-                    int x = ofMap (normX,0,1,0,minColors);
-                    int y = ofMap (data.z,0,2*PI,0,maxSymbols); // symbol
-                    
-                    if(count < howManyGetsMore){
-                        x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
-                    }
-                    if(buttons->at(i).isPlaying)count++;
-                    
-                    x = CLAMP (x,0,maxColors);
-                    y = CLAMP (y,0,MAX(maxSymbols-1,0));
+                ofVec3f data = buttons->at(i).getRawData();
+                float normX = data.y > 1 ? data.y - 1. : data.y;
+                
+                int x = ofMap (normX,0,1,0,maxColors);
+                
+                
+                int mSym = x == maxColors-1 ? howManyGetsMore : maxSymbols;
+                
+               // int y = ofMap (data.y,0,1,0,mSym); // symbol
+                int y = ofMap (data.z,0,2*PI,0,mSym);
+                
+                x = CLAMP (x,0,maxColors);
+                y = CLAMP (y,0,maxSymbols-1);
                 
                 if (i == looserTick && !co->canCulpritMove){
                     x = culpritColor;
                     y = culpritSymbol;
                 }
                 
-                    buttons->at(i).color=colors[x];
-                    buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
-                    
-                    buttons->at(i).colorInt = x;
-                    buttons->at(i).symbolInt = y;
+                buttons->at(i).color=colors[x];
+                buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
+                
+                buttons->at(i).colorInt = x;
+                buttons->at(i).symbolInt = y;
+                
+//                    ofVec3f data = buttons->at(i).getRawData();
+//                    float normX = data.y > 1 ? data.y - 1. : data.y;
+//                    
+//                    int x = ofMap (normX,0,1,0,minColors);
+//                    int y = ofMap (data.z,0,2*PI,0,maxSymbols); // symbol
+//                    
+//                    if(count < howManyGetsMore){
+//                        x = ofMap (normX,0,1,0,MAX(maxColors,maxSymbols));
+//                    }
+//                    if(buttons->at(i).isPlaying)count++;
+//                    
+//                    x = CLAMP (x,0,maxColors);
+//                    y = CLAMP (y,0,MAX(maxSymbols-1,0));
+                
+//                if (i == looserTick && !co->canCulpritMove){
+//                    x = culpritColor;
+//                    y = culpritSymbol;
+//                }
+//                
+//                    buttons->at(i).color=colors[x];
+//                    buttons->at(i).symbol=&co->characterSymbols[ CLAMP (y + teamNumber * 6,0,co->characterSymbols.size()-1 )];
+//                    
+//                    buttons->at(i).colorInt = x;
+//                    buttons->at(i).symbolInt = y;
                 
 
              //   }
