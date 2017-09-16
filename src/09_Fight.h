@@ -33,7 +33,7 @@ public:
     }
     
     bool isDone(bool b = false){
-        int points = MAX(co->tennisPoint[0],co->tennisPoint[0]);
+        int points = MAX(co->tennisPoint[0],co->tennisPoint[1]);
         return points >= gameOverPoint;
     }
     
@@ -46,7 +46,7 @@ public:
             ballx = teamNumber == 0 ? ballx : ofMap(ballx , 1920, 1920*2 , 1920, 0);
 
             if(ballx < 100){
-                co->tennisPoint[teamNumber] ++;
+                co->tennisPoint[-1*(teamNumber-1)] ++;
                 
                 ofxOscMessage m;
                 m.setAddress("/tennisPoint"+ofToString(teamNumber*-1+2));

@@ -116,7 +116,7 @@ public:
                 }
             }
             breakFormation = count > spots.size() ? true : false;
-            
+           // cout << count << "count> "<< spots.size()<<endl;
             
             for(int b = 0; b<buttons->size();b++){
                 ofVec2f bpos = buttons->at(b).getBiquadPos();
