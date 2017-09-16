@@ -299,8 +299,8 @@ void ofApp::update(){
 
             if(tableHasBeenAlive[i]){
                 ofxOscMessage m;
-                m.setAddress("/table"+ofToString(i+1)+"isDown");
-                m.addFloatArg(i);
+                m.setAddress("/tableisDown");
+                m.addFloatArg(1.f);
                 co.oscOut.sendMessage(m);
             }
         }

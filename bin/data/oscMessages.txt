@@ -5,6 +5,9 @@
 /averageX2          float (normalized)
 /averageSpeed2      float (normalized)
 
+
+/tableisDown float (1)
+
 /tennisPoint1 float (always 1)
 /tennisPoint2 float (always 1)
 
