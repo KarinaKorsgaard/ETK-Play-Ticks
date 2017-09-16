@@ -112,8 +112,9 @@ public:
         if(sendOsc){
             sendOsc = false;
             ofxOscMessage m;
-            string  s = oscInt == 1 ? "On" : "Off";
-            m.setAddress("/lantern"+s+ofToString(teamNumber+1));
+           // string  s = oscInt == 1 ? "On" : "Off";
+            m.setAddress("/lantern"+ofToString(teamNumber+1));
+            m.addFloatArg(float(oscInt));
             co->oscOut.sendMessage(m);
             
         }

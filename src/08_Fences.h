@@ -115,8 +115,9 @@ public:
                     p_moveEscalators = moveEscalators;
                     
                     ofxOscMessage m;
-                    string  s = moveEscalators ? "On" : "Off";
-                    m.setAddress("/elevator"+s+ofToString(teamNumber+1));
+                    float  s = moveEscalators ? 1.f : 0.f;
+                    m.setAddress("/elevator"+ofToString(teamNumber+1));
+                    m.addFloatArg(s);
                     co->oscOut.sendMessage(m);
                     
                 }

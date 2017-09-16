@@ -51,14 +51,6 @@ public:
                 else
                     buttons->at(i).setPosition(1920*teamNumber + 998 , 445);
             }
-            
-            
-            ofxOscMessage m;
-            m.setAddress("/TrialTeam"+ofToString(teamNumber+1));
-            m.addInt32Arg(vote[0]);
-            m.addInt32Arg(vote[1]);
-            co->oscOut.sendMessage(m);
-            
         }
         else
         {
@@ -69,6 +61,12 @@ public:
             co->oscOut.sendMessage(m);
         
         }
+        
+        ofxOscMessage m;
+        m.setAddress("/TrialTeam"+ofToString(teamNumber+1));
+        m.addFloatArg(float(vote[0])/float(co->numPresentButtons[0]));
+        m.addFloatArg(float(vote[1])/float(co->numPresentButtons[1]));
+        co->oscOut.sendMessage(m);
     }
     
     

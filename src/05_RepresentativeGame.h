@@ -157,6 +157,7 @@ public:
                     
                     ofxOscMessage m;
                     m.setAddress("/doorsOpening"+ofToString(teamNumber+1));
+                    m.addFloatArg(1.f);
                     co->oscOut.sendMessage(m);
                 }
             }
@@ -164,6 +165,7 @@ public:
                 int up = i * 2 - 1;
                 ofxOscMessage m;
                 m.setAddress("/doorsClosing"+ofToString(teamNumber+1));
+                m.addFloatArg(1.f);
                 co->oscOut.sendMessage(m);
                 doors[i]->setPosition(doors[i]->getPosition().x, doors[i]->getPosition().y-up*10.);
             }

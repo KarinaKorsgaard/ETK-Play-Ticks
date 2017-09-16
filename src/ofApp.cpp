@@ -968,6 +968,7 @@ void ofApp::contactStart(ofxBox2dContactArgs &e) {
                 if(!buttonData && racketData) {
                     ofxOscMessage m;
                     m.setAddress("/racket"+ofToString(racketData->teamID+1));
+                    m.addFloatArg(1.f);
                     co.oscOut.sendMessage(m);
                     
                 }

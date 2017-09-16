@@ -1,55 +1,52 @@
-/averageX1
-/averageY1
-/averageSpeed1
-/averageY2
-/averageX2
-/averageSpeed2
+/averageX1          float (normalized)
+/averageY1          float (normalized)
+/averageSpeed1      float (normalized)
+/averageY2          float (normalized)
+/averageX2          float (normalized)
+/averageSpeed2      float (normalized)
 
-/tennisPoint1
-/tennisPoint2
+/tennisPoint1 float (always 1)
+/tennisPoint2 float (always 1)
 
 /won1
 /won2
 
 * door opening/closing is constant while doors are moving!
-/doorsOpening1
-/doorsClosing1
-/doorsOpening2
-/doorsClosing2
+/doorsOpening1 float (always 1)
+/doorsClosing1 float (always 1)
+/doorsOpening2 float (always 1)
+/doorsClosing2 float (always 1)
 
-/lanternOn1
-/lanternOff1
-/lanternOn2
-/lanternOff2
+/lantern1 float (0 or 1)
+/lantern2 float (0 or 1)
 
-/elevatorOn1
-/elevatorOff1
-/elevatorOn2
-/elevatorOff2
 
-/Factory1Team1 int
-/Factory2Team1 int
-/Factory3Team1 int
-/Factory4Team1 int
-/Factory5Team1 int
-/Factory6Team1 int
+/elevator1 float (0 or 1)
+/elevator2 float (0 or 1)
 
-/Factory1Team2 int
-/Factory2Team2 int
-/Factory3Team2 int
-/Factory4Team2 int
-/Factory5Team2 int
-/Factory6Team2 int
+/Factory1Team1 float (normalized)
+/Factory2Team1 float (normalized)
+/Factory3Team1 float (normalized)
+/Factory4Team1 float (normalized)
+/Factory5Team1 float (normalized)
+/Factory6Team1 float (normalized)
 
-/racket1
-/racket2
+/Factory1Team2 float (normalized)
+/Factory2Team2 float (normalized)
+/Factory3Team2 float (normalized)
+/Factory4Team2 float (normalized)
+/Factory5Team2 float (normalized)
+/Factory6Team2 float (normalized)
+
+/racket1 float (always 1)
+/racket2 float (always 1)
 
 /collectedRotation1 float
 /collectedRotation2 float
 
 
-/TrialTeam1 int int
-/TrialTeam2 int int
+/TrialTeam1 float float (normalized)
+/TrialTeam2 float float (normalized)
 
 /TrialTeamVote1 int
 /TrialTeamVote2 int

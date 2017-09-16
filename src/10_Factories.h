@@ -171,7 +171,7 @@ public:
             
             ofxOscMessage m;
             m.setAddress("/Factory"+ofToString(i+1)+"Team"+ofToString(teamNumber+1));
-            m.addIntArg(baskets[i].amountOfDots);
+            m.addFloatArg(float( baskets[i].amountOfDots ) / float(baskets[i].slots ));
             co->oscOut.sendMessage(m);
             
 

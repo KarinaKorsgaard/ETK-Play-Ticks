@@ -50,6 +50,7 @@ public:
                 
                 ofxOscMessage m;
                 m.setAddress("/tennisPoint"+ofToString(teamNumber*-1+2));
+                m.addFloatArg(1.f);
                 co->oscOut.sendMessage(m);
                 
                 ball->setPosition(1920/2 + teamNumber * 1920, 1080/2);
