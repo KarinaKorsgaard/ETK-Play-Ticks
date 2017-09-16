@@ -764,13 +764,14 @@ void ofApp::updateOsc(){
         ofxOscMessage m;
         receiver.getNextMessage(m);
         
-//        for (int i = 0 ; i<alive.size(); i++) {
-//            if(!receivingTables[i])
-//                if(m.getAddress() == alive[i]){
-//                    receivingTables[i]=true;
-//                    alertCounter[i] = 0;
-//                }
-//        }
+        for (int i = 0 ; i<alive.size(); i++) {
+           // if(!receivingTables[i])
+                if(m.getAddress() == alive[i]){
+                    receivingTables[i]=true;
+                    alertCounter[i] = 0;
+                    tableHasBeenAlive[i]=true;
+                }
+        }
         
         if(co.startMovement){
             for(int t = 0; t < 2 ; t++){
