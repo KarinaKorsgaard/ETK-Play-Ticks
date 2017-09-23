@@ -218,7 +218,7 @@ public:
     void begin(ofxBox2d * world = nullptr){
        
         ofxSVG svg;
-        
+       
         float addX = teamNumber == 0 ? 0 : 1920;
         svg.load("svg/05_RepresentativeMoving.svg");
         movingPolys = getPolyline(svg);

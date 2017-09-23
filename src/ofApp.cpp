@@ -294,7 +294,7 @@ void ofApp::update(){
     // make tabels red by interval
     for(int i = 0; i<12 ; i++){
         alertCounter[i] ++;
-        if(alertCounter[i] > 20){
+        if(alertCounter[i] > 60*4){
             receivingTables[i]=false;
 
             if(tableHasBeenAlive[i]){
