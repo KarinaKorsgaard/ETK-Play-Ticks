@@ -151,7 +151,8 @@ public:
     
     void begin(ofxBox2d * world = nullptr){
 
-
+        winnerButtons.clear();
+        
         vector<int> firstOn;
         int count = 0;
         
@@ -159,28 +160,28 @@ public:
             
             //cout << firstOn.back() << endl;
             if(buttons->at(b).isPlaying){
-                if (buttons->at(b).isWinner && count < 6){
+                if (buttons->at(b).isWinner && winnerButtons.size() < 6){
                     //circles[count].b = &buttons->at(b);
                     winnerButtons.push_back(b);
-                    cout << "winbutton: "<< count <<" is " << b << "on team "<< teamNumber+1<< endl;
-                    count++;
+                    cout << "------------winbutton "<< count <<" is " << b << " from team "<< teamNumber+1<< endl;
+                    
                 }
                 else
                     firstOn.push_back(b);
             }
         }
         
-//        if(firstOn.size() < 6){
-//            for(int i = 0; i<36;i++){
-//                bool exists = false;
-//                for(int u = 0; u<firstOn.size();u++){
-//                    if( i == firstOn[u])
-//                        exists = true;
-//                }
-//                if (!exists)
-//                    firstOn.push_back(i);
-//            }
-//        }
+        if(firstOn.size() < 6){
+            for(int i = 0; i<36;i++){
+                bool exists = false;
+                  for(int u = 0; u<firstOn.size();u++){
+                    if( i == firstOn[u])
+                        exists = true;
+                }
+                if (!exists)
+                    firstOn.push_back(i);
+            }
+        }
 
         int i = 0;
         while (winnerButtons.size() < MIN(firstOn.size(), 6)){
@@ -190,6 +191,7 @@ public:
             winnerButtons.push_back(setTo);
             cout << "winbutton "<< i <<" was not found and is set to " << setTo << "on team "<< teamNumber+1<< endl;
         }
+        cout << "-----------------there are "<<winnerButtons.size()<<" winners"<<endl;
         
         for(int i = 0; i < 6 ; i++){
             circles[i].isTarget = false;
@@ -205,6 +207,7 @@ public:
     }
     
     void reset(){
+        
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
         }

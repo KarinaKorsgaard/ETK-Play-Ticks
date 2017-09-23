@@ -110,8 +110,8 @@ public:
         if(doneFormation){
             int count = 0;
             for(int b = 0; b<buttons->size();b++){
-                if(buttons->at(b).isPlaying && buttons->at(b).getBiquadPos().x > frontHall &&
-                   buttons->at(b).getBiquadPos().x<doorLimit && !buttons->at(b).isWinner){
+                if(buttons->at(b).isPlaying && buttons->at(b).getBiquadPos().x > frontHall /*&&
+                   buttons->at(b).getBiquadPos().x < doorLimit */&& !buttons->at(b).isWinner){
                     count++;
                 }
             }
@@ -119,8 +119,8 @@ public:
            // cout << count << "count> "<< spots.size()<<endl;
             
             for(int b = 0; b<buttons->size();b++){
-                ofVec2f bpos = buttons->at(b).getBiquadPos();
-                if(bpos.x > doorLimit && !buttons->at(b).isWinner){
+                
+                if(buttons->at(b).getBiquadPos().x > doorLimit+30 && !buttons->at(b).isWinner){
                     
                     buttons->at(b).isWinner = true;
                     
