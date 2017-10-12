@@ -124,6 +124,7 @@ public:
                 if(buttons->at(b).getBiquadPos().x > doorLimit+30 && !buttons->at(b).isWinner){
                     
                     buttons->at(b).isWinner = true;
+                    buttons->at(b).printInfo();
                     
                     bool isErased = false;
                     for(int i = 0; i<spots.size();i++){
