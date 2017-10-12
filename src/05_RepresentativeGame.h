@@ -106,14 +106,15 @@ public:
         }
         
         breakFormation = false;
-
+        
+        
         if(doneFormation){
             int count = 0;
             for(int b = 0; b<buttons->size();b++){
                 if(buttons->at(b).isPlaying && buttons->at(b).getBiquadPos().x > frontHall /*&&
-                   buttons->at(b).getBiquadPos().x < doorLimit */&& !buttons->at(b).isWinner){
-                    count++;
-                }
+                                                                                            buttons->at(b).getBiquadPos().x < doorLimit */&& !buttons->at(b).isWinner){
+                                                                                                count++;
+                                                                                            }
             }
             breakFormation = count > spots.size() ? true : false;
            // cout << count << "count> "<< spots.size()<<endl;
@@ -135,12 +136,16 @@ public:
                     }
                     if(!isErased)
                         spots.erase (spots.begin()+int(ofRandom(spots.size())));
-                
                 }
+                
                 
             }
         }
-        done = spots.size() == 0 ? true : false;
+        int winners = 0;
+        for(int b = 0; b<buttons->size();b++){
+            if(buttons->at(b).isWinner)winners++;
+        }
+        done = winners == 5 ? true : false;
         
     };
     
@@ -174,10 +179,13 @@ public:
             
         }
         
-        if(!done)
+        if(!done){
             for(int i=0; i<buttons->size(); i++){
-                 buttons->at(i).update(co->attraction);
+                 if(!buttons->at(i).isWinner)
+                     buttons->at(i).update(co->attraction);
+           
             }
+        }
     }
     
     void draw(){
