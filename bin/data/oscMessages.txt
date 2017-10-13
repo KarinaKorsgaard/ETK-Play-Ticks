@@ -1,3 +1,8 @@
+/1-win float (1)
+/1-loose float (1)
+/2-win float (1)
+/2-loose float (1)
+
 /averageX1          float (normalized)
 /averageY1          float (normalized)
 /averageSpeed1      float (normalized)

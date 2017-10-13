@@ -109,16 +109,15 @@ public:
         
         
         if(doneFormation){
+            
             int count = 0;
             for(int b = 0; b<buttons->size();b++){
-                if(buttons->at(b).isPlaying && buttons->at(b).getBiquadPos().x > frontHall /*&&
-                                                                                            buttons->at(b).getBiquadPos().x < doorLimit */&& !buttons->at(b).isWinner){
-                                                                                                count++;
-                                                                                            }
+                if(buttons->at(b).isPlaying && buttons->at(b).getBiquadPos().x > frontHall && !buttons->at(b).isWinner){
+                    count++;
+                }
             }
             breakFormation = count > spots.size() ? true : false;
-           // cout << count << "count> "<< spots.size()<<endl;
-            
+           
             for(int b = 0; b<buttons->size();b++){
                 
                 if(buttons->at(b).getBiquadPos().x > doorLimit+30 && !buttons->at(b).isWinner){
@@ -138,15 +137,21 @@ public:
                     if(!isErased)
                         spots.erase (spots.begin()+int(ofRandom(spots.size())));
                 }
-                
-                
             }
         }
         int winners = 0;
         for(int b = 0; b<buttons->size();b++){
-            if(buttons->at(b).isWinner)winners++;
+            if(buttons->at(b).isWinner)
+                winners++;
         }
-        done = winners == 5 ? true : false;
+        if(!done&&winners == 6){
+            for(int b = 0; b<buttons->size();b++){
+                if(buttons->at(b).isWinner)
+                    buttons->at(b).printInfo();
+            }
+        }
+        done = winners == 6 ? true : false;
+        
         
     };
     
@@ -248,7 +253,7 @@ public:
             
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
-                buttons->at(i).setPosition(frontHall ,buttons->at(i).getPos().y);
+            buttons->at(i).setPosition(frontHall ,buttons->at(i).getPos().y);
         }
         
         doorImg[0].load("img/specialAssets/05_Door-01.png");

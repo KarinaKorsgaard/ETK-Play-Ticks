@@ -205,18 +205,25 @@ public:
 
             }
             
-            if (playtime > co->delayPlayTime && co->teamIsDone.size()>0){
+            if (playtime > co->delayPlayTime && co->teamIsDone.size()>0 && !playAnimation){
                 
                 int video = co->teamIsDone[0] == teamId ? 0 : 1;
                 
-                co->celebration[video].play();
+                //co->celebration[video].play();
+                
+                ofxOscMessage m;
+                string win = video == 0 ? "win" : "loose";
+                m.setAddress("/"+ofToString(teamId+1)+"-"+win);
+                m.addFloatArg(1.0);
+                co->oscOut.sendMessage(m);
+                
                 playAnimation = true;
             }
             
             if (playAnimation && co->teamIsDone.size()>0){
                 int video = co->teamIsDone[0] == teamId ? 0 : 1;
                // cout <<" video "<< video<< endl;
-                co->celebration[video].update();
+                //co->celebration[video].update();
             }
         }
         
@@ -238,9 +245,9 @@ public:
         
         if(playAnimation){
             ofSetColor(255);
-            int video = co->teamIsDone[0] == teamId ? 0 : 1;
-            co->celebration[video].draw( (teamId*1920) + ( 1920/2 - co->celebration[co->teamIsDone[teamId]].getWidth()/2 ),
-                                                         1080/2 - co->celebration[co->teamIsDone[teamId]].getHeight()/2 );
+            //int video = co->teamIsDone[0] == teamId ? 0 : 1;
+            //co->celebration[video].draw( (teamId*1920) + ( 1920/2 - co->celebration[co->teamIsDone[teamId]].getWidth()/2 ),
+            //                                             1080/2 - co->celebration[co->teamIsDone[teamId]].getHeight()/2 );
             
             for(int i = 0; i<buttons.size();i++){
                 buttons[i].dy = 0.01;
@@ -405,7 +412,7 @@ private:
         
     }
     void reset(int s){
-        co->celebration[teamId].stop();
+        //co->celebration[teamId].stop();
         playAnimation = false;
         playtime = 0.f;
         destroyMaze();
@@ -421,16 +428,16 @@ private:
         if(teamId == 0){
             co->background.load("img/backgrounds/"+co->sMap[s]+".png");
             
-            string file1 = "videos/celebrations/"+co->sMap[s]+"Winner"+".mov";
-            string file2 = "videos/celebrations/"+co->sMap[s]+"Looser"+".mov";
-            if (!ofFile::doesFileExist(file1)){
-                file1 = "videos/celebrationDefaultWinner.mov";
-            }
-            if (!ofFile::doesFileExist(file2)){
-                file2 = "videos/celebrationDefaultLooser.mov";
-            }
-            co->celebration[0].load(file1);
-            co->celebration[1].load(file2);
+//            string file1 = "videos/celebrations/"+co->sMap[s]+"Winner"+".mov";
+//            string file2 = "videos/celebrations/"+co->sMap[s]+"Looser"+".mov";
+//            if (!ofFile::doesFileExist(file1)){
+//                file1 = "videos/celebrationDefaultWinner.mov";
+//            }
+//            if (!ofFile::doesFileExist(file2)){
+//                file2 = "videos/celebrationDefaultLooser.mov";
+//            }
+//            co->celebration[0].load(file1);
+//            co->celebration[1].load(file2);
         }
         
         co->teamIsDone.clear();
