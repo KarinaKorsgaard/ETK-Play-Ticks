@@ -213,18 +213,18 @@ public:
                 
                 ofxOscMessage m;
                 string win = video == 0 ? "win" : "loose";
-                m.setAddress("/"+ofToString(teamId+1)+"-"+win);
+                m.setAddress("/"+ofToString(teamId+1)+"-"+win+"-"+ofToString(co->sMap[s]));
                 m.addFloatArg(1.0);
                 co->oscOut.sendMessage(m);
                 
                 playAnimation = true;
             }
             
-            if (playAnimation && co->teamIsDone.size()>0){
-                int video = co->teamIsDone[0] == teamId ? 0 : 1;
-               // cout <<" video "<< video<< endl;
-                //co->celebration[video].update();
-            }
+//            if (playAnimation && co->teamIsDone.size()>0){
+//                int video = co->teamIsDone[0] == teamId ? 0 : 1;
+//               // cout <<" video "<< video<< endl;
+//                //co->celebration[video].update();
+//            }
         }
         
         

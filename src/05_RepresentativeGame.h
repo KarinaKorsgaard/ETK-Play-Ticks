@@ -120,7 +120,7 @@ public:
            
             for(int b = 0; b<buttons->size();b++){
                 
-                if(buttons->at(b).getBiquadPos().x > doorLimit+30 && !buttons->at(b).isWinner){
+                if(buttons->at(b).getBiquadPos().x > doorLimit+10 && !buttons->at(b).isWinner){
                     
                     buttons->at(b).isWinner = true;
                     buttons->at(b).printInfo();
@@ -145,6 +145,7 @@ public:
                 winners++;
         }
         if(!done&&winners == 6){
+            cout << "winners are:-------------"<<endl;
             for(int b = 0; b<buttons->size();b++){
                 if(buttons->at(b).isWinner)
                     buttons->at(b).printInfo();
