@@ -84,6 +84,7 @@ public:
     ofParameter<bool>idleB;
     
     ofParameter<bool>removeTicks;
+    ofParameter<bool>forceremoveTicks;
     
     ofParameter<bool>pauseTeam1;
     ofParameter<bool>pauseTeam2;

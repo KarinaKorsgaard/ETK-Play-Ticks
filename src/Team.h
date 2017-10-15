@@ -136,14 +136,16 @@ public:
         
     }
     
-    void removeOffTicks(){
+    void removeOffTicks(bool force = false){
         for(int i=0; i<buttons.size(); i++) {
-            if(!buttons[i].on){
-                buttons[i].isPlaying = false;
-                buttons[i].setPosition(buttons[i].getPos().x,-100);
-                co->numPresentButtons[teamId]--;
+            if(buttons[i].isPlaying){
+                if(!buttons[i].on || force){
+                    buttons[i].isPlaying = false;
+                    buttons[i].setPosition(buttons[i].getPos().x,-100);
+                    co->numPresentButtons[teamId]--;
+                    
+                }
             }
-           
         }
     }
     

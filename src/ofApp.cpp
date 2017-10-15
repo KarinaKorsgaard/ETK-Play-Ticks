@@ -187,7 +187,8 @@ void ofApp::setup(){
     physics.add(co.playSound.set("play sound",false));
     physics.add(co.sendAverageData.set("sendAverageData",false));
     
-    physics.add(co.removeTicks.set("Kill inactive ticks",false));
+    physics.add(co.removeTicks.set("try remove inactive ticks",false));
+    physics.add(co.forceremoveTicks.set("KILL all ticks",false));
     
     physics.add(co.attraction.set("attraction",1,0,2500));
     physics.add(co.fc.set("fc position",0.05,0.01,0.4));
@@ -364,6 +365,13 @@ void ofApp::update(){
         teams[1].removeOffTicks();
         
     }
+    if(co.forceremoveTicks){
+        co.forceremoveTicks=false;
+        teams[0].removeOffTicks(true);
+        teams[1].removeOffTicks(true);
+        
+    }
+    
     
 }
 
