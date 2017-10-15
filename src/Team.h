@@ -136,6 +136,17 @@ public:
         
     }
     
+    void removeOffTicks(){
+        for(int i=0; i<buttons.size(); i++) {
+            if(!buttons[i].on){
+                buttons[i].isPlaying = false;
+                buttons[i].setPosition(buttons[i].getPos().x,-100);
+                co->numPresentButtons[teamId]--;
+            }
+           
+        }
+    }
+    
     void update(){
         
         int s = co->sceneNumber;

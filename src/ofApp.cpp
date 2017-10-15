@@ -187,6 +187,8 @@ void ofApp::setup(){
     physics.add(co.playSound.set("play sound",false));
     physics.add(co.sendAverageData.set("sendAverageData",false));
     
+    physics.add(co.removeTicks.set("Kill inactive ticks",false));
+    
     physics.add(co.attraction.set("attraction",1,0,2500));
     physics.add(co.fc.set("fc position",0.05,0.01,0.4));
     
@@ -356,14 +358,19 @@ void ofApp::update(){
     
     box2d.update();
     
-    
+    if(co.removeTicks){
+        co.removeTicks=false;
+        teams[0].removeOffTicks();
+        teams[1].removeOffTicks();
+        
+    }
     
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     
-    
+
     if (co.sMap[co.sceneNumber] != "Idle" && co.sMap[co.sceneNumber] != "Ground" ){
         fboTeams[0].begin();
         ofClear(0);

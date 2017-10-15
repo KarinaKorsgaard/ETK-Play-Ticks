@@ -39,7 +39,7 @@ class ofApp : public ofBaseApp{
     
     Team teams[2];
     ofFbo fbo;
-    
+    int removeTicksCounter=0;
     ofFbo fboTeams[2];
     
     ofxSyphonServer syphon;

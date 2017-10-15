@@ -23,7 +23,7 @@ public:
     ofxBiquadFilter2f filterLowPass;
     float fc;
     
-    
+
     
     float px = 0.;
     float py = 0.;
@@ -190,7 +190,7 @@ public:
     
     void update(float attraction ,bool doubleSize = true, ofRectangle rect = ofRectangle(0,0, 1920,1080)){
         box2Dcircle->setVelocity(0,0);
-        
+
         if(isPlaying && !isDead()){
             
            // if(on){
