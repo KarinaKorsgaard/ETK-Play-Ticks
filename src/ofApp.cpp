@@ -140,7 +140,7 @@ void ofApp::setup(){
             scenes.add(p);
             b_scenes.push_back(p);
             co.sMap[i]=ofSplitString(name, "-")[1];
-            cout << co.sMap[i] << endl;
+           // cout << co.sMap[i] << endl;
             
         }else{
             break;
@@ -772,7 +772,7 @@ void ofApp::updateOsc(){
     // change scene by incoming OSC
     while(co.oscIn.hasWaitingMessages()){
         ofxOscMessage m;
-        cout <<"message:" + m.getAddress()<<endl;
+        //cout <<"message:" + m.getAddress()<<endl;
         co.oscIn.getNextMessage(m);
         if(m.getAddress() == "/next")
             b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size()-1)]=true;
@@ -953,8 +953,8 @@ void ofApp:: loadFromRestart(){
         
         teams[0].time = xml.getValue("team0time", 0);
         teams[1].time = xml.getValue("team1time", 0);
-        cout << teams[0].time << endl;
-        cout << xml.getValue("team0", 0)<< endl;
+       // cout << teams[0].time << endl;
+       // cout << xml.getValue("team0", 0)<< endl;
         
         co.numPresentButtons[0] = xml.getValue("numpeople0",0);
         co.numPresentButtons[1] = xml.getValue("numpeople1",0);
@@ -967,7 +967,7 @@ void ofApp:: loadFromRestart(){
                 
                 teams[u].buttons.at(i).isPlaying = xml.getValue(team+ofToString(i)+"isPlaying",b->isPlaying);
                 teams[u].buttons.at(i).symbolInt =CLAMP (xml.getValue(team+ofToString(i)+"symbol",0), 0, co.characterSymbols.size()-1);
-                cout <<"SYMBOL " <<teams[u].buttons.at(i).symbolInt << endl;
+               // cout <<"SYMBOL " <<teams[u].buttons.at(i).symbolInt << endl;
                 
                 teams[u].buttons.at(i).colorInt = xml.getValue(team+ofToString(i)+"color",0);
                 teams[u].buttons.at(i).isWinner = xml.getValue(team+ofToString(i)+"winner",0);
