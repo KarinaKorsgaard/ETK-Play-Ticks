@@ -14,6 +14,91 @@
 #include "ButtonData.h"
 #include "ofxAutoReloadedShader.h"
 
+class Ball{
+public:
+    ofVec2f pos = ofVec2f(1090,1080/2);
+    ofVec2f vel;
+    float radius = 40;
+    commonObjects * co;
+    
+    void update(ofRectangle rect1, ofVec2f v1, ofRectangle rect2, ofVec2f v2){
+        pos += vel;
+        
+        if(pos.x + radius>1920*2){
+            pos = ofVec2f(1920,1080/2);
+            vel*=-1;
+            co->tennisPoint[0]++;
+        }
+        if(pos.x - radius<0){
+            pos = ofVec2f(1920,1080/2);
+            vel*=-1;
+            co->tennisPoint[1]++;
+        }
+        
+        if(pos.y + radius>1080)vel.y*=-1;
+        if(pos.y - radius<0)vel.y*=-1;
+        
+        intersect(rect1, v1);
+        intersect(rect2, v2);
+
+    }
+    void draw(ofImage img){
+        img.draw(pos, radius*2, radius*2);
+        
+    }
+    void intersect(ofRectangle rect, ofVec2f velicity_pad){
+        // Find the closest point to the circle within the rectangle
+        
+                float closestX = CLAMP(pos.x, rect.x, rect.x+rect.width);
+                float closestY = CLAMP(pos.y, rect.y, rect.y + rect.height);
+        
+                // Calculate the distance between the circle's center and this closest point
+                float distanceX = pos.x - closestX;
+                float distanceY = pos.y - closestY;
+        
+                // If the distance is less than the circle's radius, an intersection occurs
+                float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+                bool intersecting = distanceSquared < (radius * radius);
+        
+        if(intersecting){
+           
+            vel.x*=-1;
+            
+            float distanceToCenter = vel.y - rect.getCenter().y;
+            vel.y += distanceToCenter*0.001*velicity_pad.length();
+            vel.x += std::copysign(distanceToCenter*0.0001,vel.x)*velicity_pad.length();
+        }
+
+        
+//        float closestX = CLAMP(_pos.x, rect.x, rect.x+rect.width);
+//        float closestY = CLAMP(_pos.y, rect.y, rect.y + rect.height);
+//
+//        // Calculate the distance between the circle's center and this closest point
+//        float distanceX = _pos.x - closestX;
+//        float distanceY = _pos.y - closestY;
+//
+//        // If the distance is less than the circle's radius, an intersection occurs
+//        float distanceSquared = (distanceX * distanceX) + (distanceY * distanceY);
+//        bool intersecting = distanceSquared < (rad * rad);
+//
+//        if(intersecting){
+//
+//            ofVec2f dist = ofVec2f(pos.x - closestX, pos.y - closestY);
+//
+//            if (vel.dot(dist) < 0) { //if circle is moving toward the rect
+//                float tangent_vel = dist.normalize().dot(vel);
+//                vel = vel - (tangent_vel*2);
+//                //cout << "something?" << endl;
+//            }
+//
+//            float penetrationDepth = radius - dist.length();
+//            ofVec2f penetrationVector = dist.getNormalized()*(penetrationDepth);
+//            pos = pos-(penetrationVector);
+//        }
+    }
+private:
+    
+};
 
 class ofApp : public ofBaseApp{
 
@@ -96,7 +181,7 @@ class ofApp : public ofBaseApp{
     }
     
     
-    shared_ptr<ofxBox2dCircle>fightBall;
+    
     ofImage fightBallImg;
     bool firstServe;
     
@@ -109,4 +194,9 @@ class ofApp : public ofBaseApp{
     ofImage scoreImgLost;
     ofImage scoreImgTie;
     vector<vector<string>>scoreMessages;
+    
+   // shared_ptr<ofxBox2dCircle>fightBall;
+    Ball fightBall;
 };
+
+

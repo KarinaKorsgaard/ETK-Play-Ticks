@@ -1,13 +1,25 @@
 <config>
+    
     <size_break_point>25</size_break_point>
+    
     <size_limit>50</size_limit>
+    
     <size>25</size>
+    
     <startValue>50</startValue>
+    
     <PORT>5000</PORT>
+    
     <NUM_TABLES>12</NUM_TABLES>
+    
     <BUTTONS_PR_TABLE>6</BUTTONS_PR_TABLE>
+    
     <PORT_OUT>4000</PORT_OUT>
+    
     <PORT_OUT_IP>localhost</PORT_OUT_IP>
     
+    
+    
     <PORT_IN>6000</PORT_IN>
+    
 </config>

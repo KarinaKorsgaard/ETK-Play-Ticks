@@ -281,6 +281,8 @@ void ofApp::setup(){
     teams[0].setupScenes();
     teams[1].setupScenes();
     
+    fightBall.co = &co;
+    
     loadFromRestart();
 }
 
@@ -337,24 +339,27 @@ void ofApp::update(){
         if(co.moveBall){
             co.moveBall = false;
             int ran = ofRandom(2)>1 ? -1 : 1;
-            fightBall->setVelocity(1*ran,0);
+            fightBall.vel = ofVec2f(1*ran,0);
         }
         if(co.startMovement){
             if (firstServe){
                 firstServe = false;
                 int serve = teams[0].time > teams[1].time ? 1 : -1;
                 int x = serve == 1 ? 1920/2 : 1920/2 + 1920;
-                fightBall.get()->setPosition(x, 1080/2);
-                fightBall.get()->setVelocity(5 * serve, 0);
+                fightBall.pos = ofVec2f(x, 1080/2);
+                fightBall.vel = ofVec2f(5 * serve, 0);
             }
             
-            ofVec2f v = fightBall->getVelocity();
-            v.y*=0.95;
-            v.normalize();
-            v*=co.ballSpeed;
-            fightBall->setVelocity(v);
-            fightBall->update();
+//            ofVec2f v = fightBall->getVelocity();
+//            v.y*=0.95;
+//            v.normalize();
+//            v*=co.ballSpeed;
+//            fightBall->setVelocity(v);
+//            fightBall->update();
         }
+        Fight * f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
+        Fight * f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);
+        fightBall.update(f1->pad_normal,f1->velocity_pad, f2->pad_normal,f2->velocity_pad);
     }
     
     box2d.update();
@@ -434,11 +439,11 @@ void ofApp::draw(){
     if(co.sMap[co.sceneNumber] == "Fight" && co.teamIsDone.size() == 0 && co.startScene){
         //fightBall->draw();
         ofPushMatrix();
-        ofTranslate(fightBall->getPosition());
-        ofRotateZ(fightBall->getRotation());
-        int r = fightBall->getRadius();
+//        ofTranslate(fightBall->getPosition());
+//        ofRotateZ(fightBall->getRotation());
+//        int r = fightBall->getRadius();
         ofSetColor(255);
-        fightBallImg.draw(-r,-r,r*2,r*2);
+        fightBall.draw(fightBallImg);
         ofPopMatrix();
     }
     
@@ -609,21 +614,21 @@ void ofApp::handleSceneChange(){
         
         if(co.sMap[co.sceneNumber] == "Fight"){
             fightBallImg.load("img/specialAssets/08_FightBall.png");
-            fightBall = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
-            fightBall.get()->setPhysics(10., 5., 10.0);
-            fightBall.get()->setup(box2d.getWorld(), 1920,1080/2 , 40);
-            fightBall.get()->alive = true;
+//            fightBall = shared_ptr<ofxBox2dCircle>(new ofxBox2dCircle);
+//            fightBall.get()->setPhysics(10., 5., 10.0);
+//            fightBall.get()->setup(box2d.getWorld(), 1920,1080/2 , 40);
+//            fightBall.get()->alive = true;
             
-            Fight * f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
-            Fight * f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);
+        //    Fight * f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
+         //   Fight * f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);
             
-            f1->ball = fightBall;
-            f2->ball = fightBall;
+          //  f1->ball = fightBall;
+          //  f2->ball = fightBall;
             
             firstServe = true;
             
         }else if(co.sMap[p_sceneNumber] == "Fight"){
-            fightBall->destroy();
+         //   fightBall->destroy();
             fightBallImg.clear();
         }
         
@@ -767,6 +772,7 @@ void ofApp::updateOsc(){
     // change scene by incoming OSC
     while(co.oscIn.hasWaitingMessages()){
         ofxOscMessage m;
+        cout <<"message:" + m.getAddress()<<endl;
         co.oscIn.getNextMessage(m);
         if(m.getAddress() == "/next")
             b_scenes[CLAMP(co.sceneNumber+1,0,b_scenes.size()-1)]=true;

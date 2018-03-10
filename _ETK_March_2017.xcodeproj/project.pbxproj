@@ -245,7 +245,6 @@
 		61084035F9BAD2E934415139 /* b2DynamicTree.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = b2DynamicTree.h; path = ../../../addons/ofxBox2d/libs/Box2D/Collision/b2DynamicTree.h; sourceTree = SOURCE_ROOT; };
 		61D086EE2A0E4D5226F21412 /* b2StackAllocator.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = b2StackAllocator.h; path = ../../../addons/ofxBox2d/libs/Box2D/Common/b2StackAllocator.h; sourceTree = SOURCE_ROOT; };
 		63A47AC60FFAFC3BF093EC0F /* OscOutboundPacketStream.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = OscOutboundPacketStream.cpp; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscOutboundPacketStream.cpp; sourceTree = SOURCE_ROOT; };
-		63A6DE8917910BA8F1C7CC40 /* Box2D.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = Box2D.h; path = ../../../addons/ofxBox2d/libs/Box2D/Box2D.h; sourceTree = SOURCE_ROOT; };
 		65EEFA3DA3526E9CDD9C21F9 /* ofxOscBundle.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxOscBundle.cpp; path = ../../../addons/ofxOsc/src/ofxOscBundle.cpp; sourceTree = SOURCE_ROOT; };
 		67E6103DC0F324FAEB33E3F5 /* b2Fixture.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = b2Fixture.h; path = ../../../addons/ofxBox2d/libs/Box2D/Dynamics/b2Fixture.h; sourceTree = SOURCE_ROOT; };
 		6A1DFAD3E6A60811ED69924F /* ofxBox2dEdge.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxBox2dEdge.cpp; path = ../../../addons/ofxBox2d/src/ofxBox2dEdge.cpp; sourceTree = SOURCE_ROOT; };
@@ -308,6 +307,7 @@
 		AF1A6A7D5CD5468B3F846A62 /* b2RopeJoint.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = b2RopeJoint.cpp; path = ../../../addons/ofxBox2d/libs/Box2D/Dynamics/Joints/b2RopeJoint.cpp; sourceTree = SOURCE_ROOT; };
 		B31C608870ECEB2490A93736 /* ofxOscParameterSync.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxOscParameterSync.h; path = ../../../addons/ofxOsc/src/ofxOscParameterSync.h; sourceTree = SOURCE_ROOT; };
 		B4BB2D6A3717A8F7F88D52CD /* b2MotorJoint.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = b2MotorJoint.cpp; path = ../../../addons/ofxBox2d/libs/Box2D/Dynamics/Joints/b2MotorJoint.cpp; sourceTree = SOURCE_ROOT; };
+		B601E4E72053143D00FFE4BC /* Box2D.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Box2D.h; path = ../../../addons/ofxBox2d/libs/Box2D/src/Box2D/Box2D.h; sourceTree = "<group>"; };
 		B75D46D6B41E78DF2B519A18 /* b2BroadPhase.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = b2BroadPhase.cpp; path = ../../../addons/ofxBox2d/libs/Box2D/Collision/b2BroadPhase.cpp; sourceTree = SOURCE_ROOT; };
 		B87C60311EC1FE841C1ECD89 /* ofxLabel.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxLabel.h; path = ../../../addons/ofxGui/src/ofxLabel.h; sourceTree = SOURCE_ROOT; };
 		BB9ACE76F509B35222388D94 /* b2ChainAndCircleContact.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = b2ChainAndCircleContact.h; path = ../../../addons/ofxBox2d/libs/Box2D/Dynamics/Contacts/b2ChainAndCircleContact.h; sourceTree = SOURCE_ROOT; };
@@ -401,7 +401,7 @@
 		0BE7E79EC87A4756E55789FB /* Box2D */ = {
 			isa = PBXGroup;
 			children = (
-				63A6DE8917910BA8F1C7CC40 /* Box2D.h */,
+				B601E4E72053143D00FFE4BC /* Box2D.h */,
 				5F73569ECAB65FF89185C254 /* Collision */,
 				E964BC1AC23EBD6ADA41DA1A /* Common */,
 				B950FBF3AE43D9EE9BC61FF5 /* Dynamics */,

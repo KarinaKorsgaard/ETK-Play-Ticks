@@ -18,6 +18,8 @@ public:
     shared_ptr<ofxBox2dRect>pad;
     shared_ptr<ofxBox2dCircle>ball;
     
+    ofRectangle pad_normal;
+
     ofImage padImg;
     
     int point ;
@@ -26,10 +28,12 @@ public:
     float ballTimer = 0;
     
     ofRectangle tennisCourt;
-    
+    ofVec2f velocity_pad;
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
         co = _co;
+        
+        pad_normal = ofRectangle(100,100,34, 363);
     }
     
     bool isDone(bool b = false){
@@ -42,34 +46,39 @@ public:
         
         if(!isDone() && co->startScene){
             // translate ball pos
-            int ballx = ball->getPosition().x;
-            ballx = teamNumber == 0 ? ballx : ofMap(ballx , 1920, 1920*2 , 1920, 0);
-
-            if(ballx < 100){
-                co->tennisPoint[-1*(teamNumber-1)] ++;
-                
-                ofxOscMessage m;
-                m.setAddress("/tennisPoint"+ofToString(teamNumber*-1+2));
-                m.addFloatArg(1.f);
-                co->oscOut.sendMessage(m);
-                
-                ball->setPosition(1920/2 + teamNumber * 1920, 1080/2);
-                ball->setVelocity(0, 0);
-                ballTimer = ofGetElapsedTimef();
-                ballTimerSet = false;
-            }
-            if(!ballTimerSet && ofGetElapsedTimef() - ballTimer > 3 ){
-                int xvel = teamNumber == 1 ? -5 : 5;
-                int randomUp = ofRandom(1) > 0.5 ? -1:1;
-                
-                ball->setVelocity(xvel, 5 * randomUp);
-                ballTimerSet=true;
-            }
-            
+//            int ballx = ball->getPosition().x;
+//            ballx = teamNumber == 0 ? ballx : ofMap(ballx , 1920, 1920*2 , 1920, 0);
+//
+//            if(ballx < 100){
+//                co->tennisPoint[-1*(teamNumber-1)] ++;
+//
+//                ofxOscMessage m;
+//                m.setAddress("/tennisPoint"+ofToString(teamNumber*-1+2));
+//                m.addFloatArg(1.f);
+//                co->oscOut.sendMessage(m);
+//
+//                ball->setPosition(1920/2 + teamNumber * 1920, 1080/2);
+//                ball->setVelocity(0, 0);
+//                ballTimer = ofGetElapsedTimef();
+//                ballTimerSet = false;
+//            }
+//            if(!ballTimerSet && ofGetElapsedTimef() - ballTimer > 3 ){
+//                int xvel = teamNumber == 1 ? -5 : 5;
+//                int randomUp = ofRandom(1) > 0.5 ? -1:1;
+//
+//                ball->setVelocity(xvel, 5 * randomUp);
+//                ballTimerSet=true;
+//            }
+//
             
             int front = teamNumber == 0 ? -1 : 1;
-            pad->setPosition( tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y);
             
+            velocity_pad = ofVec2f(pad_normal.getCenter());
+            //pad_normal.setFromCenter( ofPoint(ofGetMouseX(), ofGetMouseY()), pad_normal.width, pad_normal.height);
+            pad_normal.setFromCenter( ofPoint(tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y), pad_normal.width, pad_normal.height);
+            
+            velocity_pad-= ofVec2f(pad_normal.getCenter());
+        
             buttons->at(winButton).box2Dcircle->setPosition(
                                                buttons->at(winButton).getRawData().x*tennisCourt.width + tennisCourt.x,
                                                buttons->at(winButton).getRawData().y * tennisCourt.height + tennisCourt.y);
@@ -92,15 +101,20 @@ public:
         
         ofPushMatrix();
         
-        int x = pad->getPosition().x;
-        int y = pad->getPosition().y;
-        int w = pad->getWidth();
-        int h = pad->getHeight();
+//        int x = pad->getPosition().x;
+//        int y = pad->getPosition().y;
+//        int w = pad->getWidth();
+//        int h = pad->getHeight();
+
+        int x = pad_normal.x;
+        int y = pad_normal.y;
+        int w = pad_normal.width;
+        int h = pad_normal.height;
         
         ofTranslate(x,y);
         ofRotateZ(teamNumber * 180);
 
-        padImg.draw(-w/2,-h/2,w,h);
+        padImg.draw(0,0,w,h);
         ofPopMatrix();
         
         //lifebar
@@ -112,7 +126,7 @@ public:
         ofDrawRectangle(20 + 1920*teamNumber , 1080-40 ,MAX( left * ( 1880  / gameOverPoint ) , 0), 20);
         
         if(co->debug){
-            pad->draw();
+            ofDrawRectangle(pad_normal);
             buttons->at(winButton).drawDebug();
         }
     }
@@ -140,22 +154,22 @@ public:
         
         padImg.load("img/specialAssets/08_FightPad.png");
         
-        pad = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-        pad->setPhysics(0.,0.,0.);
-        pad->setup(world->getWorld(), 1920, 1080/2, padImg.getWidth(), padImg.getHeight());
-        pad->setFixedRotation(true);
-       
-        
-        if(teamNumber == 0)tennisCourt = ofRectangle( 880 , 120 , 2080 / 2 , 840 );
-        if(teamNumber == 1)tennisCourt = ofRectangle( 1920 , 120 , 2080 / 2 , 840 );
-        
+//        pad = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
+//        pad->setPhysics(0.,0.,0.);
+//        pad->setup(world->getWorld(), 1920, 1080/2, padImg.getWidth(), padImg.getHeight());
+//        pad->setFixedRotation(true);
+//
+//
+//        if(teamNumber == 0)tennisCourt = ofRectangle( 880 , 120 , 2080 / 2 , 840 );
+//        if(teamNumber == 1)tennisCourt = ofRectangle( 1920 , 120 , 2080 / 2 , 840 );
+//
         buttons->at(winButton).setPosition(tennisCourt.getCenter());
         int front = teamNumber == 0 ? 1 : -1;
         //pad->setPosition(buttons->at(winButton).getBiquadPos().x + 50 * front , buttons->at(winButton).getBiquadPos().y);
-        pad->setPosition( tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y);
-        pad.get()->setData(new RacketData());
-        RacketData * sd = (RacketData*)pad.get()->getData();
-        sd->teamID = teamNumber;
+       // pad->setPosition( tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y);
+       // pad.get()->setData(new RacketData());
+       // RacketData * sd = (RacketData*)pad.get()->getData();
+       // sd->teamID = teamNumber;
 
         if(teamNumber == 1){
             ofxSVG svg;
@@ -171,7 +185,7 @@ public:
         ballTimer = 0;
 
         
-        pad->destroy();
+       // pad->destroy();
         solidPolys.clear();
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
