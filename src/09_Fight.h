@@ -33,7 +33,7 @@ public:
         buttons = b;
         co = _co;
         
-        pad_normal = ofRectangle(100,100,34, 363);
+        pad_normal = ofRectangle(100,100,34,363);
     }
     
     bool isDone(bool b = false){
@@ -77,19 +77,21 @@ public:
             //pad_normal.setFromCenter( ofPoint(ofGetMouseX(), ofGetMouseY()), pad_normal.width, pad_normal.height);
             pad_normal.setFromCenter( ofPoint(tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y), pad_normal.width, pad_normal.height);
             
+            
             velocity_pad-= ofVec2f(pad_normal.getCenter());
         
-            buttons->at(winButton).box2Dcircle->setPosition(
-                                               buttons->at(winButton).getRawData().x*tennisCourt.width + tennisCourt.x,
-                                               buttons->at(winButton).getRawData().y * tennisCourt.height + tennisCourt.y);
-            buttons->at(winButton).filterLowPass.update(buttons->at(winButton).getPos());
-            buttons->at(winButton).setDirection(buttons->at(winButton).filterLowPass.value(), buttons->at(winButton).lastPos);
-            buttons->at(winButton).lastPos = buttons->at(winButton).filterLowPass.value();
-            //update(co->attraction, false , tennisCourt);
-        
+            buttons->at(winButton).update(co->attraction*1000);
+
+//            buttons->at(winButton).box2Dcircle->setPosition(
+//                                               buttons->at(winButton).getRawData().x*tennisCourt.width + tennisCourt.x,
+//                                               buttons->at(winButton).getRawData().y * tennisCourt.height + tennisCourt.y);
+//            buttons->at(winButton).filterLowPass.update(buttons->at(winButton).getPos());
+//            buttons->at(winButton).setDirection(buttons->at(winButton).filterLowPass.value(), buttons->at(winButton).lastPos);
+//            buttons->at(winButton).lastPos = buttons->at(winButton).filterLowPass.value();
+//            //update(co->attraction, false , tennisCourt);
+//        
 
         }
-        
 
     }
     
@@ -100,11 +102,6 @@ public:
         buttons->at(winButton).draw();
         
         ofPushMatrix();
-        
-//        int x = pad->getPosition().x;
-//        int y = pad->getPosition().y;
-//        int w = pad->getWidth();
-//        int h = pad->getHeight();
 
         int x = pad_normal.x;
         int y = pad_normal.y;
@@ -112,19 +109,11 @@ public:
         int h = pad_normal.height;
         
         ofTranslate(x,y);
-        ofRotateZ(teamNumber * 180);
+        //ofRotateZ(teamNumber * 180);
 
         padImg.draw(0,0,w,h);
         ofPopMatrix();
-        
-        //lifebar
-        ofNoFill();
-        ofDrawRectangle(20 + 1920*teamNumber , 1080-40, 1880 , 20);
-        ofFill();
-        int left = gameOverPoint - co->tennisPoint[teamNumber];
-        
-        ofDrawRectangle(20 + 1920*teamNumber , 1080-40 ,MAX( left * ( 1880  / gameOverPoint ) , 0), 20);
-        
+
         if(co->debug){
             ofDrawRectangle(pad_normal);
             buttons->at(winButton).drawDebug();
@@ -160,8 +149,8 @@ public:
 //        pad->setFixedRotation(true);
 //
 //
-//        if(teamNumber == 0)tennisCourt = ofRectangle( 880 , 120 , 2080 / 2 , 840 );
-//        if(teamNumber == 1)tennisCourt = ofRectangle( 1920 , 120 , 2080 / 2 , 840 );
+        if(teamNumber == 0)tennisCourt = ofRectangle( 880 , 120 , 2080 / 2 , 840 );
+        if(teamNumber == 1)tennisCourt = ofRectangle( 1920 , 120 , 2080 / 2 , 840 );
 //
         buttons->at(winButton).setPosition(tennisCourt.getCenter());
         int front = teamNumber == 0 ? 1 : -1;
@@ -171,12 +160,12 @@ public:
        // RacketData * sd = (RacketData*)pad.get()->getData();
        // sd->teamID = teamNumber;
 
-        if(teamNumber == 1){
-            ofxSVG svg;
-            svg.load("svg/09_Fight.svg");
-            solidPolys = getPolyline(svg);
-         //   cout << "FIGHT POLYS"<<solidPolys.size()<<endl;
-        }
+//        if(teamNumber == 1){
+//            ofxSVG svg;
+//            svg.load("svg/09_Fight.svg");
+//            solidPolys = getPolyline(svg);
+//         //   cout << "FIGHT POLYS"<<solidPolys.size()<<endl;
+//        }
         
     }
     

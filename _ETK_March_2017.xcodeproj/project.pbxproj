@@ -159,6 +159,8 @@
 		205C01CCE4351EE1038CED3A /* b2Rope.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = b2Rope.cpp; path = ../../../addons/ofxBox2d/libs/Box2D/Rope/b2Rope.cpp; sourceTree = SOURCE_ROOT; };
 		209BCEF79F286C9203801938 /* b2GearJoint.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = b2GearJoint.h; path = ../../../addons/ofxBox2d/libs/Box2D/Dynamics/Joints/b2GearJoint.h; sourceTree = SOURCE_ROOT; };
 		20F35AFADAF0068B067E713F /* OscReceivedElements.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = OscReceivedElements.h; path = ../../../addons/ofxOsc/libs/oscpack/src/osc/OscReceivedElements.h; sourceTree = SOURCE_ROOT; };
+		2104164C205403B4004C78B4 /* 100_looserTick.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = 100_looserTick.h; sourceTree = "<group>"; };
+		212DABD520553EA10016C6FA /* .clang-format */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ".clang-format"; sourceTree = "<group>"; };
 		21730EDB1F5FC0E800E50B4F /* winVideoDelay.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = winVideoDelay.txt; path = bin/data/winVideoDelay.txt; sourceTree = SOURCE_ROOT; };
 		2174A7B91F2E05EE0022C956 /* genericScene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = genericScene.h; sourceTree = "<group>"; };
 		2174A7BA1F2E1AE20022C956 /* Scene.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Scene.h; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 		21E6CA6B1E6D81DD00E0C55D /* svgtiny_internal.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = svgtiny_internal.h; sourceTree = "<group>"; };
 		21E6CA6C1E6D81DD00E0C55D /* svgtiny_list.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = svgtiny_list.cpp; sourceTree = "<group>"; };
 		21E6CA721E6DA18000E0C55D /* config.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = config.xml; path = bin/data/config.xml; sourceTree = SOURCE_ROOT; };
+		21F47F5D20540786001D45E9 /* restart.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = restart.xml; path = bin/data/restart.xml; sourceTree = SOURCE_ROOT; };
 		229CB9C8AF92D3460F8D554A /* ofxBox2d.cpp */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.cpp; fileEncoding = 30; name = ofxBox2d.cpp; path = ../../../addons/ofxBox2d/src/ofxBox2d.cpp; sourceTree = SOURCE_ROOT; };
 		22FDF81C4A468B788F424022 /* ofxTrueTypeFontUC.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = ofxTrueTypeFontUC.h; path = ../../../addons/ofxTrueTypeFontUC/src/ofxTrueTypeFontUC.h; sourceTree = SOURCE_ROOT; };
 		23640F57DF6C4BB6BFC5DA4C /* PacketListener.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.c.h; fileEncoding = 30; name = PacketListener.h; path = ../../../addons/ofxOsc/libs/oscpack/src/ip/PacketListener.h; sourceTree = SOURCE_ROOT; };
@@ -554,6 +557,7 @@
 				2174A7C11F30B2E00022C956 /* 09_Fight.h */,
 				21AE24EC1E6F5B5700150433 /* 10_Factories.h */,
 				21BAD9611F543A9E000D0C8B /* 10a_ReDesign.h */,
+				2104164C205403B4004C78B4 /* 100_looserTick.h */,
 				21A9BC8E1E7694CE005F90E3 /* 11_Cherades.h */,
 				2174A7BC1F305BE40022C956 /* 12_Ground.h */,
 				218283241F59599A0035E1B1 /* 13_Trial.h */,
@@ -956,6 +960,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				212DABD520553EA10016C6FA /* .clang-format */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
@@ -980,6 +985,7 @@
 				21730EDB1F5FC0E800E50B4F /* winVideoDelay.txt */,
 				21E6CA721E6DA18000E0C55D /* config.xml */,
 				21BAD9541F41DE04000D0C8B /* trail.frag */,
+				21F47F5D20540786001D45E9 /* restart.xml */,
 				21AE24E71E6EEB6D00150433 /* ButtonData.h */,
 				21E6CA741E6DB38300E0C55D /* scenes */,
 			);

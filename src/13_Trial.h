@@ -1,126 +1,113 @@
-#include "ofMain.h"
 #include "Scene.h"
+#include "ofMain.h"
 
-class Trial : public Scene{
-    
-public:
-    
+class Trial : public Scene {
+
+  public:
     bool done = false;
     int looserTick;
 
     int vote[2];
     ofPolyline votingAreas[2];
-    
-    void setup(commonObjects*_co, vector<Button>*b){
+
+    void setup(commonObjects *_co, vector<Button> *b) {
         buttons = b;
         co = _co;
     };
-    
-    
-    bool isDone(bool b = false){
-  
+
+    bool isDone(bool b = false) {
+
         vote[0] = 0;
         vote[1] = 0;
         int fullAmount = 0;
-        
-        for(int i=0; i<buttons->size(); i++) {
-            if (i != looserTick && buttons->at(i).isPlaying)
-            {
-                if (votingAreas[0].inside( buttons->at(i).getBiquadPos()))
+
+        for (int i = 0; i < buttons->size(); i++) {
+            if (i != looserTick && buttons->at(i).isPlaying) {
+                if (votingAreas[0].inside(buttons->at(i).getBiquadPos()))
                     vote[0]++;
-                else if (votingAreas[1].inside( buttons->at(i).getBiquadPos()))
+                else if (votingAreas[1].inside(buttons->at(i).getBiquadPos()))
                     vote[1]++;
-                
-                fullAmount ++;
+
+                fullAmount++;
             }
         }
-        
+
         done = false;
         if (vote[0] == fullAmount || vote[1] == fullAmount)
             done = true;
-        
+
         return done;
     };
-    
-    
-    void update(){
-        if(!done){
-            for(int i=0; i<buttons->size(); i++) {
+
+    void update() {
+        if (!done) {
+            for (int i = 0; i < buttons->size(); i++) {
                 if (i != looserTick)
                     buttons->at(i).update(co->attraction);
                 else
-                    buttons->at(i).setPosition(1920*teamNumber + 998 , 445);
+                    buttons->at(i).setPosition(1920 * teamNumber + 998, 445);
             }
-        }
-        else
-        {
+        } else {
             ofxOscMessage m;
             int s = vote[0] > vote[1] ? 1 : 0;
-            m.setAddress("/TrialTeamVote"+ofToString(teamNumber+1));
+            m.setAddress("/TrialTeamVote" + ofToString(teamNumber + 1));
             m.addIntArg(s);
             co->oscOut.sendMessage(m);
-        
         }
-        
+
         ofxOscMessage m;
-        m.setAddress("/TrialTeam"+ofToString(teamNumber+1));
-        m.addFloatArg(float(vote[0])/float(co->numPresentButtons[0]));
-        m.addFloatArg(float(vote[1])/float(co->numPresentButtons[1]));
+        m.setAddress("/TrialTeam" + ofToString(teamNumber + 1));
+        m.addFloatArg(float(vote[0]) / float(co->numPresentButtons[0]));
+        m.addFloatArg(float(vote[1]) / float(co->numPresentButtons[1]));
         co->oscOut.sendMessage(m);
     }
-    
-    
-    void draw(){
+
+    void draw() {
         ofSetColor(255);
-        for(int i=0; i<buttons->size(); i++) {
+        for (int i = 0; i < buttons->size(); i++) {
             buttons->at(i).draw();
-            if(co->debug){
+            if (co->debug) {
                 buttons->at(i).drawDebug();
             }
         }
     }
-    
-    
-    void begin(ofxBox2d * world = nullptr){
+
+    void begin(ofxBox2d *world = nullptr) {
         done = false;
         looserTick = -1;
-        vector<int>randomLooser;
-        for (int i = 0; i<buttons->size();i++){
-            if (buttons->at(i).isPlaying){
+        vector<int> randomLooser;
+        for (int i = 0; i < buttons->size(); i++) {
+            if (buttons->at(i).isPlaying) {
                 randomLooser.push_back(i);
-                if (buttons->at(i).isLooser){
+                if (buttons->at(i).isLooser) {
                     looserTick = i;
                 }
             }
         }
-        if(looserTick == -1){
-            int l = randomLooser.size() == 0 ? 0 : randomLooser[int(ofRandom(randomLooser.size()-1))];
+        if (looserTick == -1) {
+            int l = randomLooser.size() == 0
+                        ? 0
+                        : randomLooser[int(ofRandom(randomLooser.size() - 1))];
             looserTick = l;
         }
-        
+
         ofxSVG svg;
         svg.load("svg/13_Trial.svg");
-        vector<ofPolyline>p  = getPolyline(svg);
-        if (p.size()>1){
+        vector<ofPolyline> p = getPolyline(svg);
+        if (p.size() > 1) {
             int x1 = p[0].getCentroid2D().x;
             int x2 = p[1].getCentroid2D().x;
-            
-            if (x2 > x1){
+
+            if (x2 > x1) {
                 votingAreas[0] = p[0];
                 votingAreas[1] = p[1];
-            }
-            else
-            {
+            } else {
                 votingAreas[0] = p[1];
                 votingAreas[1] = p[0];
             }
-        }
-        else
-            cout << "something is wrong in the vote!"<< endl;
+        } else
+            cout << "something is wrong in the vote!" << endl;
     }
-    
-    
-    void reset(){
 
-    }
+    void reset() {}
 };

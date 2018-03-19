@@ -10,16 +10,16 @@
 #define ButtonData_h
 
 struct ButtonData {
-public:
-    int  buttonID;
-    int  teamID;
+  public:
+    int buttonID;
+    int teamID;
     bool bHit;
     bool isPlaying;
     float contactStart;
 };
 struct RacketData {
-public:
-    int  teamID;
+  public:
+    int teamID;
 };
 
 #endif /* ButtonData_h */

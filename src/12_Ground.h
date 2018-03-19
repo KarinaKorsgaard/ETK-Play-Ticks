@@ -1,38 +1,25 @@
-#include "ofMain.h"
 #include "Scene.h"
+#include "ofMain.h"
 
-class Ground : public Scene{
-    
-public:
+class Ground : public Scene {
 
-    void setup(commonObjects*_co, vector<Button>*b){
-        buttons = b;
-    };
-    
-    
+  public:
+    void setup(commonObjects *_co, vector<Button> *b) { buttons = b; };
+
     bool isDone(bool b = false){
 
     };
-    
-    
-    void update(){
 
-    }
-    
-    
-    void draw(){
+    void update() {}
+
+    void draw() {
         ofSetColor(255);
-        for(int i=0; i<buttons->size(); i++) {
+        for (int i = 0; i < buttons->size(); i++) {
             buttons->at(i).draw();
         }
     }
-    
-    
-    void begin(ofxBox2d * world = nullptr){
 
-    }
-    
-    
-    void reset(){
-    }
+    void begin(ofxBox2d *world = nullptr) {}
+
+    void reset() {}
 };

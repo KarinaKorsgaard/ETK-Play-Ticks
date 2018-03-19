@@ -17,11 +17,11 @@ float rand(in float y){
 }
 
 
-float circle(in vec2 _st, in vec2 _mask, float _r, float t , float border){
+float circle(in vec2 _st, in vec2 _mask, float _r, float t , float border) {
     float result = 0.;
     if (_st.x < border) {
         result = 0.;
-    }else {
+    } else {
         vec2 dist = _st-_mask;
         
         float radius = _r - t*_r;
