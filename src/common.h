@@ -18,7 +18,7 @@
 #include "button.h"
 #include "ofxSvg.h"
 #include "ofxTrueTypeFontUC.h"
-
+#include "ofxOsc.h"
 class commonObjects {
   public:
     ofParameter<bool> startMovement;
@@ -77,6 +77,7 @@ class commonObjects {
 
     ofParameter<bool> designDone1;
     ofParameter<bool> designDone2;
+    ofParameter<float>rotationSpeed;
 
     ofParameter<bool> idleA;
     ofParameter<bool> idleB;

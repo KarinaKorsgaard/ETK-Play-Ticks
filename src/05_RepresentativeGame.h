@@ -97,7 +97,7 @@ class Representative : public Scene {
                         doneFormation = false;
                 }
             }
-        }
+        } // doneFormation
 
         breakFormation = false;
 
@@ -147,8 +147,9 @@ class Representative : public Scene {
                 if (buttons->at(b).isWinner)
                     buttons->at(b).printInfo();
             }
+            done = true;
         }
-        done = winners == 6 ? true : false;
+        
     };
 
     void update() {

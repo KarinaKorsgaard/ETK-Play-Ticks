@@ -5,6 +5,7 @@ void ofApp::setup() {
 
     co.sceneNumber = 12;
     trailShader.load("trail");
+    looserShader.load("looserShader");
 
     scoreImgWon.load("img/mobile/defaultWon.png");
     scoreImgLost.load("img/mobile/defaultLost.png");
@@ -201,6 +202,7 @@ void ofApp::setup() {
     design.add(co.designDone1.set("team 1 ready", false));
     design.add(co.designDone2.set("team 2 ready", false));
     design.add(co.canCulpritMove.set("can culprit move", false));
+    design.add(co.rotationSpeed.set("rotationSpeed", 1., 0., 2.));
 
     gravity.setName("escalator and trail");
     gravity.add(co.moveBall.set("move ball", false));
@@ -388,7 +390,7 @@ void ofApp::draw() {
 
     ofSetColor(255);
     int w = 1920;
-    if (co.sMap[co.sceneNumber] == "Idle" || co.sMap[co.sceneNumber] == "Fight")
+    if (co.sMap[co.sceneNumber] == "Idle" || co.sMap[co.sceneNumber] == "Fight" || co.sMap[co.sceneNumber] == "LooserTick")
         w = 1920 * 2;
 
     if (co.background.isAllocated() && !co.debug) {
@@ -427,6 +429,37 @@ void ofApp::draw() {
         ofDrawRectangle(0, 0, 1920 * 2, 1080);
         trailShader.end();
     }
+    if (co.sMap[co.sceneNumber] == "LooserTick") {
+        LooserTick *l1 =
+        static_cast<LooserTick *>(teams[0].scenes[co.sMap[co.sceneNumber]]);
+        LooserTick *l2 =
+        static_cast<LooserTick *>(teams[1].scenes[co.sMap[co.sceneNumber]]);
+        
+        looserShader.begin();
+        looserShader.begin();
+        looserShader.setUniform2f("u_resolution", 1920 * 2, 1080);
+        looserShader.setUniform2f("u_mask1", l1->pos.x,l1->pos.y);
+        looserShader.setUniform2f("u_mask2", l2->pos.x,l2->pos.y);
+        
+        float r = 0.05;
+        looserShader.setUniform1f("u_radius1", r);
+        looserShader.setUniform1f("u_radius2", r);
+        
+        looserShader.setUniform1f("u_time", ofGetElapsedTimef());
+        ofSetColor(255);
+        ofFill();
+        ofDrawRectangle(0, 0, 1920 * 2, 1080);
+        
+        if(l1->pos.distance(l2->pos)<2*r*1920*2){
+            l1->setIsDone = true;
+            l2->setIsDone = true;
+            cout<<"winning looser"<< endl;
+        }
+        
+        
+        looserShader.end();
+    }
+    
     if (co.sMap[co.sceneNumber] == "Fight" && co.teamIsDone.size() == 0 &&
         co.startScene) {
         // fightBall->draw();
@@ -440,7 +473,8 @@ void ofApp::draw() {
     }
 
     if (co.sMap[co.sceneNumber] != "Idle" &&
-        co.sMap[co.sceneNumber] != "Ground") {
+        co.sMap[co.sceneNumber] != "Ground" &&
+        co.sMap[co.sceneNumber] != "LooserTick") {
         fboTeams[0].draw(0, 0);
         fboTeams[1].draw(1920, 0);
     } else {
@@ -912,6 +946,8 @@ void ofApp::restart() {
             xml.addValue(team + ofToString(i) + "isPlaying", b->isPlaying);
             xml.addValue(team + ofToString(i) + "symbol", b->symbolInt);
             xml.addValue(team + ofToString(i) + "color", b->colorInt);
+            xml.addValue(team + ofToString(i) + "designNumber",
+                         b->designNumber);
             xml.addValue(team + ofToString(i) + "winner", b->isWinner);
 
             xml.addValue(team + ofToString(i) + "xpos", b->getPos().x);
@@ -938,6 +974,7 @@ void ofApp::reset() {
             xml.addValue(team + ofToString(i) + "isPlaying", 0);
             xml.addValue(team + ofToString(i) + "symbol", 0);
             xml.addValue(team + ofToString(i) + "color", 0);
+            xml.addValue(team + ofToString(i) + "designNumber", 0);
             xml.addValue(team + ofToString(i) + "winner", 0);
 
             xml.addValue(team + ofToString(i) + "xpos", ofRandom(1920 * 2));
@@ -977,6 +1014,9 @@ void ofApp::loadFromRestart() {
 
                 teams[u].buttons.at(i).colorInt =
                     xml.getValue(team + ofToString(i) + "color", 0);
+                teams[u].buttons.at(i).designNumber =
+                    xml.getValue(team + ofToString(i) + "designNumber", 0);
+
                 teams[u].buttons.at(i).isWinner =
                     xml.getValue(team + ofToString(i) + "winner", 0);
 

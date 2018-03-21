@@ -83,21 +83,16 @@ class ReDesign : public Scene {
                 ofVec3f data = buttons->at(i).getRawData();
 
                 float delta_rotation = buttons->at(i).getRotationDelta();
-                if (delta_rotation < -6)
+                if (abs(delta_rotation) > 5)
                     delta_rotation = 0;
-                if (delta_rotation > 6)
-                    delta_rotation = 0;
-
-                buttons->at(i).designNumber += delta_rotation;
-
-                // if(ofGetFrameNum()%20==0 && numPlayers>2 && i==0) cout
-                // <<"numplayer:
-                // "<<numPlayers<< " maxColor: "<< maxColors << " maxSymbol: "
-                // << maxSymbols<< endl;
-
-                if (buttons->at(i).designNumber >
-                    minColors * maxSymbols + howManyGetsMore)
+                
+                buttons->at(i).designNumber += delta_rotation*co->rotationSpeed;
+                if(buttons->at(i).designNumber<0)
+                    buttons->at(i).designNumber=(minColors * maxSymbols + howManyGetsMore);
+                
+                if (buttons->at(i).designNumber > minColors * maxSymbols + howManyGetsMore)
                     buttons->at(i).designNumber = 0;
+
 
                 int dn = buttons->at(i).designNumber;
 

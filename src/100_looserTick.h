@@ -21,6 +21,8 @@ public:
     int looser ;
     ofImage forGround;
     bool done;
+    ofVec2f pos;
+    bool setIsDone;
     
     void setup(commonObjects*_co, vector<Button>*b){
         buttons = b;
@@ -29,20 +31,23 @@ public:
     
     
     bool isDone(bool b = false) {
-        done = true;
+        return setIsDone;
     };
     
     void update(){
-        buttons->at(looser).update(co->attraction);
+        if(!setIsDone){
+            buttons->at(looser).update(co->attraction, false, ofRectangle(0, 0, 1920*2, 1080));
+            pos = buttons->at(looser).getBiquadPos();
+        }
     }
     
     void draw(){
         buttons->at(looser).draw();
-        if(forGround.isAllocated())forGround.draw(teamNumber * 1920 , 0 , 1920 , 1080);
+        if(teamNumber==0)if(forGround.isAllocated())forGround.draw(0 , 0 , 1920 * 2, 1080);
     };
     
     void begin(ofxBox2d * world = nullptr){
-        
+        setIsDone = false;
         forGround.load("img/specialAssets/100_LooserTickForGround.png");
         
         looser = -1;

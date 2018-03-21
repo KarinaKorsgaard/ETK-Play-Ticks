@@ -182,7 +182,7 @@ class Button {
     void set(float _x, float _y, float _r) {
         x = CLAMP(_x, 0, 2);
         y = CLAMP(_y, 0, 1);
-        delta_r = _r - r_raw;
+        delta_r = r_raw - _r;
         r_raw = _r;
     }
 

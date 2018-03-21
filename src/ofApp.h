@@ -117,6 +117,7 @@ class ofApp : public ofBaseApp {
     commonFunctions cc;
 
     ofxAutoReloadedShader trailShader;
+    ofxAutoReloadedShader looserShader;
 
     ofxBox2d box2d;
     void contactStart(ofxBox2dContactArgs &e);
