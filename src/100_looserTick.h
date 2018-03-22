@@ -66,15 +66,32 @@ public:
         if(looser == -1){
             int l = randomLooser.size() == 0 ? 0 : randomLooser[int(ofRandom(randomLooser.size()-1))];
             looser = l;
+            cout << looser << " the looser was not found is looser from "<<teamNumber<< endl;
         }
         
         
-        cout << looser << " the looser was not found is looser from "<<teamNumber<< endl;
+       
+        
+        ofxSVG svg;
+        svg.load("svg/100_looserTick.svg");
+        solidPolys = getPolyline(svg, true);
+        
+        for (int i = 0; i < buttons->size(); i++) {
+            buttons->at(i).box2Dcircle->alive = false;
+           
+        }
+        buttons->at(looser).box2Dcircle->alive = true;
+        buttons->at(looser).setPosition(1920/2 + 1920*teamNumber, 1080/2);
     };
     
     void reset(){
         looser = -1;
         forGround.clear();
+        
+        for (int i = 0; i < buttons->size(); i++) {
+            buttons->at(i).box2Dcircle->alive = true;
+        }
+    
     };
   
     

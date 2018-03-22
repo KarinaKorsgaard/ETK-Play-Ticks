@@ -450,7 +450,7 @@ void ofApp::draw() {
         ofFill();
         ofDrawRectangle(0, 0, 1920 * 2, 1080);
         
-        if(l1->pos.distance(l2->pos)<2*r*1920*2){
+        if(l1->pos.distance(l2->pos)<50*2){
             l1->setIsDone = true;
             l2->setIsDone = true;
             cout<<"winning looser"<< endl;
