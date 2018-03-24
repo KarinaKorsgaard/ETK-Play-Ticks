@@ -74,6 +74,7 @@ class commonObjects {
 
     ofParameter<bool> marketDone1;
     ofParameter<bool> marketDone2;
+    ofParameter<float> looserRadius;
 
     ofParameter<bool> designDone1;
     ofParameter<bool> designDone2;

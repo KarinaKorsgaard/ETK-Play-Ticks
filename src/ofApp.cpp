@@ -228,6 +228,7 @@ void ofApp::setup() {
     market.setName("factories");
     market.add(co.marketDone1.set("finish market 1", false));
     market.add(co.marketDone2.set("finish market 2", false));
+    market.add(co.looserRadius.set("looser radius",0.1,0.,.1));
 
     charades.setName("charades");
     charades.add(co.idleA.set("a is done", false));
@@ -440,12 +441,9 @@ void ofApp::draw() {
         looserShader.setUniform2f("u_resolution", 1920 * 2, 1080);
         looserShader.setUniform2f("u_mask1", l1->pos.x,l1->pos.y);
         looserShader.setUniform2f("u_mask2", l2->pos.x,l2->pos.y);
-        
-        float r = 0.05;
-        looserShader.setUniform1f("u_radius1", r);
-        looserShader.setUniform1f("u_radius2", r);
-        
+        looserShader.setUniform1f("u_radius", co.looserRadius);
         looserShader.setUniform1f("u_time", ofGetElapsedTimef());
+        
         ofSetColor(255);
         ofFill();
         ofDrawRectangle(0, 0, 1920 * 2, 1080);

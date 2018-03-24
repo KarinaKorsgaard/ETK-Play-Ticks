@@ -6,8 +6,8 @@ uniform sampler2D tex;
 uniform vec2 u_mask1;
 uniform vec2 u_mask2;
 uniform vec2 u_resolution;
-uniform float u_radius1;
-uniform float u_radius2;
+uniform float u_radius;
+
 uniform float u_time;
 
 float rand(in float y){
@@ -37,9 +37,9 @@ void main (void) {
     
     vec4 color = texture2D(tex,gl_FragCoord.xy/u_resolution.xy);
     
-    float c1 = circle(uv, u_mask1/u_resolution.xx, u_radius1 + abs(sin(u_time*2.5))*0.001, 0.4 , 0.);
+    float c1 = circle(uv, u_mask1/u_resolution.xx, u_radius + abs(sin(u_time*2.5))*u_radius*0.05, 0.4 , 0.);
     //c1 = u_radius1 > 0. ? c1 : 0.;
-    float c2 = circle(uv, u_mask2/u_resolution.xx, u_radius2 + abs(sin(u_time*2.5))*0.001, 0.4, 0.5);
+    float c2 = circle(uv, u_mask2/u_resolution.xx, u_radius + abs(sin(u_time*2.5))*u_radius*0.05, 0.4, 0.5);
     //c2 = u_radius2 > 0. ? c2 : 0.;
     //float c3 = circle(uv, u_beginLight1/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2, 0.);
     //float c4 = circle(uv, u_beginLight2/u_resolution.xx, 0.001 + abs(sin(u_time))*0.001 , 0.2, 0.5);
