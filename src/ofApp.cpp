@@ -430,6 +430,9 @@ void ofApp::draw() {
         ofDrawRectangle(0, 0, 1920 * 2, 1080);
         trailShader.end();
     }
+ //   if (co.sMap[co.sceneNumber] == "Factories") {
+ //       if(teams[0].isDone)teams[0].
+ //   }
     if (co.sMap[co.sceneNumber] == "LooserTick") {
         LooserTick *l1 =
         static_cast<LooserTick *>(teams[0].scenes[co.sMap[co.sceneNumber]]);

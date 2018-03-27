@@ -74,7 +74,7 @@ public:
         
         ofxSVG svg;
         svg.load("svg/100_looserTick.svg");
-        solidPolys = getPolyline(svg, true);
+        if(teamNumber == 0)solidPolys = getPolyline(svg, true);
         
         for (int i = 0; i < buttons->size(); i++) {
             buttons->at(i).box2Dcircle->alive = false;
