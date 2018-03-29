@@ -285,7 +285,7 @@ class commonFunctions {
             int w = doble ? 1919 * 2 : 1919;
             if (lines[0].getBoundingBox().width < w ||
                 lines[0].getBoundingBox().height < 1079)
-                polys.push_back(lines[0]);
+                if(lines[0].getVertices().size()>3)polys.push_back(lines[0]);
         }
         return polys;
     }

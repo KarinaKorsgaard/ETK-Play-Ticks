@@ -368,8 +368,7 @@ class Team {
         if (polyShapes.size() == 0) {
             for (int i = 0; i < polys.size(); i++) {
                 ofRectangle r = polys[i].getBoundingBox();
-                if (polys[i].getVertices().size() > 3 &&
-                    (r.width < 1900 || r.height < 1070)) {
+                if (polys[i].getVertices().size() > 3 ) {
 
                     shared_ptr<ofxBox2dPolygon> poly =
                         shared_ptr<ofxBox2dPolygon>(new ofxBox2dPolygon);

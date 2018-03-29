@@ -70,12 +70,6 @@ public:
         }
         
         
-       
-        
-        ofxSVG svg;
-        svg.load("svg/100_looserTick.svg");
-        if(teamNumber == 0)solidPolys = getPolyline(svg, true);
-        
         for (int i = 0; i < buttons->size(); i++) {
             buttons->at(i).box2Dcircle->alive = false;
            
@@ -83,15 +77,32 @@ public:
         buttons->at(looser).box2Dcircle->alive = true;
         int xbegin = teamNumber == 0 ? 20: 3820;
         buttons->at(looser).setPosition(xbegin, 1080/2);
+        
+        if(teamNumber == 0){
+            ofxSVG svg;
+            svg.load("svg/100_looserTick.svg");
+            solidPolys = getPolyline(svg, true);
+            
+            cout << "LOOSER"<<endl;
+            cout <<"size "<<solidPolys.size()<<endl;
+            
+            for(int i = 0; i<solidPolys.size();i++){
+                
+                
+                cout<<solidPolys[i].getVertices().size()<<endl;
+            }
+        }
     };
     
     void reset(){
         looser = -1;
         forGround.clear();
+        solidPolys.clear();
         
         for (int i = 0; i < buttons->size(); i++) {
             buttons->at(i).box2Dcircle->alive = true;
         }
+        
     
     };
   
