@@ -81,7 +81,8 @@ public:
            
         }
         buttons->at(looser).box2Dcircle->alive = true;
-        buttons->at(looser).setPosition(1920/2 + 1920*teamNumber, 1080/2);
+        int xbegin = teamNumber == 0 ? 20: 3820;
+        buttons->at(looser).setPosition(xbegin, 1080/2);
     };
     
     void reset(){
