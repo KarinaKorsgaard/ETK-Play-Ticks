@@ -20,28 +20,44 @@ class Ball {
     ofVec2f vel;
     float radius = 40;
     commonObjects *co;
-
+    bool goal = false;
+    double goalTimer = 0.0;
+    
     void update(ofRectangle rect1, ofVec2f v1, ofRectangle rect2, ofVec2f v2) {
-        pos += vel;
+        if(!goal) {
+            pos += vel;
+            
+            if (pos.y + radius > 1080)
+                vel.y *= -1;
+            if (pos.y - radius < 0)
+                vel.y *= -1;
+            
+            intersect(rect1, v1);
+            intersect(rect2, v2);
+        }
 
         if (pos.x + radius > 1920 * 2) {
             pos = ofVec2f(1920, 1080 / 2);
-            vel *= -1;
+            goal = true;
             co->tennisPoint[0]++;
         }
         if (pos.x - radius < 0) {
             pos = ofVec2f(1920, 1080 / 2);
-            vel *= -1;
+            goal = true;
             co->tennisPoint[1]++;
         }
 
-        if (pos.y + radius > 1080)
-            vel.y *= -1;
-        if (pos.y - radius < 0)
-            vel.y *= -1;
-
-        intersect(rect1, v1);
-        intersect(rect2, v2);
+        if(goal) {
+            goalTimer+=ofGetLastFrameTime();
+            cout << goalTimer << endl;
+            if(goalTimer > 2.) {
+                vel *= -1;
+                goal = false;
+                goalTimer = 0.0;
+            }
+        }
+        
+        
     }
     void draw(ofImage img) {
         img.draw(pos - ofVec2f(radius, radius), radius * 2, radius * 2);

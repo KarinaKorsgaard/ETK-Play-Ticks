@@ -45,51 +45,14 @@ public:
 
         
         if(!isDone() && co->startScene){
-            // translate ball pos
-//            int ballx = ball->getPosition().x;
-//            ballx = teamNumber == 0 ? ballx : ofMap(ballx , 1920, 1920*2 , 1920, 0);
-//
-//            if(ballx < 100){
-//                co->tennisPoint[-1*(teamNumber-1)] ++;
-//
-//                ofxOscMessage m;
-//                m.setAddress("/tennisPoint"+ofToString(teamNumber*-1+2));
-//                m.addFloatArg(1.f);
-//                co->oscOut.sendMessage(m);
-//
-//                ball->setPosition(1920/2 + teamNumber * 1920, 1080/2);
-//                ball->setVelocity(0, 0);
-//                ballTimer = ofGetElapsedTimef();
-//                ballTimerSet = false;
-//            }
-//            if(!ballTimerSet && ofGetElapsedTimef() - ballTimer > 3 ){
-//                int xvel = teamNumber == 1 ? -5 : 5;
-//                int randomUp = ofRandom(1) > 0.5 ? -1:1;
-//
-//                ball->setVelocity(xvel, 5 * randomUp);
-//                ballTimerSet=true;
-//            }
-//
+
             
             int front = teamNumber == 0 ? -1 : 1;
-            
             velocity_pad = ofVec2f(pad_normal.getCenter());
-            //pad_normal.setFromCenter( ofPoint(ofGetMouseX(), ofGetMouseY()), pad_normal.width, pad_normal.height);
             pad_normal.setFromCenter( ofPoint(tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y), pad_normal.width, pad_normal.height);
-            
-            
             velocity_pad-= ofVec2f(pad_normal.getCenter());
         
             buttons->at(winButton).update(co->attraction*1000);
-
-//            buttons->at(winButton).box2Dcircle->setPosition(
-//                                               buttons->at(winButton).getRawData().x*tennisCourt.width + tennisCourt.x,
-//                                               buttons->at(winButton).getRawData().y * tennisCourt.height + tennisCourt.y);
-//            buttons->at(winButton).filterLowPass.update(buttons->at(winButton).getPos());
-//            buttons->at(winButton).setDirection(buttons->at(winButton).filterLowPass.value(), buttons->at(winButton).lastPos);
-//            buttons->at(winButton).lastPos = buttons->at(winButton).filterLowPass.value();
-//            //update(co->attraction, false , tennisCourt);
-//        
 
         }
 
@@ -142,30 +105,13 @@ public:
         }
         
         padImg.load("img/specialAssets/08_FightPad.png");
-        
-//        pad = shared_ptr<ofxBox2dRect>(new ofxBox2dRect);
-//        pad->setPhysics(0.,0.,0.);
-//        pad->setup(world->getWorld(), 1920, 1080/2, padImg.getWidth(), padImg.getHeight());
-//        pad->setFixedRotation(true);
-//
-//
+
         if(teamNumber == 0)tennisCourt = ofRectangle( 880 , 120 , 2080 / 2 , 840 );
         if(teamNumber == 1)tennisCourt = ofRectangle( 1920 , 120 , 2080 / 2 , 840 );
 //
         buttons->at(winButton).setPosition(tennisCourt.getCenter());
         int front = teamNumber == 0 ? 1 : -1;
-        //pad->setPosition(buttons->at(winButton).getBiquadPos().x + 50 * front , buttons->at(winButton).getBiquadPos().y);
-       // pad->setPosition( tennisCourt.x + teamNumber * tennisCourt.width, buttons->at(winButton).getBiquadPos().y);
-       // pad.get()->setData(new RacketData());
-       // RacketData * sd = (RacketData*)pad.get()->getData();
-       // sd->teamID = teamNumber;
 
-//        if(teamNumber == 1){
-//            ofxSVG svg;
-//            svg.load("svg/09_Fight.svg");
-//            solidPolys = getPolyline(svg);
-//         //   cout << "FIGHT POLYS"<<solidPolys.size()<<endl;
-//        }
         
     }
     
@@ -175,7 +121,7 @@ public:
 
         
        // pad->destroy();
-        solidPolys.clear();
+       // solidPolys.clear();
         for(int i=0; i<buttons->size(); i++) {
             buttons->at(i).isWinner = false;
         }

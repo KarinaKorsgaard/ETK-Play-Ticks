@@ -74,12 +74,12 @@ class Design : public Scene {
     }
 
     void update() {
-        if (co->startScene) {
-            if (countDown > 0 && !done)
-                countDown -= ofGetLastFrameTime();
-            else
-                countDown = 0;
-        }
+//        if (co->startScene) {
+//            if (countDown > 0 && !done)
+//                countDown -= ofGetLastFrameTime();
+//            else
+//                countDown = 0;
+//        }
         if (!done) {
             int c = colors.size();
             int s = co->characterSymbols.size();
@@ -113,7 +113,7 @@ class Design : public Scene {
 
                 int dn = buttons->at(i).designNumber;
               //  if(buttons->at(i).isPlaying)cout<<dn<<"max: "<<minColors * maxSymbols + howManyGetsMore<<endl;
-                int x = dn / MAX(maxSymbols, 1);
+                int x =CLAMP(dn / MAX(maxSymbols, 1), 0, colors.size()-1);
 
                 int y = dn - x * maxSymbols;
 
@@ -184,7 +184,7 @@ class Design : public Scene {
     }
 
     void begin(ofxBox2d *world = nullptr) {
-        countDown = 5 * 60;
+     //   countDown = 5 * 60;
         co->designDone1 = false;
         co->designDone2 = false;
 

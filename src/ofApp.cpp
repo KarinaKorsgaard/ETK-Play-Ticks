@@ -341,13 +341,6 @@ void ofApp::update() {
                 fightBall.pos = ofVec2f(x, 1080 / 2);
                 fightBall.vel = ofVec2f(5 * serve, 0);
             }
-
-            //            ofVec2f v = fightBall->getVelocity();
-            //            v.y*=0.95;
-            //            v.normalize();
-            //            v*=co.ballSpeed;
-            //            fightBall->setVelocity(v);
-            //            fightBall->update();
         }
         Fight *f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
         Fight *f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);

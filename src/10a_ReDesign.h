@@ -96,7 +96,7 @@ class ReDesign : public Scene {
 
                 int dn = buttons->at(i).designNumber;
 
-                int x = dn / MAX(maxSymbols, 1);
+                int x =CLAMP(dn / MAX(maxSymbols, 1), 0, colors.size()-1);
 
                 int y = dn - x * maxSymbols;
 
