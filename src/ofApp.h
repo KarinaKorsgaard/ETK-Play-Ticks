@@ -92,7 +92,7 @@ class Ball {
             m.addFloatArg(1.f);
             co->oscOut.sendMessage(m);
 
-            vel.x *= -1*co.ballSpeed;
+            vel.x *= -1*co->ballSpeed;
 
             float distanceToCenter = vel.y - rect.getCenter().y;
             vel.y += distanceToCenter * 0.001 * velicity_pad.length();
