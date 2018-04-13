@@ -205,8 +205,8 @@ void ofApp::setup() {
     design.add(co.rotationSpeed.set("rotationSpeed", 1., 0., 2.));
 
     gravity.setName("escalator and trail");
-    gravity.add(co.moveBall.set("move ball", false));
-    gravity.add(co.ballSpeed.set("ball speeed", 15., 0., 30.));
+    //gravity.add(co.moveBall.set("move ball", false));
+    gravity.add(co.ballSpeed.set("ball speeed", 1., 0., 3.));
     gravity.add(co.gravity.set("gravity", 1, 0, 50));
     gravity.add(co.escalatorSpeed.set("escalator speed", 1., 0., 1.));
     gravity.add(co.maxTrailRadius.set("maxTrailRadius", 0.001, 0., 0.05));
@@ -860,7 +860,7 @@ void ofApp::updateOsc() {
                         z = CLAMP(z, 0.0, 2.f * PI);
 
                         b->set(x, y, z);
-
+                        
                         if (b->on && !b->isPlaying) {
                             b->isPlaying = true;
                             ButtonData *bd =

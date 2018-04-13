@@ -210,10 +210,10 @@ class Fences : public Scene {
 
         svg.load("svg/08_EscalatorMoving.svg");
         movingPolys = getPolyline(svg);
-
+        cout<<"fences_moving " << movingPolys.size()<< endl;
         svg.load("svg/08_EscalatorSolids.svg");
         solidPolys = getPolyline(svg);
-
+        cout<<"fences_solid " << solidPolys.size()<< endl;
         theWinner = -1;
 
         // world->setGravity(0,co->gravity);
@@ -225,6 +225,7 @@ class Fences : public Scene {
 
         svg.load("svg/08_EscalatorPits.svg");
         pitPolys = getPolyline(svg);
+        cout<<"fences_pits " << pitPolys.size()<< endl;
         // cout << "PITPOLYS "<< pitPolys.size()<<endl;
 
         vector<int> rTickOrder;

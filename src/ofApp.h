@@ -27,10 +27,14 @@ class Ball {
         if(!goal) {
             pos += vel;
             
-            if (pos.y + radius > 1080)
+            if (pos.y + radius > 1080) {
                 vel.y *= -1;
-            if (pos.y - radius < 0)
+                // vel.x = 0.;
+            }
+            if (pos.y - radius < 0) {
                 vel.y *= -1;
+                // vel.x = 0.;
+            }
             
             intersect(rect1, v1);
             intersect(rect2, v2);
@@ -49,7 +53,7 @@ class Ball {
 
         if(goal) {
             goalTimer+=ofGetLastFrameTime();
-            cout << goalTimer << endl;
+            //cout << goalTimer << endl;
             if(goalTimer > 2.) {
                 vel *= -1;
                 goal = false;
@@ -88,7 +92,7 @@ class Ball {
             m.addFloatArg(1.f);
             co->oscOut.sendMessage(m);
 
-            vel.x *= -1;
+            vel.x *= -1*co.ballSpeed;
 
             float distanceToCenter = vel.y - rect.getCenter().y;
             vel.y += distanceToCenter * 0.001 * velicity_pad.length();
