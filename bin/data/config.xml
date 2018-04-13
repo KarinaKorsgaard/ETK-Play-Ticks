@@ -8,7 +8,7 @@
     
     <startValue>50</startValue>
     
-    <PORT>5000</PORT>
+    <PORT>8000</PORT>
     
     <NUM_TABLES>12</NUM_TABLES>
     
