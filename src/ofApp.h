@@ -61,7 +61,7 @@ class Ball {
             }
         }
         
-        
+        if(vel.length()>co->ballSpeed)vel*=0.99;
     }
     void draw(ofImage img) {
         img.draw(pos - ofVec2f(radius, radius), radius * 2, radius * 2);
@@ -92,12 +92,12 @@ class Ball {
             m.addFloatArg(1.f);
             co->oscOut.sendMessage(m);
 
-            vel.x *= -1*co->ballSpeed;
+            vel.x *= -1;
 
             float distanceToCenter = vel.y - rect.getCenter().y;
-            vel.y += distanceToCenter * 0.001 * velicity_pad.length();
+            vel.y += distanceToCenter * 0.01 * velicity_pad.length();
 
-            vel.x += std::copysign(distanceToCenter * 0.0001, vel.x) *
+            vel.x += std::copysign(distanceToCenter * 0.001, vel.x) *
                      velicity_pad.length();
         }
     }

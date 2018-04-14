@@ -18,6 +18,7 @@ class Basket {
     int amountOfDots = 0;
     vector<Button> buttons;
     int numSymbolsPresent, numColorsPresent;
+    
 
     void setup(ofPolyline p, int _slots) {
         poly = p;
@@ -113,6 +114,9 @@ class Factories : public Scene {
     vector<bool> empolyedTicks;
 
     bool done = false;
+    bool donedone = false;
+    ofImage cage;
+    float cageTransparency = 0;
     ofImage overlay;
     int looserId;
     void setup(commonObjects *_co, vector<Button> *b) {
@@ -122,14 +126,26 @@ class Factories : public Scene {
 
     bool isDone(bool b = false) {
         done = true;
+        
         for (int i = 0; i < baskets.size(); i++)
             if (!baskets[i].bucketIsFull)
                 done = false;
-        if (b)
-            done = b;
         if (baskets.size() == 0)
             done = false;
-        return done;
+        
+        if(done && !donedone && cageTransparency > 250) {
+            ofVec2f m = ofVec2f(1920/2,1080/2);
+            ofVec2f l = buttons->at(looserId).getBiquadPos();
+            float maxDist = cage.getWidth()/2 - buttons->at(looserId).radius;
+            donedone = l.distance(m) < maxDist;
+        }
+        
+        if (b) {
+            done = b;
+            donedone = b;
+        }
+        
+        return donedone;
     };
 
     void update() {
@@ -141,6 +157,10 @@ class Factories : public Scene {
             for (int i = 0; i < buttons->size(); i++) {
                 buttons->at(i).update(co->attraction);
             }
+        }
+        else if(!donedone) {
+            cageTransparency = MIN(cageTransparency+ofGetLastFrameTime()*225, 255);
+            buttons->at(looserId).update(co->attraction);
         }
         //   cout << looserId << "is looser team "<< teamNumber << " from
         //   factories"<< endl;
@@ -194,6 +214,11 @@ class Factories : public Scene {
         }
         ofSetColor(255);
         overlay.draw(teamNumber * 1920, 0, 1920, 1080);
+        
+        if(done) {
+            ofSetColor(255, cageTransparency);
+            cage.draw(1920/2-cage.getWidth()/2, 1080/2-cage.getHeight()/2);
+        }
     };
 
     void begin(ofxBox2d *world = nullptr) {
@@ -207,6 +232,8 @@ class Factories : public Scene {
 
         overlay.load("img/specialAssets/09_FactoriesOverlay.png");
 
+        cage.load("img/specialAssets/09_FactoriesCage.png");
+        
         int X = co->numPresentButtons[teamNumber];
         int F = max(co->lookUp[X][0], co->lookUp[X][1]);
         int FsTotal = X - 1;
@@ -247,7 +274,8 @@ class Factories : public Scene {
         cout << "slots" << slotsTotal << " peoplpe: " << X << endl;
         co->marketDone1 = false;
         co->marketDone2 = false;
-
+        donedone = false;
+        cageTransparency = 0.0;
         empolyedTicks.resize(36);
 
         for (int i = 0; i < buttons->size(); i++) {
@@ -262,7 +290,7 @@ class Factories : public Scene {
 
     void reset() {
         empolyedTicks.clear();
-
+        cage.clear();
         polysOutline.clear();
         baskets.clear();
         solidPolys.clear();
