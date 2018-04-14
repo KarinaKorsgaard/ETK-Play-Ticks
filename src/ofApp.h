@@ -25,8 +25,8 @@ class Ball {
     
     void update(ofRectangle rect1, ofVec2f v1, ofRectangle rect2, ofVec2f v2) {
         if(!goal) {
-            pos += vel;
-            
+            pos += vel* (ofGetLastFrameTime() * 65);
+            cout<< ofGetLastFrameTime() * 65<< endl;
             if (pos.y + radius > 1080) {
                 vel.y *= -1*co->ballDampening;
                 // vel.x = 0.;
