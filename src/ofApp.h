@@ -28,11 +28,11 @@ class Ball {
             pos += vel;
             
             if (pos.y + radius > 1080) {
-                vel.y *= -1;
+                vel.y *= -1*co->ballDampening;
                 // vel.x = 0.;
             }
             if (pos.y - radius < 0) {
-                vel.y *= -1;
+                vel.y *= -1*co->ballDampening;
                 // vel.x = 0.;
             }
             
@@ -56,6 +56,7 @@ class Ball {
             //cout << goalTimer << endl;
             if(goalTimer > 2.) {
                 vel *= -1;
+                vel.y*=0.5;
                 goal = false;
                 goalTimer = 0.0;
             }
@@ -95,9 +96,9 @@ class Ball {
             vel.x *= -1;
 
             float distanceToCenter = vel.y - rect.getCenter().y;
-            vel.y += distanceToCenter * 0.01 * velicity_pad.length();
+            vel.y += distanceToCenter * 0.001 * velicity_pad.length();
 
-            vel.x += std::copysign(distanceToCenter * 0.001, vel.x) *
+            vel.x += std::copysign(distanceToCenter * 0.0001, vel.x) *
                      velicity_pad.length();
         }
     }

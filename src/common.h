@@ -51,6 +51,7 @@ class commonObjects {
     ofParameter<bool> canCulpritMove;
     ofParameter<bool> moveBall;
     ofParameter<float> ballSpeed;
+    ofParameter<float> ballDampening;
     ofParameter<bool> sendAverageData;
     ofParameter<int> attraction;
     ofParameter<float> fc;
