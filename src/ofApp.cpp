@@ -189,14 +189,14 @@ void ofApp::setup() {
     physics.add(co.attraction.set("attraction", 1, 0, 2500));
     physics.add(co.fc.set("fc position", 0.05, 0.01, 0.4));
 
-    physics.add(co.drainCoefficient1.set("drain1", 0, 0, 5));
-    physics.add(co.drainCoefficient2.set("drain2", 0, 0, 5));
+   // physics.add(co.drainCoefficient1.set("drain1", 0, 0, 5));
+   // physics.add(co.drainCoefficient2.set("drain2", 0, 0, 5));
 
     physics.add(co.moveThemOut.set("move ticks out of walls", false));
     physics.add(co.logReport.set("logreport", false));
     // physics.setName("game controls");
-    physics.add(co.deadTimer.set("dead time", 5, 1, 30));
-    physics.add(co.refillCoef.set("refill amount", startVal / 2, 0, startVal));
+   // physics.add(co.deadTimer.set("dead time", 5, 1, 30));
+   // physics.add(co.refillCoef.set("refill amount", startVal / 2, 0, startVal));
 
     design.setName("Design");
     design.add(co.designDone1.set("team 1 ready", false));
@@ -204,9 +204,9 @@ void ofApp::setup() {
     design.add(co.canCulpritMove.set("can culprit move", false));
     design.add(co.rotationSpeed.set("rotationSpeed", 1., 0., 2.));
 
-    gravity.setName("escalator and trail");
+    gravity.setName("escalator, trail & tennis");
     //gravity.add(co.moveBall.set("move ball", false));
-    gravity.add(co.ballSpeed.set("max ball speeed", 10., 1., 30.));
+    gravity.add(co.ballSpeed.set("max ball speeed", 10., 1., 15.));
     gravity.add(co.ballDampening.set("ballDampening", 0.99, 0.95, 1.));
     gravity.add(co.gravity.set("gravity", 1, 0, 50));
     gravity.add(co.escalatorSpeed.set("escalator speed", 1., 0., 1.));
@@ -214,22 +214,19 @@ void ofApp::setup() {
 
     logic.setName("logic");
     logic.add(co.logicPrecision.set("logic precision", 20., 0.01, 100.f));
+    logic.add(co.showLogicTargets.set(false));
+    
+    market.setName("factories");
+    market.add(co.marketDone1.set("finish market 1", false));
+    market.add(co.marketDone2.set("finish market 2", false));
+    market.add(co.looserRadius.set("looser radius",0.1,0.,.1));
+    
     for (int i = 0; i < 6; i++) {
-        // ofParameter<float>t;
-        // co.targetCircleRot.push_back(t);
-        // logic.add(co.targetCircleRot.back().set("circle"+ofToString(i+1),0,0,360));
-
         ofParameter<float> f;
         co.factoryRotation.push_back(f);
         market.add(co.factoryRotation.back().set("factory" + ofToString(i + 1),
                                                  0, 0, 360));
     }
-    logic.add(co.showLogicTargets.set(false));
-
-    market.setName("factories");
-    market.add(co.marketDone1.set("finish market 1", false));
-    market.add(co.marketDone2.set("finish market 2", false));
-    market.add(co.looserRadius.set("looser radius",0.1,0.,.1));
 
     charades.setName("charades");
     charades.add(co.idleA.set("a is done", false));
@@ -637,17 +634,6 @@ void ofApp::handleSceneChange() {
 
         if (co.sMap[co.sceneNumber] == "Fight") {
             fightBallImg.load("img/specialAssets/08_FightBall.png");
-            //            fightBall = shared_ptr<ofxBox2dCircle>(new
-            //            ofxBox2dCircle); fightBall.get()->setPhysics(10., 5.,
-            //            10.0); fightBall.get()->setup(box2d.getWorld(),
-            //            1920,1080/2 , 40); fightBall.get()->alive = true;
-
-            //    Fight * f1 = static_cast<Fight *>(teams[0].scenes["Fight"]);
-            //   Fight * f2 = static_cast<Fight *>(teams[1].scenes["Fight"]);
-
-            //  f1->ball = fightBall;
-            //  f2->ball = fightBall;
-
             firstServe = true;
 
         } else if (co.sMap[p_sceneNumber] == "Fight") {

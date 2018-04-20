@@ -37,7 +37,7 @@ class commonObjects {
     float size_break;
     float size_lim;
 
-    float tennisPoint[2];
+    int tennisPoint[2];
 
     double delayPlayTime;
 

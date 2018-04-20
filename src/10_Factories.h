@@ -134,7 +134,7 @@ class Factories : public Scene {
             done = false;
         
         if(done && !donedone && cageTransparency > 250) {
-            ofVec2f m = ofVec2f(1920/2,1080/2);
+            ofVec2f m = ofVec2f(1920/2 + teamNumber*1920,1080/2);
             ofVec2f l = buttons->at(looserId).getBiquadPos();
             float maxDist = cage.getWidth()/2 - buttons->at(looserId).radius;
             donedone = l.distance(m) < maxDist;
@@ -217,7 +217,7 @@ class Factories : public Scene {
         
         if(done) {
             ofSetColor(255, cageTransparency);
-            cage.draw(1920/2-cage.getWidth()/2, 1080/2-cage.getHeight()/2);
+            cage.draw(1920/2-cage.getWidth()/2 + teamNumber*1920, 1080/2-cage.getHeight()/2);
         }
     };
 

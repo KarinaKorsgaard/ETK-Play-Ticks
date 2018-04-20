@@ -281,7 +281,7 @@ class Team {
             string name = "";
 
             if (co->sMap[s] == "Fight") {
-                timeString = ofToString(co->tennisPoint[teamId] + 1);
+                timeString = ofToString(co->tennisPoint[teamId]);
                 if (teamId == 1) {
                     int w =
                         co->font_medium->getStringBoundingBox(timeString, 0, 0)
