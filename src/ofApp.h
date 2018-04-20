@@ -62,7 +62,7 @@ class Ball {
             }
         }
         
-        if(vel.length()>co->ballSpeed)vel*=0.99;
+        if(vel.length()>co->ballSpeed)vel*=0.97;
     }
     void draw(ofImage img) {
         img.draw(pos - ofVec2f(radius, radius), radius * 2, radius * 2);
