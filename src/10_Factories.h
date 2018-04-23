@@ -119,9 +119,15 @@ class Factories : public Scene {
     float cageTransparency = 0;
     ofImage overlay;
     int looserId;
+    ofPoint cagePoint;
     void setup(commonObjects *_co, vector<Button> *b) {
         buttons = b;
         co = _co;
+        
+        ofxSVG c_svg;
+        c_svg.load("svg/10_FactoriesCage.svg");
+        cagePoint = getPolyline(c_svg)[0].getCentroid2D();
+        cout << "CAGE: "<<getPolyline(c_svg).size()<< endl;
     };
 
     bool isDone(bool b = false) {
@@ -133,8 +139,8 @@ class Factories : public Scene {
         if (baskets.size() == 0)
             done = false;
         
-        if(done && !donedone && cageTransparency > 250) {
-            ofVec2f m = ofVec2f(1920/2 + teamNumber*1920,1080/2);
+        if (done && !donedone && cageTransparency > 250) {
+            ofVec2f m = ofVec2f(cagePoint.x, cagePoint.y);
             ofVec2f l = buttons->at(looserId).getBiquadPos();
             float maxDist = cage.getWidth()/2 - buttons->at(looserId).radius;
             donedone = l.distance(m) < maxDist;
@@ -217,8 +223,10 @@ class Factories : public Scene {
         
         if(done) {
             ofSetColor(255, cageTransparency);
-            cage.draw(1920/2-cage.getWidth()/2 + teamNumber*1920, 1080/2-cage.getHeight()/2);
+            cage.draw(cagePoint.x-cage.getWidth()/2, cagePoint.y-cage.getHeight()/2);
         }
+        if(co->debug)cage.draw(cagePoint.x-cage.getWidth()/2, cagePoint.y-cage.getHeight()/2);
+        cout << cagePoint << endl;
     };
 
     void begin(ofxBox2d *world = nullptr) {
