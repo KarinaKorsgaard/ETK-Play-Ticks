@@ -140,12 +140,13 @@ class Team {
             }
         }
     }
-
+    void forceReset(){
+        reset(co->sceneNumber);
+    }
     void update() {
 
         int s = co->sceneNumber;
         if (p_sceneNum != s) {
-
             reset(s);
         }
 

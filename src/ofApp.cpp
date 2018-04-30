@@ -357,6 +357,24 @@ void ofApp::update() {
         co.forceremoveTicks = false;
         teams[0].removeOffTicks(true);
         teams[1].removeOffTicks(true);
+        
+        int temp  = co.sceneNumber;
+        co.sceneNumber = (co.sceneNumber+1)%co.sMap.size();
+        handleSceneChange();
+        
+        teams[0].update();
+        teams[1].update();
+        
+        co.sceneNumber = temp;
+        handleSceneChange();
+        
+        co.startScene = true;
+        co.startMovement = true;
+        co.startTime = true;
+        
+        teams[0].update();
+        teams[1].update();
+        // setup again
     }
 }
 
